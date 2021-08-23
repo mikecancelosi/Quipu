@@ -59,7 +59,6 @@ namespace Quipu.Web
                 spa.Options.SourcePath = "client-app";
                 if (env.IsDevelopment())
                 {
-
                     spa.UseVueDevelopmentServer();
                 }
             });
