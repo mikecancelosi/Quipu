@@ -39,7 +39,7 @@ namespace Quipu.Web
                 {
                     FileName = isWindows ? "cmd" : "npm",
                     Arguments = $"{(isWindows ? "/c npm " : "")}run serve",
-                    WorkingDirectory = "client-app",
+                    WorkingDirectory = "VueComponents",
                     RedirectStandardError = true,
                     RedirectStandardInput = true,
                     RedirectStandardOutput = true,
