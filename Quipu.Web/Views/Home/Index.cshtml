@@ -1,14 +1,20 @@
-﻿@page
-@model IndexModel
-@{
-    ViewData["Title"] = "Home page";
+﻿@{
+    ViewData["Title"] = "Home Page";
 }
 
-<div id="app">
-    <home-component></home-component>
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <div id="app">
+        <h1 class="display-4">{{message}}</h1>
+    </div>
 </div>
-
-@section script{
-    <script src="@Url.Content("~/bundle/Home.js")"></script>
-    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
- } 
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js"></script>
+<script>
+    let app = new Vue({
+        el: '#app',        
+        data: {
+            message: `Vue in the works!`
+        }
+    })
+</script>
