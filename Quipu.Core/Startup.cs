@@ -6,12 +6,16 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Quipu.Core.DAL;
 using Microsoft.Extensions.Configuration;
+using Quipu.Core.BLL;
+using Quipu.Core.DomainModel;
 
 namespace Quipu.Core
 {
     public class Startup
     {
         private IConfiguration Configuration;
+        readonly string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -26,7 +30,25 @@ namespace Quipu.Core
             services.AddDbContext<QContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
-           // services.AddDatabaseDeveloperPageExceptionFilter();
+            services.AddCors(options =>
+            {
+                options.AddPolicy(name: MyAllowSpecificOrigins,
+                                  builder =>
+                                  {
+                                      builder.WithOrigins("http://192.168.1.166:5000");
+                                  });
+            });            
+
+            //Model Service
+            services.AddScoped<IModelService<Alert>, AlertService>();
+            services.AddScoped<IModelService<Change>, ChangeService>();
+            services.AddScoped<IModelService<Discussion>, DiscussionService>();
+            services.AddScoped<IModelService<PermissionGroup>, PermissionGroupService>();
+            services.AddScoped<IModelService<Permission>, PermissionService>();
+            services.AddScoped<IModelService<Settings>, SettingsService>();
+            services.AddScoped<IModelService<Task>, TaskService>();
+            services.AddScoped<IModelService<UserPermissionOverride>, UserPermissionOverrideService>();
+            services.AddScoped<IModelService<User>, UserService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -38,6 +60,8 @@ namespace Quipu.Core
             }
 
             app.UseRouting();
+
+            app.UseCors(MyAllowSpecificOrigins);
 
             app.UseAuthorization();
 
