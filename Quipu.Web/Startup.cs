@@ -32,15 +32,6 @@ namespace Quipu.Web
             {
                 configuration.RootPath = "ClientApp";
             });
-
-            services.AddCors(options =>
-            {
-                options.AddPolicy(name: MyAllowSpecificOrigins,
-                                  builder =>
-                                  {
-                                      builder.WithOrigins("http://192.168.1.166:5000");
-                                  });
-            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -53,14 +44,12 @@ namespace Quipu.Web
 
             app.UseRouting();
             app.UseSpaStaticFiles();
-            app.UseAuthorization();
+            app.UseAuthorization();         
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
             });
-
-            app.UseCors(MyAllowSpecificOrigins);
 
             app.UseSpa(spa =>
             {

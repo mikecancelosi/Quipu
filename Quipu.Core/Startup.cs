@@ -8,6 +8,7 @@ using Quipu.Core.DAL;
 using Microsoft.Extensions.Configuration;
 using Quipu.Core.BLL;
 using Quipu.Core.DomainModel;
+using System.Web.Http.Cors;
 
 namespace Quipu.Core
 {
@@ -35,7 +36,9 @@ namespace Quipu.Core
                 options.AddPolicy(name: MyAllowSpecificOrigins,
                                   builder =>
                                   {
-                                      builder.WithOrigins("http://192.168.1.166:5000");
+                                      builder.WithOrigins("*")
+                                             .WithHeaders("*")
+                                             .WithMethods("*");
                                   });
             });            
 
@@ -67,7 +70,8 @@ namespace Quipu.Core
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllers();
+                endpoints.MapControllers()
+                .RequireCors(MyAllowSpecificOrigins);
             });
         }
     }

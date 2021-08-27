@@ -28,7 +28,7 @@
         },
         methods: {
             getProjects() {
-                axios.get('http://192.168.1.166:5000/api/Tasks')
+                axios.get('https://192.168.1.166:45455/api/Tasks')
                     .then((response) => {
                         this.projects =  response.data;
                     })
