@@ -1,74 +1,116 @@
 <template>
-    <header>
-        <nav>
-            <div class="container">
-                <h1>Quipu</h1>
-                <div>
-                    <ul class="navbar-nav flex-grow">
-                        <li class="nav-item">
-                            <router-link :to="{ name: 'Home' }" class="nav-link text-dark">Home</router-link>
+    <v-app>
+        <v-navigation-drawer>
 
-                        </li>
-                        <li class="nav-item">
-                            <router-link :to="{ name: 'Projects' }" class="nav-link text-dark">My Tasks</router-link>
-                        </li>
-                        <li class="nav-item">
-                            <router-link :to="{ name: 'Projects' }" class="nav-link text-dark">Inbox</router-link>
-                        </li>
-                        <li class="nav-item">
-                            <router-link :to="{ name: 'Projects' }" class="nav-link text-dark">Projects</router-link>
-                        </li>
-                        <li class="nav-item">
-                            <router-link :to="{ name: 'Projects' }" class="nav-link text-dark">Reporting</router-link>
-                        </li>
-                        <li class="nav-item">
-                            <router-link :to="{ name: 'Projects' }" class="nav-link text-dark">Portfolio</router-link>
-                        </li>
-                        <li class="nav-item">
-                            <router-link :to="{ name: 'Projects' }" class="nav-link text-dark">Goals</router-link>
-                        </li>
-                    </ul>
-                </div>
-                <hr />
+            <v-list-item>
+                <v-list-item-content>
+                    <v-list-item-title class="text-h6">Quipu</v-list-item-title>
+                </v-list-item-content>
+            </v-list-item>
 
-                <div>
-                    <h2>Favorites</h2>
-                </div>
-                <hr/>
+            <v-divider />
 
-                <div>
-                    <h2>Teams</h2>
-                </div>
-                <hr/>
+            <v-list dense nav>
+                <v-list-item @click=" this.$router.push('/Home')">
 
-                <div class="align-bottom">
-                    <h2>Help</h2>
-                </div>
+                    <v-list-item-icon>
+                        <v-icon>mdi-format-list-bulleted</v-icon>
+                    </v-list-item-icon>
+
+                    <v-list-item-content>
+                        <v-list-item-title>Home</v-list-item-title>
+                    </v-list-item-content>
+                </v-list-item>
+
+                <v-list-item @click=" this.$router.push('/Projects')">
+
+                    <v-list-item-icon>
+                        <v-icon>mdi-format-list-bulleted</v-icon>
+                    </v-list-item-icon>
+
+                    <v-list-item-content>
+                        <v-list-item-title>My Tasks</v-list-item-title>
+                    </v-list-item-content>
+                </v-list-item>
+
+                <v-list-item @click=" this.$router.push('/Projects')">
+
+                    <v-list-item-icon>
+                        <v-icon>mdi-format-list-bulleted</v-icon>
+                    </v-list-item-icon>
+
+                    <v-list-item-content>
+                        <v-list-item-title>Inbox</v-list-item-title>
+                    </v-list-item-content>
+                </v-list-item>
+
+                <v-list-item @click=" this.$router.push('/Projects')">
+
+                    <v-list-item-icon>
+                        <v-icon>mdi-format-list-bulleted</v-icon>
+                    </v-list-item-icon>
+
+                    <v-list-item-content>
+                        <v-list-item-title>Reporting</v-list-item-title>
+                    </v-list-item-content>
+                </v-list-item>
+
+                <v-list-item @click=" this.$router.push('/Projects')">
+
+                    <v-list-item-icon>
+                        <v-icon>mdi-format-list-bulleted</v-icon>
+                    </v-list-item-icon>
+
+                    <v-list-item-content>
+                        <v-list-item-title>Goals</v-list-item-title>
+                    </v-list-item-content>
+                </v-list-item>
+            </v-list>            
+
+            <v-divider />
+
+            <div>
+                <h2>Favorites</h2>
             </div>
-        </nav>
-    </header>
+            <v-divider />
+
+            <div>
+                <h2>Teams</h2>
+            </div>
+            <v-divider />
+
+            <v-footer>
+                   <h2>Help</h2>
+            </v-footer>
+        </v-navigation-drawer>
+    </v-app>
 </template>
 
 
 <style scoped>
-    .container{
+    .container {
         text-align: left;
         padding: 15px;
         margin: 0 0 0 0;
         max-width: 250px;
-        background-color:#555;
-    }
-    h2{
-        font-size:16px;
-    }
-    .align-bottom{
-        position:absolute;
-        bottom:10px;
-        left:100px;
     }
 
-   
+    h2 {
+        font-size: 16px;
+    }
+
+    .align-bottom {
+        position: absolute;
+        bottom: 10px;
+        left: 100px;
+    }
+    .v-navigation-drawer{
+       
+    }
+
+    
 </style>
+
 <script>
     export default {
         name: "NavMenu",
