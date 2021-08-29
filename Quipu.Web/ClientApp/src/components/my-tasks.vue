@@ -1,5 +1,7 @@
 ﻿<template>
-    <h1>My Tasksasksasksasksasksasksasksasksasksasksasksasks</h1>
+    <v-container fluid>
+        <h1>My Tasksasksasksasksasksasksasksasksasksasksasksasks</h1>
+    </v-container>
    
 
 

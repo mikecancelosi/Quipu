@@ -1,12 +1,11 @@
 <template>
     <v-app theme="dark">
-        <nav-menu :isExpanded ="this.isNavExpanded" @collapseNav="this.collapse" />
-        <div class="Quipu-Content">
-            <div class="btn-right">
+        
+            <nav-menu :isExpanded="this.isNavExpanded" @collapseNav="this.collapse" />
+            <v-content>               
                 <v-btn icon="mdi-forwardburger" @click="expand" />
-            </div>
-            <router-view />
-        </div>
+                <router-view />
+            </v-content>
     </v-app>
 </template>
 
@@ -36,22 +35,20 @@
 
 <style scoped>
 
-    .v-app {
-        position: relative;
-        right: 0;
-        left: 0;
-        bottom: 0;
-        top: 0;
-    }
+    .Quipu-Content {  
+        width:70%;
+        order:2;
 
-    .Quipu-Content {
-        position: relative;       
-        width:100%
     }
 
     .nav-menu {
-        position: relative;
         width:256px;
+        order:1;
+    }
+    .container{
+        display:flex;
+        flex-direction:column;
+        width:fit-content;
     }
 </style>
 

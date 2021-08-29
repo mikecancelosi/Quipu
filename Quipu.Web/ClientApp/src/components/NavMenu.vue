@@ -1,5 +1,7 @@
 <template>
-    <v-navigation-drawer :model-value="this.isExpanded">
+    <v-navigation-drawer permanent 
+                         app
+                         :model-value="this.isExpanded">
         <div class="title-nav">
 
             <v-list-item-title class="text-h6">Quipu</v-list-item-title>
