@@ -1,7 +1,7 @@
 ﻿import { createWebHistory, createRouter } from "vue-router";
 import Home from "@/components/Home.vue";
-import ProjectsList from "@/components/ProjectsList.vue"
-import FetchData from "@/components/FetchData.vue";
+import ProjectsList from "@/components/project-list.vue"
+import ProjectItem from "@/components/project-item.vue"
 
 const routes = [
     {
@@ -15,9 +15,10 @@ const routes = [
         component: ProjectsList,
     },
     {
-        path: "/FetchData",
-        name: "FetchData",
-        component: FetchData,
+        path: "/Projects/:id",
+        name: "ProjectItem",
+        component: ProjectItem,
+        props:true
     }
 ];
 

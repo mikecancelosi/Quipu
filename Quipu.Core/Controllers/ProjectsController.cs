@@ -24,7 +24,6 @@ namespace Quipu.Core.Controllers
 
         // GET: api/Projects
         [HttpGet]
-        [EnableCorsAttribute("*","*","*")]
         public async Task<ActionResult<IEnumerable<Project>>> GetProjects()
         {
             return await _context.Projects.ToListAsync();

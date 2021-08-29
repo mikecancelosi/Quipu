@@ -21,6 +21,7 @@ namespace Quipu.Core.DomainModel
         public string Name { get; set; }
         public string Description { get; set; }
         public int? Assigned_User_ID { get; set; }
+        public bool Completed { get; set; }
 
         public virtual User AssignedToUser { get; set; }
         public virtual ICollection<Discussion> Discussions { get; set; }

@@ -1,30 +1,48 @@
 <template>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav>
             <div class="container">
-                <a class="navbar-brand">Vue JS Template for .NET 5</a>
-                <button class="navbar-toggler"
-                        type="button"
-                        data-toggle="collapse"
-                        data-target=".navbar-collapse"
-                        aria-label="Toggle navigation"
-                        @click="toggle">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse"
-                     v-bind:class="{show: isExpanded}">
+                <h1>Quipu</h1>
+                <div>
                     <ul class="navbar-nav flex-grow">
                         <li class="nav-item">
                             <router-link :to="{ name: 'Home' }" class="nav-link text-dark">Home</router-link>
-                           
+
+                        </li>
+                        <li class="nav-item">
+                            <router-link :to="{ name: 'Projects' }" class="nav-link text-dark">My Tasks</router-link>
+                        </li>
+                        <li class="nav-item">
+                            <router-link :to="{ name: 'Projects' }" class="nav-link text-dark">Inbox</router-link>
                         </li>
                         <li class="nav-item">
                             <router-link :to="{ name: 'Projects' }" class="nav-link text-dark">Projects</router-link>
                         </li>
                         <li class="nav-item">
-                            <router-link :to="{ name: 'FetchData' }" class="nav-link text-dark">Fetch Data</router-link>
+                            <router-link :to="{ name: 'Projects' }" class="nav-link text-dark">Reporting</router-link>
+                        </li>
+                        <li class="nav-item">
+                            <router-link :to="{ name: 'Projects' }" class="nav-link text-dark">Portfolio</router-link>
+                        </li>
+                        <li class="nav-item">
+                            <router-link :to="{ name: 'Projects' }" class="nav-link text-dark">Goals</router-link>
                         </li>
                     </ul>
+                </div>
+                <hr />
+
+                <div>
+                    <h2>Favorites</h2>
+                </div>
+                <hr/>
+
+                <div>
+                    <h2>Teams</h2>
+                </div>
+                <hr/>
+
+                <div class="align-bottom">
+                    <h2>Help</h2>
                 </div>
             </div>
         </nav>
@@ -32,26 +50,24 @@
 </template>
 
 
-<style>
-    a.navbar-brand {
-        white-space: normal;
-        text-align: center;
-        word-break: break-all;
+<style scoped>
+    .container{
+        text-align: left;
+        padding: 15px;
+        margin: 0 0 0 0;
+        max-width: 250px;
+        background-color:#555;
+    }
+    h2{
+        font-size:16px;
+    }
+    .align-bottom{
+        position:absolute;
+        bottom:10px;
+        left:100px;
     }
 
-    html {
-        font-size: 14px;
-    }
-
-    @media (min-width: 768px) {
-        html {
-            font-size: 16px;
-        }
-    }
-
-    .box-shadow {
-        box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
-    }
+   
 </style>
 <script>
     export default {
