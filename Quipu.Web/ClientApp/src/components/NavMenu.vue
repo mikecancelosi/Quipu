@@ -1,102 +1,144 @@
 <template>
-    <v-app>
-        <v-navigation-drawer>
+    <v-navigation-drawer :model-value="this.isExpanded">
+        <div class="title-nav">
 
-            <v-list-item>
+            <v-list-item-title class="text-h6">Quipu</v-list-item-title>
+            <v-spacer />
+            <div class="btn-right">
+                <v-btn icon="mdi-backburger" @click="this.collapse" />
+            </div>
+
+
+        </div>
+
+        <v-list dense nav>
+            <v-list-item @click=" this.$router.push('/Home')">
+
+                <v-list-item-icon>
+                    <v-icon nav-item-icon>mdi-home-outline</v-icon>
+                </v-list-item-icon>
+
                 <v-list-item-content>
-                    <v-list-item-title class="text-h6">Quipu</v-list-item-title>
+                    <v-list-item-title>Home</v-list-item-title>
                 </v-list-item-content>
             </v-list-item>
 
-            <v-divider />
+            <v-list-item @click=" this.$router.push('/MyTasks')">
 
-            <v-list dense nav>
-                <v-list-item @click=" this.$router.push('/Home')">
+                <v-list-item-icon>
+                    <v-icon nav-item-icon>mdi-check-circle-outline</v-icon>
+                </v-list-item-icon>
 
-                    <v-list-item-icon>
-                        <v-icon>mdi-format-list-bulleted</v-icon>
-                    </v-list-item-icon>
+                <v-list-item-content>
+                    <v-list-item-title>My Tasks</v-list-item-title>
+                </v-list-item-content>
+            </v-list-item>
 
-                    <v-list-item-content>
-                        <v-list-item-title>Home</v-list-item-title>
-                    </v-list-item-content>
-                </v-list-item>
+            <v-list-item @click=" this.$router.push('/Projects')">
 
-                <v-list-item @click=" this.$router.push('/Projects')">
+                <v-list-item-icon>
+                    <v-icon nav-item-icon>mdi-bell-outline</v-icon>
+                </v-list-item-icon>
 
-                    <v-list-item-icon>
-                        <v-icon>mdi-format-list-bulleted</v-icon>
-                    </v-list-item-icon>
+                <v-list-item-content>
+                    <v-list-item-title>Inbox</v-list-item-title>
+                </v-list-item-content>
+            </v-list-item>
 
-                    <v-list-item-content>
-                        <v-list-item-title>My Tasks</v-list-item-title>
-                    </v-list-item-content>
-                </v-list-item>
+            <v-list-item @click=" this.$router.push('/Projects')">
 
-                <v-list-item @click=" this.$router.push('/Projects')">
+                <v-list-item-icon>
+                    <v-icon nav-item-icon>mdi-chart-timeline-variant</v-icon>
+                </v-list-item-icon>
 
-                    <v-list-item-icon>
-                        <v-icon>mdi-format-list-bulleted</v-icon>
-                    </v-list-item-icon>
+                <v-list-item-content>
+                    <v-list-item-title>Reporting</v-list-item-title>
+                </v-list-item-content>
+            </v-list-item>
 
-                    <v-list-item-content>
-                        <v-list-item-title>Inbox</v-list-item-title>
-                    </v-list-item-content>
-                </v-list-item>
+            <v-list-item @click=" this.$router.push('/Projects')">
 
-                <v-list-item @click=" this.$router.push('/Projects')">
+                <v-list-item-icon>
+                    <v-icon nav-item-icon>mdi-shape-outline</v-icon>
+                </v-list-item-icon>
 
-                    <v-list-item-icon>
-                        <v-icon>mdi-format-list-bulleted</v-icon>
-                    </v-list-item-icon>
+                <v-list-item-content>
+                    <v-list-item-title>Goals</v-list-item-title>
+                </v-list-item-content>
+            </v-list-item>
+        </v-list>
 
-                    <v-list-item-content>
-                        <v-list-item-title>Reporting</v-list-item-title>
-                    </v-list-item-content>
-                </v-list-item>
+        <v-divider />
 
-                <v-list-item @click=" this.$router.push('/Projects')">
+        <v-list>
+            <h2>Favorites</h2>
 
-                    <v-list-item-icon>
-                        <v-icon>mdi-format-list-bulleted</v-icon>
-                    </v-list-item-icon>
+            <v-list-item>
 
-                    <v-list-item-content>
-                        <v-list-item-title>Goals</v-list-item-title>
-                    </v-list-item-content>
-                </v-list-item>
-            </v-list>            
+                <v-list-item-icon>
+                    <v-icon nav-item-icon-small>mdi-star-outline</v-icon>
+                </v-list-item-icon>
 
-            <v-divider />
+                <v-list-item-content>
+                    <p>Star projects for easy access</p>
+                </v-list-item-content>
+            </v-list-item>
 
-            <div>
-                <h2>Favorites</h2>
-            </div>
-            <v-divider />
+        </v-list>
+        <v-divider />
 
-            <div>
-                <h2>Teams</h2>
-            </div>
-            <v-divider />
+        <v-list>
+            <h2>Teams</h2>
 
-            <v-footer>
-                   <h2>Help</h2>
-            </v-footer>
-        </v-navigation-drawer>
-    </v-app>
+
+        </v-list>
+        <v-divider />
+
+        <v-footer>
+            <h2>Help</h2>
+        </v-footer>
+    </v-navigation-drawer>
 </template>
 
 
+<script>
+    export default {
+        name: "NavMenu",
+        props: {
+            isExpanded: Boolean
+        },
+        methods: {
+            collapse() {
+                this.$emit('collapse-nav');
+            },
+        }
+    }
+</script>
+
 <style scoped>
-    .container {
-        text-align: left;
-        padding: 15px;
-        margin: 0 0 0 0;
-        max-width: 250px;
+    p {
+        font-size: 12px;
     }
 
     h2 {
-        font-size: 16px;
+        font-size: 14px;
+        text-align: left;
+        font-weight: 600;
+    }
+
+    .title-nav {
+        display: flex;
+        align-items: center;
+        width: 100%;
+    }
+
+    .btn-right {
+        float: right;
+    }
+
+    .text-h6 {
+        float: left;
+        position: relative;
     }
 
     .align-bottom {
@@ -104,29 +146,51 @@
         bottom: 10px;
         left: 100px;
     }
-    .v-navigation-drawer{
-       
+
+    .v-navigation-drawer {
+        padding: 30px 20px;
     }
 
-    
-</style>
+    .v-list-item {
+        padding: 0px;
+    }
 
-<script>
-    export default {
-        name: "NavMenu",
-        data() {
-            return {
-                isExpanded: false
-            }
-        },
-        methods: {
-            collapse() {
-                this.isExpanded = false;
-            },
+    .v-icon {
+        font-size: 32px;
+    }
 
-            toggle() {
-                this.isExpanded = !this.isExpanded;
-            }
+        .v-icon[nav-item-icon] {
+            font-size: 24px;
+            margin-right: 5px;
         }
+
+        .v-icon[nav-item-icon-small] {
+            font-size: 20px;
+            margin-right: 5px;
+        }
+
+    .v-list-item-title {
+        font-size: 14px;
     }
-</script>
+
+    .v-list--density-default.v-list--one-line .v-list-item {
+        min-height: 0;
+        padding: 10px 0;
+    }
+
+    .v-list {
+        padding: 20px 0;
+    }
+
+    .v-footer {
+        position: absolute;
+        bottom: 0;
+        text-align: center;
+    }
+
+    .v-divider {
+        position: absolute;
+        left: 0;
+        right: 0;
+    }
+</style>
