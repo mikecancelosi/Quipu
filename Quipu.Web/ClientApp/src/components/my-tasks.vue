@@ -1,8 +1,22 @@
 ﻿<template>
-    <v-container fluid>
-        <h1>My Tasksasksasksasksasksasksasksasksasksasksasksasks</h1>
-    </v-container>
-   
+    <q-header elevated>
+        <q-toolbar>
+            <q-btn flat
+                   dense
+                   round
+                   @click="openNav"
+                   aria-label="Menu"
+                   v-show="!this.leftDrawerOpen"
+                   icon="mdi-forwardburger" />
+
+            <q-toolbar-title>
+                My Tasks
+            </q-toolbar-title>
+
+            <List
+
+        </q-toolbar>
+    </q-header>
 
 
 </template>
@@ -12,6 +26,9 @@
     import axios from 'axios'
     export default {
         name: "MyTasks",
+        props: {
+            leftDrawerOpen : Boolean,
+        },
         data() {
             return {
                 tasks: []
@@ -26,7 +43,10 @@
                     .catch(function (error) {
                         alert(error);
                     });
-            }           
+            },
+            openNav() {
+                this.$emit("open-nav");
+            }
         },
         mounted() {
             this.getTasks();
