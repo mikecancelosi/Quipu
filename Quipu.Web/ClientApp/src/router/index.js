@@ -1,7 +1,8 @@
 ﻿import { createWebHistory, createRouter } from "vue-router";
 import Home from "@/components/Home.vue";
-import ProjectsList from "@/components/project-list.vue"
-import ProjectItem from "@/components/project-item.vue"
+import ProjectsList from "@/components/ProjectsList.vue"
+import ProjectItem from "@/components/ProjectItem.vue"
+import ProjectCreate from "@/components/ProjectCreate.vue"
 import MyTasks from "@/components/my-tasks.vue"
 import MyTasksBoard from "@/components/MyTasksBoard.vue"
 import MyTasksCalendar from "@/components/MyTasksCalendar.vue"
@@ -23,6 +24,11 @@ const routes = [
         name: "ProjectItem",
         component: ProjectItem,
         props:true
+    },
+    {
+        path: "/Projects/Create",
+        name: "ProjectCreate",
+        component: ProjectCreate
     },
     {
         path: "/MyTasks",
@@ -48,6 +54,7 @@ const routes = [
 
         ]
     }
+   
 ];
 
 const router = createRouter({

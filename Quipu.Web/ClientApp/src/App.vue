@@ -92,7 +92,7 @@
                                         <q-item-section>Use a template</q-item-section>
                                     </q-item>
                                     <q-separator style="padding:0px;" />
-                                    <q-item clickable v-close-popup class="popup-item">
+                                    <q-item clickable v-close-popup class="popup-item" >
                                         <q-item-section avatar>
                                             <q-icon name="o_forum" size="20px" />
                                         </q-item-section>
