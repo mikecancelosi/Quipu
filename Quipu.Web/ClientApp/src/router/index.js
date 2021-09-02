@@ -3,7 +3,7 @@ import Home from "@/components/Home.vue";
 import ProjectsList from "@/components/ProjectsList.vue"
 import ProjectItem from "@/components/ProjectItem.vue"
 import ProjectCreate from "@/components/ProjectCreate.vue"
-import MyTasks from "@/components/my-tasks.vue"
+import MyTasks from "@/components/MyTasks.vue"
 import MyTasksBoard from "@/components/MyTasksBoard.vue"
 import MyTasksCalendar from "@/components/MyTasksCalendar.vue"
 import MyTasksList from "@/components/MyTasksList.vue"

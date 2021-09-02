@@ -72,7 +72,7 @@
 
             <q-item>
                 <div class="row" style="align-items:center; width:100%">
-                    <q-item-label>Quipu</q-item-label>
+                    <q-item-label>Teams</q-item-label>
 
                     <q-space />
 
@@ -92,11 +92,11 @@
                                         <q-item-section>Use a template</q-item-section>
                                     </q-item>
                                     <q-separator style="padding:0px;" />
-                                    <q-item clickable v-close-popup class="popup-item" >
+                                    <q-item clickable v-close-popup class="popup-item" @click="this.$router.push('/Projects/Create')">
                                         <q-item-section avatar>
-                                            <q-icon name="o_forum" size="20px" />
+                                            <q-icon name="o_note_add" size="20px" />
                                         </q-item-section>
-                                        <q-item-section>Blank Project</q-item-section>
+                                        <q-item-section >Blank Project</q-item-section>
                                     </q-item>
                                 </q-list>
                             </q-menu>
@@ -142,7 +142,15 @@
     .popup-item{
       
     }
+</style>
 
+<style>
+    h1{
+        font-size:36px;
+    }
+    h2{
+        font-size:24px;
+    }
 
 </style>
 
