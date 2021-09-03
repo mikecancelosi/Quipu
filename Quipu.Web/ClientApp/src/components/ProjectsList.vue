@@ -56,7 +56,6 @@
                 return completedTasks / taskSize;
             },
             navigateToProject(project) {
-                console.log(project.id);
                 this.$router.push("/Projects/"+project.id);
             }
         },

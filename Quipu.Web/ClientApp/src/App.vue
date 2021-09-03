@@ -75,6 +75,30 @@
                     <q-item-label>Teams</q-item-label>
 
                     <q-space />
+                    <q-btn flat
+                           dense
+                           round
+                           icon="o_add"
+                           @click="this.$router.push('/Teams/Create')" />
+
+                </div>
+            </q-item>
+
+            <q-list v-for="team in teams" :key="team">
+                <q-item clickable @click="this.$router.push({name:'TeamOverview', params:{id: team.id}})">
+                    <q-item-section>
+                        <a>{{team.name}}</a>
+                    </q-item-section>
+                </q-item>
+            </q-list>
+
+            <q-separator />
+
+            <q-item>
+                <div class="row" style="align-items:center; width:100%">
+                    <q-item-label>Projects</q-item-label>
+
+                    <q-space />
 
                     <div>
                         <q-btn flat
@@ -82,7 +106,7 @@
                                round
                                icon="o_add">
                             <q-menu>
-                               
+
                                 <q-list id="create-proj-pop" dense>
                                     <a class="popup-heading">Create Project</a>
                                     <q-item clickable v-close-popup class="popup-item" disable>
@@ -96,7 +120,7 @@
                                         <q-item-section avatar>
                                             <q-icon name="o_note_add" size="20px" />
                                         </q-item-section>
-                                        <q-item-section >Blank Project</q-item-section>
+                                        <q-item-section>Blank Project</q-item-section>
                                     </q-item>
                                 </q-list>
                             </q-menu>
@@ -104,8 +128,6 @@
                     </div>
                 </div>
             </q-item>
-
-            <q-separator />
         </q-drawer>
 
         <q-page-container>
@@ -126,50 +148,66 @@
     .q-item__section--avatar {
         min-width: 0px;
     }
-    #create-proj-pop{
+
+    #create-proj-pop {
         padding: 10px 0px 5px 0px;
         min-width: 200px;
     }
-    #create-proj-pop > * {
-        padding: 0px 10px 0px 10px;
-        margin: 5px 0px;
+
+        #create-proj-pop > * {
+            padding: 0px 10px 0px 10px;
+            margin: 5px 0px;
+        }
+
+    .popup-heading {
+        font-size: 12px;
+        color: #888;
+        font-weight: 600;
     }
-    .popup-heading{
-        font-size:12px;
-        color:#888;
-        font-weight:600;
-    }
-    .popup-item{
-      
+
+    .popup-item {
     }
 </style>
 
 <style>
-    h1{
-        font-size:36px;
-    }
-    h2{
-        font-size:24px;
+    h1 {
+        font-size: 36px;
     }
 
+    h2 {
+        font-size: 24px;
+    }
 </style>
 
 <script>
+    import axios from 'axios'
 
     export default {
         name: 'LayoutDefault',
         data() {
             return {
-                leftDrawerOpen: true
+                leftDrawerOpen: true,
+                teams:[]
             }
         },
         methods: {
             openNav() {
                 this.leftDrawerOpen = true;
+            },
+            getTeams() {
+                axios.get('http://127.0.0.1:5000/api/Teams')
+                    .then((response) => {
+                        this.teams = response.data;
+                        console.log(this.teams);
+                    })
+                    .catch(function (error) {
+                        alert(error);
+                    });
             }
         },
         mounted() {
-            this.$router.push('/Home')
+            this.$router.push('/Home');
+            this.getTeams();
         }
 
     }

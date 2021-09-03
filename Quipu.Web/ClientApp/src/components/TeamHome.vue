@@ -11,21 +11,41 @@
 
             <div>
                 <q-toolbar-title>
-                    My Tasks
+                   {{team.name}}
                 </q-toolbar-title>
-               
+
                 <q-list>
 
-                    <q-list-item @click="this.$router.push('/MyTasks/List')">
+                    <q-list-item @click="this.$router.push('/Teams/Overview')">
+                        Overview
+                    </q-list-item>
+
+                    <q-list-item>
                         List
                     </q-list-item>
 
-                    <q-list-item @click="this.$router.push('/MyTasks/Board')">
+                    <q-list-item>
                         Board
                     </q-list-item>
 
-                    <q-list-item @click="this.$router.push('/MyTasks/Calendar')">
+                    <q-list-item>
+                        Timeline
+                    </q-list-item>
+
+                    <q-list-item>
                         Calendar
+                    </q-list-item>
+
+                    <q-list-item>
+                        Dashboard
+                    </q-list-item>
+
+                    <q-list-item>
+                        Messages
+                    </q-list-item>
+
+                    <q-list-item>
+                        Files
                     </q-list-item>
 
                 </q-list>
@@ -36,60 +56,39 @@
     </q-header>
 
     <q-page-container style="padding: 0 0 0 0">
-      <router-view :tasks ="this.tasks"/>
+        <router-view :team="this.team"/>
     </q-page-container>
-
-
 </template>
-
-<style scoped>
-    .q-toolbar{
-        height:70px;
-        background-color:transparent;
-    }
-    q-list-item{
-        margin-right:20px;
-    }
-    q-list-item:active{
-        color:green;
-    }
-    q-page-container{
-        padding:0 0 0 0;
-        padding-top:0px;
-    }
-</style>
 
 
 <script>
     import axios from 'axios'
-
     export default {
-        name: "MyTasks",
-        props: {
-            leftDrawerOpen : Boolean,
-        },
+        name: 'TeamHome',
+        props: ['id'],
         data() {
             return {
-                tasks: []
+                leftDrawerOpen: true,
+                team: {},
+
             }
         },
         methods: {
-            getTasks() {
-                axios.get('http://127.0.0.1:5000/api/Tasks')
+            getTeam() {
+                axios.get('http://127.0.0.1:5000/api/Teams/' + this.id)
                     .then((response) => {
-                        this.tasks =  response.data;
+                        this.team = response.data;
                     })
                     .catch(function (error) {
                         alert(error);
                     });
             },
-            openNav() {
-                this.$emit("open-nav");
-            }
         },
         mounted() {
-            this.$router.push('/MyTasks/List')
-            this.getTasks();
+            this.getTeam();
+            
         }
+
     }
+
 </script>

@@ -19,7 +19,21 @@
             <q-space/>
             <q-input color="teal" filled label="Description" type="textarea" />
             <q-space/>
-            <q-select outlined label="Privacy" v-model="selectedprivacy" :options="privacyoptions" color="teal"/>
+            <div class="row">
+                <q-select outlined
+                          label="Privacy" 
+                          v-model="selectedprivacy" 
+                          :options="privacyoptions" 
+                          color="teal" 
+                          style=" width:45%;" />
+                <q-space style=" width:10%;" />
+                <q-select outlined 
+                          label="Team Owner" 
+                          color="teal"
+                          :options ="teams"
+                          v-model="selectedteam"
+                          style=" width:45%;" />
+            </div>
             <q-space/>
             <div class="row">
                 <q-space/>
@@ -56,10 +70,12 @@
         name: "ProjectCreate",
         props: {
             leftDrawerOpen: Boolean,
+            teams: []
         },
         data() {
             return {
                 selectedprivacy: ref("Private"),
+                selectedteam: "",
                 privacyoptions: ["Private", "Public"]
             }
         },

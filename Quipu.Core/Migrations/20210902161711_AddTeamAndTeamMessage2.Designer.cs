@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Quipu.Core.DAL;
 
 namespace Quipu.Core.Migrations
 {
     [DbContext(typeof(QContext))]
-    partial class QContextModelSnapshot : ModelSnapshot
+    [Migration("20210902161711_AddTeamAndTeamMessage2")]
+    partial class AddTeamAndTeamMessage2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -338,7 +340,12 @@ namespace Quipu.Core.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("TeamID")
+                        .HasColumnType("int");
+
                     b.HasKey("ID");
+
+                    b.HasIndex("TeamID");
 
                     b.ToTable("Users");
                 });
@@ -372,21 +379,6 @@ namespace Quipu.Core.Migrations
                     b.HasIndex("UserID");
 
                     b.ToTable("UserPermissionOverrides");
-                });
-
-            modelBuilder.Entity("TeamUser", b =>
-                {
-                    b.Property<int>("TeamsID")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UsersID")
-                        .HasColumnType("int");
-
-                    b.HasKey("TeamsID", "UsersID");
-
-                    b.HasIndex("UsersID");
-
-                    b.ToTable("TeamUser");
                 });
 
             modelBuilder.Entity("Quipu.Core.DomainModel.Alert", b =>
@@ -480,6 +472,13 @@ namespace Quipu.Core.Migrations
                     b.Navigation("Project");
                 });
 
+            modelBuilder.Entity("Quipu.Core.DomainModel.User", b =>
+                {
+                    b.HasOne("Quipu.Core.DomainModel.Team", null)
+                        .WithMany("Users")
+                        .HasForeignKey("TeamID");
+                });
+
             modelBuilder.Entity("Quipu.Core.DomainModel.UserPermissionOverride", b =>
                 {
                     b.HasOne("Quipu.Core.DomainModel.Permission", "Permission")
@@ -493,21 +492,6 @@ namespace Quipu.Core.Migrations
                     b.Navigation("Permission");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("TeamUser", b =>
-                {
-                    b.HasOne("Quipu.Core.DomainModel.Team", null)
-                        .WithMany()
-                        .HasForeignKey("TeamsID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Quipu.Core.DomainModel.User", null)
-                        .WithMany()
-                        .HasForeignKey("UsersID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("Quipu.Core.DomainModel.Discussion", b =>
@@ -542,6 +526,8 @@ namespace Quipu.Core.Migrations
                     b.Navigation("Messages");
 
                     b.Navigation("Projects");
+
+                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("Quipu.Core.DomainModel.User", b =>

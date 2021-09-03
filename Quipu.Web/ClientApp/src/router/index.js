@@ -7,6 +7,9 @@ import MyTasks from "@/components/MyTasks.vue"
 import MyTasksBoard from "@/components/MyTasksBoard.vue"
 import MyTasksCalendar from "@/components/MyTasksCalendar.vue"
 import MyTasksList from "@/components/MyTasksList.vue"
+import TeamCreate from "@/components/TeamCreate.vue"
+import TeamHome from "@/components/TeamHome.vue"
+import TeamOverview from "@/components/TeamOverview.vue"
 
 const routes = [
     {
@@ -52,6 +55,25 @@ const routes = [
                 component: MyTasksList
             }
 
+        ]
+    },
+    {
+        path: "/Teams/Create",
+        name: "TeamCreate",
+        component: TeamCreate
+    },
+    {
+        path: "/Teams/:id",
+        name: "TeamHome",
+        component: TeamHome,
+        props:true,
+        children: [
+            {
+                path: "overview",
+                name: "TeamOverview",
+                component: TeamOverview,
+                props:true,
+            }
         ]
     }
    
