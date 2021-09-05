@@ -3,21 +3,38 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Quipu.Core.DAL;
 
 namespace Quipu.Core.Migrations
 {
     [DbContext(typeof(QContext))]
-    partial class QContextModelSnapshot : ModelSnapshot
+    [Migration("20210905211906_AddProjectTeamRelation")]
+    partial class AddProjectTeamRelation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("ProductVersion", "5.0.9")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+            modelBuilder.Entity("ProjectTeam", b =>
+                {
+                    b.Property<int>("ProjectsID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TeamsID")
+                        .HasColumnType("int");
+
+                    b.HasKey("ProjectsID", "TeamsID");
+
+                    b.HasIndex("TeamsID");
+
+                    b.ToTable("ProjectTeam");
+                });
 
             modelBuilder.Entity("ProjectUser", b =>
                 {
@@ -386,17 +403,32 @@ namespace Quipu.Core.Migrations
 
             modelBuilder.Entity("TeamUser", b =>
                 {
-                    b.Property<int>("MembersID")
-                        .HasColumnType("int");
-
                     b.Property<int>("TeamsID")
                         .HasColumnType("int");
 
-                    b.HasKey("MembersID", "TeamsID");
+                    b.Property<int>("UsersID")
+                        .HasColumnType("int");
 
-                    b.HasIndex("TeamsID");
+                    b.HasKey("TeamsID", "UsersID");
+
+                    b.HasIndex("UsersID");
 
                     b.ToTable("TeamUser");
+                });
+
+            modelBuilder.Entity("ProjectTeam", b =>
+                {
+                    b.HasOne("Quipu.Core.DomainModel.Project", null)
+                        .WithMany()
+                        .HasForeignKey("ProjectsID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Quipu.Core.DomainModel.Team", null)
+                        .WithMany()
+                        .HasForeignKey("TeamsID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("ProjectUser", b =>
@@ -515,15 +547,15 @@ namespace Quipu.Core.Migrations
 
             modelBuilder.Entity("TeamUser", b =>
                 {
-                    b.HasOne("Quipu.Core.DomainModel.User", null)
-                        .WithMany()
-                        .HasForeignKey("MembersID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Quipu.Core.DomainModel.Team", null)
                         .WithMany()
                         .HasForeignKey("TeamsID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Quipu.Core.DomainModel.User", null)
+                        .WithMany()
+                        .HasForeignKey("UsersID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

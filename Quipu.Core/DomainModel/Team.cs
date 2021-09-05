@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -10,7 +11,7 @@ namespace Quipu.Core.DomainModel
     {
         public Team()
         {           
-            this.Users = new HashSet<User>();
+            this.Members = new HashSet<User>();
             this.Messages = new HashSet<TeamMessage>();
         }
 
@@ -19,13 +20,20 @@ namespace Quipu.Core.DomainModel
         [Required(ErrorMessage = "Each team needs to have a name")]
         public string Name { get; set; }
         public string Description { get; set; }
-        public virtual ICollection<User> Users { get; set; }
+        public virtual ICollection<User> Members { get; set; }
+        [NotMapped]
         public virtual ICollection<Project> Projects
         {
             get
             {
-                var source = Users.Select(u => u.Projects);
-                return source.Aggregate((acc, list) => { return (ICollection<Project>)acc.Concat(list); }).ToHashSet();
+                var projects = new HashSet<Project>();
+                var source = Members.Select(u => u.Projects);
+                foreach (var projectCollection in source)
+                {
+                    projects.Union(projectCollection);
+                }
+
+                return projects;
             }
         }
         public virtual ICollection<TeamMessage> Messages { get; set; }

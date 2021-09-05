@@ -20,7 +20,7 @@
                                icon="mdi-backburger" />
                     </div>
                 </div>
-                <q-item dense clickable @click="this.$router.push('/Home')">
+                <q-item dense clickable @click="this.$router.push('/Home')" disable>
                     <q-item-section avatar>
                         <q-icon name="o_school" />
                     </q-item-section>
@@ -36,7 +36,7 @@
                         <q-item-label>My Tasks</q-item-label>
                     </q-item-section>
                 </q-item>
-                <q-item dense clickable @click="this.$router.push('/Inbox')">
+                <q-item dense clickable @click="this.$router.push('/Inbox')" disable>
                     <q-item-section avatar>
                         <q-icon name="o_chat" />
                     </q-item-section>
@@ -44,15 +44,15 @@
                         <q-item-label>Inbox</q-item-label>
                     </q-item-section>
                 </q-item>
-                <q-item dense clickable @click="this.$router.push('/Reporting')">
+                <q-item dense clickable @click="this.$router.push('/Projects')">
                     <q-item-section avatar>
                         <q-icon name="o_forum" />
                     </q-item-section>
                     <q-item-section>
-                        <q-item-label>Reporting</q-item-label>
+                        <q-item-label>Projects</q-item-label>
                     </q-item-section>
                 </q-item>
-                <q-item dense clickable @click="this.$router.push('/Goals')">
+                <q-item dense clickable @click="this.$router.push('/Goals')" disable>
                     <q-item-section avatar>
                         <q-icon name="o_rss_feed" />
                     </q-item-section>

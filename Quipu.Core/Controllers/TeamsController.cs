@@ -78,7 +78,7 @@ namespace Quipu.Core.Controllers
         [HttpPost]
         public async Task<ActionResult<Team>> PostTeam(Team team)
         {
-            foreach(User user in team.Users)
+            foreach(User user in team.Members)
             {
                 _context.Entry(user).State = EntityState.Unchanged;
             }

@@ -15,7 +15,7 @@ namespace Quipu.Core.DomainModel
             this.UserPermissionOverrides = new HashSet<UserPermissionOverride>();
             this.Discussions = new HashSet<Discussion>();
             this.Alerts = new HashSet<Alert>();
-            this.Alerts = new HashSet<Project>();
+            this.Projects = new HashSet<Project>();
         }
 
         [Key]
