@@ -70,7 +70,7 @@
 
             <q-separator />
 
-            <q-item>
+            <q-item style="margin-bottom:10px;">
                 <div class="row" style="align-items:center; width:100%">
                     <q-item-label>Teams</q-item-label>
 
@@ -85,13 +85,20 @@
             </q-item>
 
             <q-list v-for="team in teams" :key="team">
-                <q-item clickable @click="this.$router.push({name:'TeamOverview', params:{id: team.id}})">
-                    <q-item-section>
-                        <a>{{team.name}}</a>
+                <q-item clickable 
+                        dense
+                        @click="this.$router.push({name:'TeamOverview', params:{id: team.id}})">
+                    <q-item-section >     
+                        <div class="row" style="align-items:center">
+                            <q-avatar color="teal-8" rounded size="10px" style="margin-right:10px" />
+                            <a>{{team.name}}</a>
+                            <q-space/>
+                            <q-btn round flat dense icon="o_more_vert" disable></q-btn>
+                        </div>
                     </q-item-section>
                 </q-item>
             </q-list>
-
+            <q-space style="min-height:20px;"/>
             <q-separator />
 
             <q-item>
@@ -141,6 +148,8 @@
         font-size: 20px;
     }
 
+    
+
     .navigationdrawer {
         padding: 10px 20px 20px 20px;
     }
@@ -177,6 +186,26 @@
     h2 {
         font-size: 24px;
     }
+
+    header{
+        background-color:transparent;
+    }
+
+    .q-tab{
+       padding:4px;
+    }
+
+    .headingContainer {
+        height: 70px;
+        background-color: transparent;
+    }
+
+    .q-header{
+        min-height:100px;
+        padding:0px 10px;
+        background-color:transparent;
+    }
+
 </style>
 
 <script>

@@ -15,6 +15,7 @@ namespace Quipu.Core.DomainModel
             this.UserPermissionOverrides = new HashSet<UserPermissionOverride>();
             this.Discussions = new HashSet<Discussion>();
             this.Alerts = new HashSet<Alert>();
+            this.Alerts = new HashSet<Project>();
         }
 
         [Key]
@@ -33,5 +34,7 @@ namespace Quipu.Core.DomainModel
         public virtual ICollection<Discussion> Discussions { get; set; }
         public virtual ICollection<Alert> Alerts { get; set; }
         public virtual ICollection<Team> Teams { get; set; }
+        public virtual ICollection<Project> Projects { get; set; }
+
     }
 }

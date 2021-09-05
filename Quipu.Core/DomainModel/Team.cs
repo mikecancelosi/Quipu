@@ -11,7 +11,7 @@ namespace Quipu.Core.DomainModel
         public Team()
         {           
             this.Users = new HashSet<User>();
-            this.Projects = new HashSet<Project>();
+            this.Messages = new HashSet<TeamMessage>();
         }
 
         [Key]
@@ -20,7 +20,14 @@ namespace Quipu.Core.DomainModel
         public string Name { get; set; }
         public string Description { get; set; }
         public virtual ICollection<User> Users { get; set; }
-        public virtual ICollection<Project> Projects { get; set; }
+        public virtual ICollection<Project> Projects
+        {
+            get
+            {
+                var source = Users.Select(u => u.Projects);
+                return source.Aggregate((acc, list) => { return (ICollection<Project>)acc.Concat(list); }).ToHashSet();
+            }
+        }
         public virtual ICollection<TeamMessage> Messages { get; set; }
     }
 }

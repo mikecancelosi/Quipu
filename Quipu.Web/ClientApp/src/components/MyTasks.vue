@@ -1,6 +1,6 @@
 ﻿<template>
-    <q-header elevated>
-        <q-toolbar>
+    <q-header>
+        <q-toolbar class="headingContainer">
             <q-btn flat
                    dense
                    round
@@ -16,15 +16,15 @@
                
                 <q-list>
 
-                    <q-list-item @click="this.$router.push('/MyTasks/List')">
+                    <q-list-item @click="this.$router.push('/MyTasks/List')"  class="subNav">
                         List
                     </q-list-item>
 
-                    <q-list-item @click="this.$router.push('/MyTasks/Board')">
+                    <q-list-item @click="this.$router.push('/MyTasks/Board')" class="subNav">
                         Board
                     </q-list-item>
 
-                    <q-list-item @click="this.$router.push('/MyTasks/Calendar')">
+                    <q-list-item @click="this.$router.push('/MyTasks/Calendar')" class="subNav">
                         Calendar
                     </q-list-item>
 
@@ -43,13 +43,7 @@
 </template>
 
 <style scoped>
-    .q-toolbar{
-        height:70px;
-        background-color:transparent;
-    }
-    q-list-item{
-        margin-right:20px;
-    }
+
     q-list-item:active{
         color:green;
     }

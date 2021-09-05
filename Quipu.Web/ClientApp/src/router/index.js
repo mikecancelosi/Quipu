@@ -10,6 +10,7 @@ import MyTasksList from "@/components/MyTasksList.vue"
 import TeamCreate from "@/components/TeamCreate.vue"
 import TeamHome from "@/components/TeamHome.vue"
 import TeamOverview from "@/components/TeamOverview.vue"
+import TeamProjects from "@/components/TeamProjects.vue"
 
 const routes = [
     {
@@ -73,7 +74,14 @@ const routes = [
                 name: "TeamOverview",
                 component: TeamOverview,
                 props:true,
+            },
+            {
+                path: "projects",
+                name: "TeamProjects",
+                component: TeamProjects,
+                props: true,
             }
+
         ]
     }
    
