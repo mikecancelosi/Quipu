@@ -30,7 +30,7 @@
                 <div id="overviewcontent" style="max-width:800px;margin-top:20px;">
 
                     <div id="collab-section">
-                        <h2>How we'll collaborate in {{project.name}}</h2>
+                        <h2>How we'll collaborate </h2>
                         <q-input borderless
                                  placeholder="Welcome your team and set the tone for how you'll work together in Asana. Add meeting details, communication channels, and other important information."
                                  type="textarea" />
@@ -46,8 +46,7 @@
                                            border-radius:17px;
                                            border-width: 1px;
                                            margin-right:10px;
-                                           padding:5px;
-" />
+                                           padding:5px;" />
                                 <div>Add member</div>
                             </div>
 
