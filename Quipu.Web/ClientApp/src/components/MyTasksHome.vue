@@ -58,7 +58,8 @@
     import axios from 'axios'
 
     export default {
-        name: "MyTasks",
+        name: "MyTasksHome",
+        emits: ["openNav"],
         props: {
             leftDrawerOpen : Boolean,
         },

@@ -1,6 +1,6 @@
 ﻿<template>
 
-    <q-header elevated="false" style="align-items:center;min-height:1px; height:100px; background-color:transparent;">
+    <q-header style="align-items:center;min-height:1px; height:100px; background-color:transparent;">
         <q-toolbar style="height:100%;">
             <q-btn flat
                    dense
@@ -52,58 +52,67 @@
         <q-space />
         <q-separator />
 
-        <table class='table table-striped' aria-labelledby="tableLabel">
-            <thead>
-                <tr>
-                    <th>Project Name</th>
-                    <th>Status</th>
-                    <th>Priority</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="project of projects" v-bind:key="project" v-on:click="navigateToProject(project)">
-                    <td>{{ project.name }}</td>
-                    <td>{{ project.status ?? 'On Track' }}</td>
-                    <td>{{ project.priority ?? 'Low' }}</td>
-                </tr>
-            </tbody>
-        </table>
+        <q-table :rows="rows" 
+                 :columns="columns"
+                 :loading="loading"
+                 @row-dblclick="navigateToProject"/>
     </div>
 </template>
 
 <style scoped>
-    .q-space{
-        min-height:10px;
+    .q-space {
+        min-height: 10px;
     }
-    #contentContainer{
-        padding:10px 20px;
+
+    #contentContainer {
+        padding: 10px 20px;
     }
 </style>
 
 <script>
     import axios from 'axios'
+    import {  ref } from 'vue'
     export default {
         name: "ProjectsList",
+        emits:["openNav"],
         props: {
-            leftDrawerOpen:Boolean,
-        },
+            leftDrawerOpen: Boolean,
+        },      
         data() {
             return {
-                projects: []
+                columns:
+                    [
+                        { name: "name", label: "Project Name", field: "name", align: 'left' },
+                        { name: "status", label: "Status", field: "status", align: 'left' },
+                        { name: "priority", label: "Priority", field: "priority", align: 'left' },
+                    ],
+                rows:[],                
+                pagination: ref({
+                    sortBy: 'desc',
+                    descending: false,
+                    page: 1,
+                    rowsPerPage: 3,
+                    rowsNumber: 10
+                }),
+                loading:true,
             }
         },
         methods: {
             getProjects() {
                 axios.get('http://127.0.0.1:5000/api/Projects')
                     .then((response) => {
-                        this.projects =  response.data;
+                        this.loading = false;
+                        this.rows= response.data;
                     })
                     .catch(function (error) {
                         alert(error);
                     });
             },
-            navigateToProject(project) {
-                this.$router.push("/Projects/"+project.id);
+            openNav() {
+                this.$emit("open-nav");
+            },
+            navigateToProject(evt,row) {
+                this.$router.push('/Projects/' + row.id);
             }
         },
         mounted() {

@@ -8,7 +8,6 @@ using Quipu.Core.DAL;
 using Microsoft.Extensions.Configuration;
 using Quipu.Core.BLL;
 using Quipu.Core.DomainModel;
-using System.Web.Http.Cors;
 
 namespace Quipu.Core
 {

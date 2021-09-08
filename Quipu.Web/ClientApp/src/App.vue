@@ -28,7 +28,7 @@
                         <q-item-label>Home</q-item-label>
                     </q-item-section>
                 </q-item>
-                <q-item dense clickable :to="{name: 'MyTasks'}">
+                <q-item dense clickable :to="{name: 'MyTasksHome'}">
                     <q-item-section avatar>
                         <q-icon name="o_code" />
                     </q-item-section>
@@ -227,7 +227,6 @@
                 axios.get('http://127.0.0.1:5000/api/Teams')
                     .then((response) => {
                         this.teams = response.data;
-                        console.log(this.teams);
                     })
                     .catch(function (error) {
                         alert(error);

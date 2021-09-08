@@ -1,9 +1,11 @@
 ﻿import { createWebHistory, createRouter } from "vue-router";
 import Home from "@/components/Home.vue";
 import ProjectsList from "@/components/ProjectsList.vue"
-import ProjectItem from "@/components/ProjectItem.vue"
 import ProjectCreate from "@/components/ProjectCreate.vue"
-import MyTasks from "@/components/MyTasks.vue"
+import ProjectHome from "@/components/ProjectHome.vue"
+import ProjectOverview from "@/components/ProjectOverview.vue"
+import ProjectTaskList from "@/components/ProjectTaskList.vue"
+import MyTasksHome from "@/components/MyTasksHome.vue"
 import MyTasksBoard from "@/components/MyTasksBoard.vue"
 import MyTasksCalendar from "@/components/MyTasksCalendar.vue"
 import MyTasksList from "@/components/MyTasksList.vue"
@@ -13,6 +15,11 @@ import TeamOverview from "@/components/TeamOverview.vue"
 import TeamProjects from "@/components/TeamProjects.vue"
 
 const routes = [
+    {
+        path: "/",
+        name: "Home",
+        component: Home,
+    },
     {
         path: "/Home",
         name: "Home",
@@ -25,9 +32,23 @@ const routes = [
     },
     {
         path: "/Projects/:id",
-        name: "ProjectItem",
-        component: ProjectItem,
-        props:true
+        name: "ProjectHome",
+        component: ProjectHome,
+        props: true,
+        children: [
+            {
+                path: "overview",
+                name: "ProjectOverview",
+                component: ProjectOverview,
+                props:true,
+            },
+            {
+                path: "tasklist",
+                name: "ProjectTaskList",
+                component: ProjectTaskList,
+                props: true,
+            }
+        ]
     },
     {
         path: "/Projects/Create",
@@ -36,8 +57,8 @@ const routes = [
     },
     {
         path: "/MyTasks",
-        name: "MyTasks",
-        component: MyTasks,
+        name: "MyTasksHome",
+        component: MyTasksHome,
         children: [
             {
                 path: "",

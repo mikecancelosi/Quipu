@@ -1,8 +1,6 @@
 ﻿<template>
-
     <q-layout>
-
-        <q-drawer v-model="leftDrawerOpen" side="right" bordered :width="400">
+        <q-drawer v-model="rightDrawerOpen" side="right" bordered :width="400">
             <div class="q-drawer-container">
                 <h2 style="color: darkgray;">What's the status?</h2>
                 <div class="row">
@@ -32,7 +30,7 @@
                 <div id="overviewcontent" style="max-width:800px;margin-top:20px;">
 
                     <div id="collab-section">
-                        <h2>How we'll collaborate</h2>
+                        <h2>How we'll collaborate in {{project.name}}</h2>
                         <q-input borderless
                                  placeholder="Welcome your team and set the tone for how you'll work together in Asana. Add meeting details, communication channels, and other important information."
                                  type="textarea" />
@@ -52,17 +50,18 @@
 " />
                                 <div>Add member</div>
                             </div>
-                            <div class="row" v-for="member in this.team.Users" :key="member">
-                                <p>HELLO!</p>
 
-                            </div>
                         </div>
+                    </div>
+                    <div class="row" v-for="member in this.project.Members" :key="member">
+                        <p>HELLO!</p>
+
                     </div>
 
                     <h2>Key Resources</h2>
                     <div id="resource-container" class="row">
                         <q-space />
-                        <q-icon name="mdi-clipboard-file-outline" size="100px" style="margin-right:10px; "/>
+                        <q-icon name="mdi-clipboard-file-outline" size="100px" style="margin-right:10px; " />
                         <div id="resource-empty" class="row">
                             <p>Align your team around a shared vision with a project brief and supporting resources</p>
                             <div class="row">
@@ -76,9 +75,7 @@
                 <q-space />
             </div>
         </q-page-container>
-
     </q-layout>
-
 </template>
 
 <style scoped>
@@ -97,46 +94,47 @@
         padding: 0px 10px;
     }
 
-    #collab-section{
-        margin-bottom:50px;
+    #collab-section {
+        margin-bottom: 50px;
     }
 
-    #roles-section{
-        margin-bottom:50px;
+    #roles-section {
+        margin-bottom: 50px;
     }
 
     #resource-container {
         width: 100%;
         min-height: 100px;
-        justify-items:center;
-        align-items:center;
-        padding:30px 0px;
-        border-width:1px;
-        border-style:solid;
-        border-radius:10px;
+        justify-items: center;
+        align-items: center;
+        padding: 30px 0px;
+        border-width: 1px;
+        border-style: solid;
+        border-radius: 10px;
     }
 
     #resource-empty {
-        width:50%;
+        width: 50%;
     }
-    
 </style>
 
+
 <script>
+
     export default {
-        name: 'TeamOverview',
+        name: "ProjectOverview",
         props: {
-            team: {},
+            project: {}
         },
         data() {
             return {
-                leftDrawerOpen: true,
+                rightDrawerOpen: true,
             }
         },
         methods: {
+
         },
         mounted() {
         }
-
     }
 </script>

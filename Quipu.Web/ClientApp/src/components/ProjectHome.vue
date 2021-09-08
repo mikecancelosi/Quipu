@@ -13,7 +13,7 @@
 
                 <q-btn icon="o_groups" size="24px" dense flat style="margin-right:15px; padding:0px;" />
                 <a style="font-size:24px">
-                    {{team.name}}
+                    {{project.name}}
                 </a>
                 <q-btn flat round disable dense icon="o_expand_more" />
                 <q-btn flat round disable dense icon="o_info" />
@@ -29,16 +29,16 @@
 
         <q-tabs dense style="position:absolute; bottom:0;">
 
-            <q-tab @click="this.$router.push('/Teams/'+ this.id +'/Overview')" >
+            <q-tab @click="this.$router.push('/Projects/'+ this.id +'/Overview')">
                 Overview
             </q-tab>
 
-            <q-tab @click="this.$router.push('/Teams/'+ this.id +'/Projects')">
-                Project List
+            <q-tab @click="this.$router.push('/Projects/'+ this.id +'/TaskList')">
+                Task List
             </q-tab>
 
             <q-tab disable>
-                Board
+                Task Board
             </q-tab>
 
             <q-tab disable>
@@ -65,43 +65,39 @@
     </q-header>
 
     <q-page-container style="padding: 0 0 0 0">
-        <router-view :team="this.team"/>
+        <router-view :project="this.project" />
     </q-page-container>
+
+
+
 </template>
 
-<style>
-
-    .q-tab {
-        padding: 0px 10px;
-        min-width:1px;
+<style scoped>
+    .headerText {
+        text-align: left;
+        margin: 0 0 0 20px
     }
-
-    .q-header .q-tab__content {
-        min-width: 1px;
-    }
-
-    
 </style>
 
 <script>
     import axios from 'axios'
     export default {
-        name: 'TeamHome',
+        name: "ProjectHome",
         emits: ["openNav"],
         props: {
+            id: String,
             leftDrawerOpen: Boolean,
-            id: String
         },
         data() {
-            return {                
-                team: {},
+            return {
+                project: {},
             }
         },
         methods: {
-            getTeam() {
-                axios.get('http://127.0.0.1:5000/api/Teams/' + this.id)
+            async getProject() {
+                await axios.get('http://127.0.0.1:5000/api/Projects/' + this.id)
                     .then((response) => {
-                        this.team = response.data;
+                        this.project = response.data;
                     })
                     .catch(function (error) {
                         alert(error);
@@ -109,13 +105,12 @@
             },
             openNav() {
                 this.$emit("open-nav");
-            }
+            },
         },
         mounted() {
-            this.getTeam();
-            
+            this.getProject().then(() => {
+                this.$router.push({ name: "ProjectOverview", params: { project: this.project } });
+            })
         }
-
     }
-
 </script>
