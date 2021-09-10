@@ -61,7 +61,7 @@
                               :props="props"
                               colspan="100%">
                             <q-expansion-item :label="props.row.name"
-                                              :v-model="props.row.expanded"
+                                              v-model="this.expanded"
                                               switch-toggle-side
                                               expand-icon-toggle
                                               dense-toggle
@@ -236,10 +236,11 @@
         name: "ProjectTaskList",
         components: { draggable },
         props: {
-            team: {},
+            project: {},
         },
         data() {
             return {
+                expanded: true,
                 headercolumns: [
                     {
                         name: 'name',
@@ -272,63 +273,33 @@
                         headerClasses: 'tablecol statuscol',
                     }
                 ],
-                headerrows: [
-                    {
-                        name: 'To Do',
-                        expanded: true,
-                        tasks: [
-                            { name: "task", assignee: "mike", date: "09/27", priority: "high", status: "OnTrack", id: 1 },
-                            { name: "Joao", assignee: "mike", date: "09/27", priority: "high", status: "OnTrack", id: 2 },
-                            { name: "Jean", assignee: "mike", date: "09/27", priority: "high", status: "OnTrack", id: 3 },
-                            { name: "Gerard", assignee: "mike", date: "09/27", priority: "high", status: "OnTrack", id: 4 }
-                        ]
-                    },
-                    {
-                        name: 'In Work',
-                        expanded: true,
-                        tasks: [
-                            { name: "Juan", assignee: "mike", date: "09/27", priority: "high", status: "OnTrack", id: 5 },
-                            { name: "Edgard", assignee: "mike", date: "09/27", priority: "high", status: "OnTrack", id: 6 },
-                            { name: "Johnson", assignee: "mike", date: "09/27", priority: "high", status: "OnTrack", id: 7 }
-                        ]
-                    },
-                    {
-                        name: 'Done',
-                        expanded: true,
-                        tasks: [
-                            { name: "mike", assignee: "mike", date: "09/27", priority: "high", status: "OnTrack", id: 8 },
-                            { name: "Richard", assignee: "mike", date: "09/27", priority: "high", status: "OnTrack", id: 9 },
-                            { name: "Joseph", assignee: "mike", date: "09/27", priority: "high", status: "OnTrack", id: 10 }
-                        ]
-                    }
-                ],
+                headerrows: [],
                 drag: false,
 
             }
         },
-        methods: {
-            getProjects() {
-                axios.get('http://127.0.0.1:5000/api/Projects')
+        methods: {           
+            getRows()
+            {               
+                //Get groups
+                let taskgroups = [];
+                axios.get('http://127.0.0.1:5000/api/TaskStatusCategories')
                     .then((response) => {
-                        this.loading = false;
-                        this.rows = response.data;
+                        taskgroups = response.data;
+                        taskgroups.forEach(group => {
+                            this.headerrows.push({
+                                name: group.name,
+                                expanded: false,
+                                tasks: this.project.tasks.filter(task => {
+                                    return task.statusCategory.id === group.id
+                                }),
+                            });
+                        });                        
                     })
                     .catch(function (error) {
                         alert(error);
                     });
             },
-            add: function () {
-                this.list.push({ name: "Juan" });
-            },
-            replace: function () {
-                this.list = [{ name: "Edgard" }];
-            },
-            clone: function (el) {
-                return {
-                    name: el.name + " cloned"
-                };
-            },
-
             openNav() {
                 this.$emit("open-nav");
             },
@@ -347,7 +318,7 @@
             }
         },
         mounted() {
-            this.getProjects();
+            this.getRows();
         }
     }
 </script>

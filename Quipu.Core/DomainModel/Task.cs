@@ -20,9 +20,9 @@ namespace Quipu.Core.DomainModel
         [Required(ErrorMessage ="A task needs to have a title")]
         public string Name { get; set; }
         public string Description { get; set; }
-        public int? Assigned_User_ID { get; set; }
         public bool Completed { get; set; }
 
+        public virtual TaskStatusCategory StatusCategory { get; set; }
         public virtual User AssignedToUser { get; set; }
         public virtual ICollection<Discussion> Discussions { get; set; }
         public virtual ICollection<Alert> Alerts { get; set; }

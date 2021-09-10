@@ -22,5 +22,6 @@ namespace Quipu.Core.DAL
         public DbSet<Project> Projects { get; set; }
         public DbSet<Team> Teams { get; set; }
         public DbSet<TeamMessage> TeamMessages { get; set; }
+        public DbSet<Quipu.Core.DomainModel.TaskStatusCategory> TaskStatusCategory { get; set; }
     }
 }

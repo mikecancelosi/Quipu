@@ -33,6 +33,11 @@ namespace Quipu.Core.Controllers
         public async Task<ActionResult<Project>> GetProject(int id)
         {
             var project = await _context.Projects.FindAsync(id);
+            _context.Entry(project).Collection(p => p.Tasks).Load();
+            foreach(var task in project.Tasks)
+            {
+                _context.Entry(task).Reference(t => t.StatusCategory).Load();
+            }
 
             if (project == null)
             {
