@@ -39,6 +39,7 @@ namespace Quipu.Core.Controllers
                 _context.Entry(task).Reference(t => t.StatusCategory).Load();
                 _context.Entry(task).Reference(t => t.Status).Load();
                 _context.Entry(task).Reference(t => t.Priority).Load();
+                _context.Entry(task).Reference(t => t.AssignedToUser).Load();
             }
 
             if (project == null)

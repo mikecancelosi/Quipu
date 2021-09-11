@@ -115,7 +115,7 @@
                                                                size="10px"
                                                                v-if="element.assigneehover &&
                                                                  !element.assigneedropdown &&
-                                                                 element.assigneduser == null"
+                                                                 element.assignedToUser == null"
                                                                @click=" element.assigneedropdown = true; assignuser()"
                                                                :style="{
                                                                     visibility: element.assignedToUser == null
@@ -124,12 +124,12 @@
                                          
                                                     <q-select dense
                                                               ref="userselect"
-                                                              v-model="element.assigneduser"
+                                                              v-model="element.assignedToUser"
                                                               :hide-dropdown-icon="!element.assigneehover && !element.assigneedropdown"
                                                               :options="this.useroptions"
                                                               @update:model-value="updatetask(element)"
                                                               @popup-hide="element.assigneedropdown = false"
-                                                              v-if="element.assigneedropdown || element.assigneduser != null"
+                                                              v-if="element.assigneedropdown || element.assignedToUser != null"
                                                               borderless
                                                               emit-value>
                                                         <template v-slot:option="scope">
@@ -141,7 +141,7 @@
                                                         </template>
 
                                                         <template v-slot:selected>
-                                                            {{element.assigneduser != null ? element.assigneduser.display_Name : ''}}
+                                                            {{element.assignedToUser != null ? element.assignedToUser.display_Name : ''}}
                                                         </template>
                                                     </q-select>
 
@@ -459,10 +459,12 @@
                                 }),
                             });
                         });
+                        
                     })
                     .catch(function (error) {
                         alert(error);
                     });
+                console.log(this.headerrows);
 
                 axios.get('http://127.0.0.1:5000/api/Users')
                     .then((response) => {

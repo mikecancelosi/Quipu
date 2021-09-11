@@ -23,12 +23,16 @@ namespace Quipu.Core.DomainModel
         public string Description { get; set; }
         public bool Completed { get; set; }
         [ForeignKey("Priority")]
-        public int PriorityID { get; set; }   
-        public PriorityType Priority { get; set; }   
+        public int PriorityID { get; set; }
         [ForeignKey("Status")]
         public int StatusID { get; set; }
-        public StatusType Status { get; set; }
+        [ForeignKey("AssignedToUser")]
+        public int AssignedToUserID { get; set; }
+        [ForeignKey("StatusCategory")]
+        public int StatusCategoryID { get; set; }
 
+        public virtual PriorityType Priority { get; set; }
+        public virtual StatusType Status { get; set; }
         public virtual TaskStatusCategory StatusCategory { get; set; }
         public virtual User AssignedToUser { get; set; }
         public virtual ICollection<Discussion> Discussions { get; set; }
