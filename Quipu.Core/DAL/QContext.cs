@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Quipu.Core.DomainModel;
+using System;
 
 namespace Quipu.Core.DAL
 {
@@ -22,6 +24,25 @@ namespace Quipu.Core.DAL
         public DbSet<Project> Projects { get; set; }
         public DbSet<Team> Teams { get; set; }
         public DbSet<TeamMessage> TeamMessages { get; set; }
-        public DbSet<Quipu.Core.DomainModel.TaskStatusCategory> TaskStatusCategory { get; set; }
+        public DbSet<TaskStatusCategory> TaskStatusCategory { get; set; }
+        public DbSet<PriorityType> PriorityType { get; set; }
+        public DbSet<StatusType> StatusType { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder model)
+        {
+            foreach(var entityType in model.Model.GetEntityTypes())
+            {
+                foreach(var property in entityType.GetProperties())
+                {
+                    if(property.ClrType.IsEnum)
+                    {
+                        var type = typeof(EnumToStringConverter<>).MakeGenericType(property.ClrType);
+                        var converter = Activator.CreateInstance(type, new ConverterMappingHints()) as ValueConverter;
+
+                        property.SetValueConverter(converter);
+                    }
+                }
+            }
+        }
     }
 }

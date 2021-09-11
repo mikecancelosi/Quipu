@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Quipu.Core.DAL;
 
 namespace Quipu.Core.Migrations
 {
     [DbContext(typeof(QContext))]
-    partial class QContextModelSnapshot : ModelSnapshot
+    [Migration("20210910213202_EnumsWithStrings")]
+    partial class EnumsWithStrings
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -198,21 +200,6 @@ namespace Quipu.Core.Migrations
                     b.ToTable("PermissionGroups");
                 });
 
-            modelBuilder.Entity("Quipu.Core.DomainModel.PriorityType", b =>
-                {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("ID");
-
-                    b.ToTable("PriorityType");
-                });
-
             modelBuilder.Entity("Quipu.Core.DomainModel.Project", b =>
                 {
                     b.Property<int>("ID")
@@ -227,17 +214,15 @@ namespace Quipu.Core.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("PriorityID")
-                        .HasColumnType("int");
+                    b.Property<string>("Priority")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("StatusID")
-                        .HasColumnType("int");
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("ID");
-
-                    b.HasIndex("PriorityID");
-
-                    b.HasIndex("StatusID");
 
                     b.ToTable("Projects");
                 });
@@ -252,21 +237,6 @@ namespace Quipu.Core.Migrations
                     b.HasKey("ID");
 
                     b.ToTable("Settings");
-                });
-
-            modelBuilder.Entity("Quipu.Core.DomainModel.StatusType", b =>
-                {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("ID");
-
-                    b.ToTable("StatusType");
                 });
 
             modelBuilder.Entity("Quipu.Core.DomainModel.Task", b =>
@@ -289,29 +259,27 @@ namespace Quipu.Core.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("PriorityID")
-                        .HasColumnType("int");
+                    b.Property<string>("Priority")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("ProjectID")
                         .HasColumnType("int");
 
-                    b.Property<int?>("StatusCategoryID")
-                        .HasColumnType("int");
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("StatusID")
+                    b.Property<int?>("StatusCategoryID")
                         .HasColumnType("int");
 
                     b.HasKey("ID");
 
                     b.HasIndex("AssignedToUserID");
 
-                    b.HasIndex("PriorityID");
-
                     b.HasIndex("ProjectID");
 
                     b.HasIndex("StatusCategoryID");
-
-                    b.HasIndex("StatusID");
 
                     b.ToTable("Tasks");
                 });
@@ -528,30 +496,11 @@ namespace Quipu.Core.Migrations
                     b.Navigation("PermissionHeader");
                 });
 
-            modelBuilder.Entity("Quipu.Core.DomainModel.Project", b =>
-                {
-                    b.HasOne("Quipu.Core.DomainModel.PriorityType", "Priority")
-                        .WithMany()
-                        .HasForeignKey("PriorityID");
-
-                    b.HasOne("Quipu.Core.DomainModel.StatusType", "Status")
-                        .WithMany()
-                        .HasForeignKey("StatusID");
-
-                    b.Navigation("Priority");
-
-                    b.Navigation("Status");
-                });
-
             modelBuilder.Entity("Quipu.Core.DomainModel.Task", b =>
                 {
                     b.HasOne("Quipu.Core.DomainModel.User", "AssignedToUser")
                         .WithMany("TasksAssigned")
                         .HasForeignKey("AssignedToUserID");
-
-                    b.HasOne("Quipu.Core.DomainModel.PriorityType", "Priority")
-                        .WithMany()
-                        .HasForeignKey("PriorityID");
 
                     b.HasOne("Quipu.Core.DomainModel.Project", null)
                         .WithMany("Tasks")
@@ -561,15 +510,7 @@ namespace Quipu.Core.Migrations
                         .WithMany("Tasks")
                         .HasForeignKey("StatusCategoryID");
 
-                    b.HasOne("Quipu.Core.DomainModel.StatusType", "Status")
-                        .WithMany()
-                        .HasForeignKey("StatusID");
-
                     b.Navigation("AssignedToUser");
-
-                    b.Navigation("Priority");
-
-                    b.Navigation("Status");
 
                     b.Navigation("StatusCategory");
                 });

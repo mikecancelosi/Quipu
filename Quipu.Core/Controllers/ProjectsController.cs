@@ -37,6 +37,8 @@ namespace Quipu.Core.Controllers
             foreach(var task in project.Tasks)
             {
                 _context.Entry(task).Reference(t => t.StatusCategory).Load();
+                _context.Entry(task).Reference(t => t.Status).Load();
+                _context.Entry(task).Reference(t => t.Priority).Load();
             }
 
             if (project == null)

@@ -61,7 +61,7 @@
                               :props="props"
                               colspan="100%">
                             <q-expansion-item :label="props.row.name"
-                                              v-model="this.expanded"
+                                              v-model="props.row.expanded"
                                               switch-toggle-side
                                               expand-icon-toggle
                                               dense-toggle
@@ -94,27 +94,59 @@
                                                                    icon="o_check_circle_outline" />
                                                         </div>
                                                         <a>{{ element.name }}</a>
-                                                        <q-space/>
-                                                        <q-btn label="Details" 
-                                                               icon-right="o_chevron_right" 
+                                                        <q-space />
+                                                        <q-btn label="Details"
+                                                               icon-right="o_chevron_right"
                                                                flat
-                                                               dense 
+                                                               dense
                                                                no-caps
-                                                               class="showonhover"/>
+                                                               class="showonhover" />
                                                     </div>
                                                 </div>
                                                 <div class="tablecol assigncol">
                                                     {{ element.assignee }}
-                                                    
+
                                                 </div>
                                                 <div class="tablecol datecol">
                                                     {{ element.date }}
                                                 </div>
                                                 <div class="tablecol prioritycol">
-                                                    {{ element.priority }}
+                                                    <q-badge color="orange" rounded>
+                                                        {{ element.priority }}
+                                                    </q-badge>
+
                                                 </div>
-                                                <div class="tablecol statuscol">
-                                                    {{ element.status }}
+
+                                                <div class="tablecol statuscol"  @mouseenter="element.statushover = true" 
+                                                     @mouseleave="element.statushover = false">
+                                                    <q-select :hide-dropdown-icon="!element.statushover"                                                             
+                                                              borderless
+                                                              v-model="element.status"
+                                                              :options="statusoptions"
+                                                              dense
+                                                              emit-value>
+
+                                                        <template v-slot:option="scope">
+                                                            <q-item v-bind="scope.itemProps">
+                                                                <q-item-section>
+                                                                    <div>
+                                                                        <q-icon name="o_check"
+                                                                                size="16px"
+                                                                                :style="{visibility: scope.opt.category == element.status.id ? 'visible' : 'hidden'}" />
+                                                                        <q-badge rounded>
+                                                                            {{scope.opt.label}}
+                                                                        </q-badge>
+                                                                    </div>
+                                                                </q-item-section>
+                                                            </q-item>
+                                                        </template>
+                                                        <template v-slot:selected>
+                                                            <q-badge rounded>
+                                                                {{element.status.name}}
+                                                            </q-badge>
+                                                        </template>
+
+                                                    </q-select>
                                                 </div>
                                             </div>
 
@@ -169,6 +201,9 @@
         min-height: 40px;
         align-items: center;
     }
+    .q-field__marginal{
+        min-height:0px;
+    }
 
         .list-row .q-icon {
             cursor: grab;
@@ -187,9 +222,9 @@
     }
 
         .list-row-noicon .tablecol:hover {
-            background-color:RGB(255,255,255,.1);
-
+            background-color: RGB(255,255,255,.1);
         }
+
         .list-row-noicon .tablecol .showonhover {
             visibility: hidden;
         }
@@ -199,8 +234,10 @@
         }
 
 
-
-
+    .headercol {
+        padding-top: 0px;
+        padding-bottom: 0px;
+    }
 
     .tablecol {
         width: 10%;
@@ -226,6 +263,21 @@
     .statuscol {
         border-right: 0px;
     }
+
+    .q-badge {
+        font-size: 12px;
+        padding: 5px 10px;
+        width: fit-content;
+    }
+
+    .q-list {
+        min-width: 200px;
+    }
+
+    .q-item .q-icon {
+        align-self: center;
+        margin-right: 10px;
+    }
 </style>
 
 <script>
@@ -246,43 +298,68 @@
                         name: 'name',
                         label: 'Task Name',
                         align: 'left',
-                        headerClasses: 'tablecol taskcol',
+                        headerClasses: 'headercol tablecol taskcol',
                     },
                     {
                         name: 'assignee',
                         label: 'Assignee',
                         align: 'left',
-                        headerClasses: 'tablecol assigncol',
+                        headerClasses: 'headercol tablecol assigncol',
                     },
                     {
                         name: 'date',
                         label: 'Date',
                         align: 'left',
-                        headerClasses: 'tablecol datecol',
+                        headerClasses: 'headercol tablecol datecol',
                     },
                     {
                         name: 'priority',
                         label: 'Priority',
                         align: 'left',
-                        headerClasses: 'tablecol prioritycol',
+                        headerClasses: 'headercol tablecol prioritycol',
                     },
                     {
                         name: 'status',
                         label: 'Status',
                         align: 'left',
-                        headerClasses: 'tablecol statuscol',
+                        headerClasses: 'headercol tablecol statuscol',
                     }
                 ],
+                statustypes: [],
+                prioritytypes: [],
                 headerrows: [],
                 drag: false,
+                statusoptions: [],
 
             }
         },
-        methods: {           
-            getRows()
-            {               
+        methods: {
+            getRows() {
                 //Get groups
                 let taskgroups = [];
+                axios.get('http://127.0.0.1:5000/api/StatusTypes')
+                    .then((response) => {
+                        this.statustypes = response.data;
+                        this.statustypes.forEach(status => {
+                            this.statusoptions.push({
+                                label: status.name,
+                                value: status,
+                                category: status.id,
+                            });
+                        });
+                    })
+                    .catch(function (error) {
+                        alert(error);
+                    });
+
+                axios.get('http://127.0.0.1:5000/api/PriorityTypes')
+                    .then((response) => {
+                        this.prioritytypes = response.data;
+                    })
+                    .catch(function (error) {
+                        alert(error);
+                    });
+
                 axios.get('http://127.0.0.1:5000/api/TaskStatusCategories')
                     .then((response) => {
                         taskgroups = response.data;
@@ -290,11 +367,15 @@
                             this.headerrows.push({
                                 name: group.name,
                                 expanded: false,
+                                priorityhover: false,
+                                statushover:true,
                                 tasks: this.project.tasks.filter(task => {
                                     return task.statusCategory.id === group.id
                                 }),
                             });
-                        });                        
+                        });
+
+
                     })
                     .catch(function (error) {
                         alert(error);
@@ -305,6 +386,9 @@
             },
             navigateToProject(evt, row) {
                 this.$router.push('/Projects/' + row.id);
+            },
+            hover() {
+                console.log("hoverr!");
             }
         },
         computed: {

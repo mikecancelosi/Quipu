@@ -39,7 +39,7 @@ namespace Quipu.Core
                                              .WithHeaders("*")
                                              .WithMethods("*");
                                   });
-            });            
+            });
 
             //Model Service
             services.AddScoped<IModelService<Alert>, AlertService>();
@@ -53,8 +53,10 @@ namespace Quipu.Core
             services.AddScoped<IModelService<User>, UserService>();
             services.AddDbContext<QContext>(options => options.UseLazyLoadingProxies().UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddControllersWithViews().AddNewtonsoftJson(options =>
-                                                                 options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
-);
+            {
+                options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+                options.SerializerSettings.Converters.Add(new Newtonsoft.Json.Converters.StringEnumConverter());
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

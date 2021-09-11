@@ -21,6 +21,8 @@ namespace Quipu.Core.DomainModel
         public string Name { get; set; }
         public string Description { get; set; }
         public bool Completed { get; set; }
+        public PriorityType Priority { get; set; }        
+        public StatusType Status { get; set; }
 
         public virtual TaskStatusCategory StatusCategory { get; set; }
         public virtual User AssignedToUser { get; set; }
