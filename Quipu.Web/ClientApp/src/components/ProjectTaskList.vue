@@ -103,19 +103,56 @@
                                                                class="showonhover" />
                                                     </div>
                                                 </div>
-                                                <div class="tablecol assigncol">
-                                                    {{ element.assignee }}
+
+                                                <div class="tablecol assigncol" 
+                                                     @mouseenter="element.assigneehover = true"
+                                                     @mouseleave="element.assigneehover = false">
+                                                    <q-btn icon="o_person_outline"
+                                                           round
+                                                           outline
+                                                           dense
+                                                           size="10px;"
+                                                           @click=" element.assigneedropdown = true; assignuser()"
+                                                           class="hiddencolbtn"
+                                                           v-if="element.assigneehover && 
+                                                                 !element.assigneedropdown &&
+                                                                 element.assigneduser == null"
+                                                           :style="{
+                                                                    visibility: element.assignedToUser == null
+                                                                                                     ? 'visible'
+                                                                                                     : 'hidden'}" />
+                                                    <q-select dense
+                                                              ref="userselect"
+                                                              v-model="element.assigneduser"
+                                                              :options="this.useroptions"
+                                                              @update:model-value="updatetask(element)"
+                                                              @popup-hide="element.assigneedropdown = false"
+                                                              v-if="element.assigneedropdown || element.assigneduser != null"
+                                                              emit-value>
+                                                        <template v-slot:option="scope">
+                                                            <q-item v-bind="scope.itemProps">
+                                                                <q-item-section>
+                                                                    {{scope.opt.label}}
+                                                                </q-item-section>
+                                                            </q-item>
+                                                        </template>
+
+                                                        <template v-slot:selected>                                                           
+                                                                {{element.assigneduser != null ? element.assigneduser.display_Name : ''}}
+                                                        </template>
+                                                    </q-select>
 
                                                 </div>
                                                 <div class="tablecol datecol">
                                                     {{ element.date }}
                                                 </div>
-                                                <div class="tablecol prioritycol" @mouseenter="element.priorityhover = true" 
+                                                <div class="tablecol prioritycol"
+                                                     @mouseenter="element.priorityhover = true"
                                                      @mouseleave="element.priorityhover = false">
                                                     <q-select :hide-dropdown-icon="!element.priorityhover"
                                                               borderless
                                                               v-model="element.priority"
-                                                                @update:model-value="updatetask(element)"
+                                                              @update:model-value="updatetask(element)"
                                                               :options="priorityoptions"
                                                               dense
                                                               emit-value>
@@ -144,9 +181,9 @@
 
                                                 </div>
 
-                                                <div class="tablecol statuscol"  @mouseenter="element.statushover = true" 
+                                                <div class="tablecol statuscol" @mouseenter="element.statushover = true"
                                                      @mouseleave="element.statushover = false">
-                                                    <q-select :hide-dropdown-icon="!element.statushover"                                                             
+                                                    <q-select :hide-dropdown-icon="!element.statushover"
                                                               borderless
                                                               v-model="element.status"
                                                               @update:model-value="updatetask(element)"
@@ -182,7 +219,10 @@
                                     </template>
 
                                     <template #footer>
-                                        <div style="margin-top:10px; font-size:14px; border-bottom:0px; margin-left:40px;">
+                                        <div style="margin-top:10px;
+                                                    font-size:14px;
+                                                    border-bottom:0px;
+                                                    margin-left:40px;">
                                             Add task...
                                         </div>
                                     </template>
@@ -229,18 +269,19 @@
         min-height: 40px;
         align-items: center;
     }
-    .q-field__marginal{
-        min-height:0px;
+
+    .q-field__marginal {
+        min-height: 0px;
     }
 
-        .list-row .q-icon {
-            cursor: grab;
-            visibility: hidden
-        }
+    .list-row .q-icon {
+        cursor: grab;
+        visibility: hidden
+    }
 
-        .list-row:hover .q-icon {
-            visibility: visible
-        }
+    .list-row:hover .q-icon {
+        visibility: visible
+    }
 
     .list-row-noicon {
         border-top: 1px solid gray;
@@ -306,6 +347,10 @@
         align-self: center;
         margin-right: 10px;
     }
+
+    .hiddencolbtn {
+        position: absolute;
+    }
 </style>
 
 <script>
@@ -359,6 +404,8 @@
                 drag: false,
                 statusoptions: [],
                 priorityoptions: [],
+                users: [],
+                useroptions: [],
 
             }
         },
@@ -402,20 +449,36 @@
                         taskgroups.forEach(group => {
                             this.headerrows.push({
                                 name: group.name,
-                                expanded: false,
+                                expanded: true,
                                 priorityhover: false,
-                                statushover:true,
+                                statushover: true,
+                                assigneehover: false,
+                                assigneedropdown: false,
                                 tasks: this.project.tasks.filter(task => {
                                     return task.statusCategory.id === group.id
                                 }),
                             });
                         });
-
-
                     })
                     .catch(function (error) {
                         alert(error);
                     });
+
+                axios.get('http://127.0.0.1:5000/api/Users')
+                    .then((response) => {
+                        this.users = response.data;
+                        this.users.forEach(user => {
+                            this.useroptions.push({
+                                label: user.display_Name,
+                                value: user,
+                                category: user.id,
+                            });
+                        });
+                    })
+                    .catch(function (error) {
+                        alert(error);
+                    });
+
             },
             openNav() {
                 this.$emit("open-nav");
@@ -424,6 +487,7 @@
                 this.$router.push('/Projects/' + row.id);
             },
             updatetask(value) {
+                console.log(value);
                 axios.put('http://127.0.0.1:5000/api/Tasks/' + value.id, value)
                     .then(response => {
                         console.log(response);
@@ -431,6 +495,9 @@
                     .catch(error => {
                         console.log(error);
                     });
+            },
+            assignuser() {
+                this.$nextTick(() => { this.$refs.userselect.showPopup() });
             }
         },
         computed: {
