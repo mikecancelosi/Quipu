@@ -104,30 +104,33 @@
                                                     </div>
                                                 </div>
 
-                                                <div class="tablecol assigncol" 
+                                                <div class="tablecol assigncol"
                                                      @mouseenter="element.assigneehover = true"
                                                      @mouseleave="element.assigneehover = false">
-                                                    <q-btn icon="o_person_outline"
-                                                           round
-                                                           outline
-                                                           dense
-                                                           size="10px;"
-                                                           @click=" element.assigneedropdown = true; assignuser()"
-                                                           class="hiddencolbtn"
-                                                           v-if="element.assigneehover && 
+                                                   
+                                                        <q-btn icon="o_person_outline"
+                                                               round
+                                                               outline
+                                                               dense
+                                                               size="10px"
+                                                               v-if="element.assigneehover &&
                                                                  !element.assigneedropdown &&
                                                                  element.assigneduser == null"
-                                                           :style="{
+                                                               @click=" element.assigneedropdown = true; assignuser()"
+                                                               :style="{
                                                                     visibility: element.assignedToUser == null
                                                                                                      ? 'visible'
-                                                                                                     : 'hidden'}" />
+                                                                                                     : 'collapse'}" />
+                                         
                                                     <q-select dense
                                                               ref="userselect"
                                                               v-model="element.assigneduser"
+                                                              :hide-dropdown-icon="!element.assigneehover && !element.assigneedropdown"
                                                               :options="this.useroptions"
                                                               @update:model-value="updatetask(element)"
                                                               @popup-hide="element.assigneedropdown = false"
                                                               v-if="element.assigneedropdown || element.assigneduser != null"
+                                                              borderless
                                                               emit-value>
                                                         <template v-slot:option="scope">
                                                             <q-item v-bind="scope.itemProps">
@@ -137,10 +140,11 @@
                                                             </q-item>
                                                         </template>
 
-                                                        <template v-slot:selected>                                                           
-                                                                {{element.assigneduser != null ? element.assigneduser.display_Name : ''}}
+                                                        <template v-slot:selected>
+                                                            {{element.assigneduser != null ? element.assigneduser.display_Name : ''}}
                                                         </template>
                                                     </q-select>
+
 
                                                 </div>
                                                 <div class="tablecol datecol">
@@ -346,10 +350,6 @@
     .q-item .q-icon {
         align-self: center;
         margin-right: 10px;
-    }
-
-    .hiddencolbtn {
-        position: absolute;
     }
 </style>
 
