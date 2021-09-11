@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Quipu.Core.DAL;
 
 namespace Quipu.Core.Migrations
 {
     [DbContext(typeof(QContext))]
-    partial class QContextModelSnapshot : ModelSnapshot
+    [Migration("20210911034925_AddFKToTask2")]
+    partial class AddFKToTask2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

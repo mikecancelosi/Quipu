@@ -110,10 +110,37 @@
                                                 <div class="tablecol datecol">
                                                     {{ element.date }}
                                                 </div>
-                                                <div class="tablecol prioritycol">
-                                                    <q-badge color="orange" rounded>
-                                                        {{ element.priority }}
-                                                    </q-badge>
+                                                <div class="tablecol prioritycol" @mouseenter="element.priorityhover = true" 
+                                                     @mouseleave="element.priorityhover = false">
+                                                    <q-select :hide-dropdown-icon="!element.priorityhover"
+                                                              borderless
+                                                              v-model="element.priority"
+                                                                @update:model-value="updatetask(element)"
+                                                              :options="priorityoptions"
+                                                              dense
+                                                              emit-value>
+
+                                                        <template v-slot:option="scope">
+                                                            <q-item v-bind="scope.itemProps">
+                                                                <q-item-section>
+                                                                    <div>
+                                                                        <q-icon name="o_check"
+                                                                                size="16px"
+                                                                                :style="{visibility: scope.opt.category == element.priority.id ? 'visible' : 'hidden'}" />
+                                                                        <q-badge rounded :color="scope.opt.value.color">
+                                                                            {{scope.opt.label}}
+                                                                        </q-badge>
+                                                                    </div>
+                                                                </q-item-section>
+                                                            </q-item>
+                                                        </template>
+                                                        <template v-slot:selected>
+                                                            <q-badge rounded :color="element.priority.color">
+                                                                {{element.priority.name}}
+                                                            </q-badge>
+                                                        </template>
+
+                                                    </q-select>
 
                                                 </div>
 
@@ -122,6 +149,7 @@
                                                     <q-select :hide-dropdown-icon="!element.statushover"                                                             
                                                               borderless
                                                               v-model="element.status"
+                                                              @update:model-value="updatetask(element)"
                                                               :options="statusoptions"
                                                               dense
                                                               emit-value>
@@ -133,7 +161,7 @@
                                                                         <q-icon name="o_check"
                                                                                 size="16px"
                                                                                 :style="{visibility: scope.opt.category == element.status.id ? 'visible' : 'hidden'}" />
-                                                                        <q-badge rounded>
+                                                                        <q-badge rounded :color="scope.opt.value.color">
                                                                             {{scope.opt.label}}
                                                                         </q-badge>
                                                                     </div>
@@ -141,7 +169,7 @@
                                                             </q-item>
                                                         </template>
                                                         <template v-slot:selected>
-                                                            <q-badge rounded>
+                                                            <q-badge rounded :color="element.status.color">
                                                                 {{element.status.name}}
                                                             </q-badge>
                                                         </template>
@@ -330,6 +358,7 @@
                 headerrows: [],
                 drag: false,
                 statusoptions: [],
+                priorityoptions: [],
 
             }
         },
@@ -355,6 +384,13 @@
                 axios.get('http://127.0.0.1:5000/api/PriorityTypes')
                     .then((response) => {
                         this.prioritytypes = response.data;
+                        this.prioritytypes.forEach(priority => {
+                            this.priorityoptions.push({
+                                label: priority.name,
+                                value: priority,
+                                category: priority.id,
+                            });
+                        });
                     })
                     .catch(function (error) {
                         alert(error);
@@ -387,8 +423,14 @@
             navigateToProject(evt, row) {
                 this.$router.push('/Projects/' + row.id);
             },
-            hover() {
-                console.log("hoverr!");
+            updatetask(value) {
+                axios.put('http://127.0.0.1:5000/api/Tasks/' + value.id, value)
+                    .then(response => {
+                        console.log(response);
+                    })
+                    .catch(error => {
+                        console.log(error);
+                    });
             }
         },
         computed: {

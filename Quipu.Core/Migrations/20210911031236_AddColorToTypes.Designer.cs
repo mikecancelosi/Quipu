@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Quipu.Core.DAL;
 
 namespace Quipu.Core.Migrations
 {
     [DbContext(typeof(QContext))]
-    partial class QContextModelSnapshot : ModelSnapshot
+    [Migration("20210911031236_AddColorToTypes")]
+    partial class AddColorToTypes
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -295,7 +297,7 @@ namespace Quipu.Core.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("PriorityID")
+                    b.Property<int?>("PriorityID")
                         .HasColumnType("int");
 
                     b.Property<int?>("ProjectID")
@@ -304,7 +306,7 @@ namespace Quipu.Core.Migrations
                     b.Property<int?>("StatusCategoryID")
                         .HasColumnType("int");
 
-                    b.Property<int>("StatusID")
+                    b.Property<int?>("StatusID")
                         .HasColumnType("int");
 
                     b.HasKey("ID");
@@ -557,9 +559,7 @@ namespace Quipu.Core.Migrations
 
                     b.HasOne("Quipu.Core.DomainModel.PriorityType", "Priority")
                         .WithMany()
-                        .HasForeignKey("PriorityID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("PriorityID");
 
                     b.HasOne("Quipu.Core.DomainModel.Project", null)
                         .WithMany("Tasks")
@@ -571,9 +571,7 @@ namespace Quipu.Core.Migrations
 
                     b.HasOne("Quipu.Core.DomainModel.StatusType", "Status")
                         .WithMany()
-                        .HasForeignKey("StatusID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("StatusID");
 
                     b.Navigation("AssignedToUser");
 

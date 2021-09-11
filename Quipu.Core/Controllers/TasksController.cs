@@ -55,8 +55,11 @@ namespace Quipu.Core.Controllers
             {
                 return BadRequest();
             }
+            task.PriorityID = task.Priority.ID;
+            task.StatusID = task.Status.ID;
 
             _context.Entry(task).State = EntityState.Modified;
+
 
             try
             {
