@@ -56,6 +56,7 @@ namespace Quipu.Core.Controllers
                 return BadRequest();
             }
 
+            task.ProjectID = task.Project?.ID ?? task.ProjectID;
             task.StatusCategoryID = task.StatusCategory?.ID ?? task.StatusCategoryID;
             task.AssignedToUserID = task.AssignedToUser?.ID ?? task.AssignedToUserID;
             task.PriorityID = task.Priority?.ID ?? task.PriorityID;

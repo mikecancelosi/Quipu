@@ -22,15 +22,18 @@ namespace Quipu.Core.DomainModel
         public bool Completed { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
+        [ForeignKey("Project")]
+        public int ProjectID { get; set; }
         [ForeignKey("Priority")]
-        public int PriorityID { get; set; }
+        public int? PriorityID { get; set; }
         [ForeignKey("Status")]
-        public int StatusID { get; set; }
+        public int? StatusID { get; set; }
         [ForeignKey("AssignedToUser")]
-        public int AssignedToUserID { get; set; }
+        public int? AssignedToUserID { get; set; }
         [ForeignKey("StatusCategory")]
-        public int StatusCategoryID { get; set; }
+        public int? StatusCategoryID { get; set; }
 
+        public virtual Project Project { get; set; }
         public virtual PriorityType Priority { get; set; }
         public virtual StatusType Status { get; set; }
         public virtual TaskStatusCategory StatusCategory { get; set; }

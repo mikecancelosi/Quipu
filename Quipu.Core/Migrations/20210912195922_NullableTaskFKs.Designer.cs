@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Quipu.Core.DAL;
 
 namespace Quipu.Core.Migrations
 {
     [DbContext(typeof(QContext))]
-    partial class QContextModelSnapshot : ModelSnapshot
+    [Migration("20210912195922_NullableTaskFKs")]
+    partial class NullableTaskFKs
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -301,7 +303,7 @@ namespace Quipu.Core.Migrations
                     b.Property<int?>("PriorityID")
                         .HasColumnType("int");
 
-                    b.Property<int>("ProjectID")
+                    b.Property<int?>("ProjectID")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("StartDate")
@@ -565,11 +567,9 @@ namespace Quipu.Core.Migrations
                         .WithMany()
                         .HasForeignKey("PriorityID");
 
-                    b.HasOne("Quipu.Core.DomainModel.Project", "Project")
+                    b.HasOne("Quipu.Core.DomainModel.Project", null)
                         .WithMany("Tasks")
-                        .HasForeignKey("ProjectID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ProjectID");
 
                     b.HasOne("Quipu.Core.DomainModel.TaskStatusCategory", "StatusCategory")
                         .WithMany("Tasks")
@@ -582,8 +582,6 @@ namespace Quipu.Core.Migrations
                     b.Navigation("AssignedToUser");
 
                     b.Navigation("Priority");
-
-                    b.Navigation("Project");
 
                     b.Navigation("Status");
 

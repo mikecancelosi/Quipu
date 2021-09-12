@@ -93,7 +93,12 @@
                                                                    flat
                                                                    icon="o_check_circle_outline" />
                                                         </div>
-                                                        <a>{{ element.name }}</a>
+                                                        <q-input ref="nameinput"
+                                                                 debounce="1000"
+                                                                 dense
+                                                                 borderless
+                                                                 v-model="element.name" 
+                                                                 @blur="(evt)=>tasklostfocus(element)"/>
                                                         <q-space />
                                                         <q-btn label="Details"
                                                                icon-right="o_chevron_right"
@@ -208,7 +213,9 @@
                                                                     <div>
                                                                         <q-icon name="o_check"
                                                                                 size="16px"
-                                                                                :style="{visibility: scope.opt.category == element.priority.id ? 'visible' : 'hidden'}" />
+                                                                                :style="{visibility: scope.opt.category == (element.priority?.id ?? 0)
+                                                                                                                        ? 'visible'
+                                                                                                                        : 'hidden'}" />
                                                                         <q-badge rounded :color="scope.opt.value.color">
                                                                             {{scope.opt.label}}
                                                                         </q-badge>
@@ -217,8 +224,8 @@
                                                             </q-item>
                                                         </template>
                                                         <template v-slot:selected>
-                                                            <q-badge rounded :color="element.priority.color">
-                                                                {{element.priority.name}}
+                                                            <q-badge rounded :color="element.priority?.color ?? 'primary'">
+                                                                {{element.priority?.name ?? ''}}
                                                             </q-badge>
                                                         </template>
 
@@ -226,7 +233,8 @@
 
                                                 </div>
 
-                                                <div class="tablecol statuscol" @mouseenter="element.statushover = true"
+                                                <div class="tablecol statuscol"
+                                                     @mouseenter="element.statushover = true"
                                                      @mouseleave="element.statushover = false">
                                                     <q-select :hide-dropdown-icon="!element.statushover"
                                                               borderless
@@ -242,7 +250,9 @@
                                                                     <div>
                                                                         <q-icon name="o_check"
                                                                                 size="16px"
-                                                                                :style="{visibility: scope.opt.category == element.status.id ? 'visible' : 'hidden'}" />
+                                                                                :style="{visibility: scope.opt.category == (element.status?.id ?? 0)
+                                                                                                                        ? 'visible'
+                                                                                                                        : 'hidden'}" />
                                                                         <q-badge rounded :color="scope.opt.value.color">
                                                                             {{scope.opt.label}}
                                                                         </q-badge>
@@ -251,8 +261,8 @@
                                                             </q-item>
                                                         </template>
                                                         <template v-slot:selected>
-                                                            <q-badge rounded :color="element.status.color">
-                                                                {{element.status.name}}
+                                                            <q-badge rounded :color="element.status?.color ?? 'primary'">
+                                                                {{element.status?.name ?? ''}}
                                                             </q-badge>
                                                         </template>
 
@@ -264,10 +274,7 @@
                                     </template>
 
                                     <template #footer>
-                                        <div style="margin-top:10px;
-                                                    font-size:14px;
-                                                    border-bottom:0px;
-                                                    margin-left:40px;">
+                                        <div class="addtaskrow" @click="addemptytask(props)">
                                             Add task...
                                         </div>
                                     </template>
@@ -288,7 +295,6 @@
     #heading-options > .q-btn {
         margin-right: 20px;
     }
-
 
     .button {
         margin-top: 35px;
@@ -392,6 +398,48 @@
         align-self: center;
         margin-right: 10px;
     }
+
+    .addtaskrow {
+        font-size: 14px;
+        border-bottom: 0px;
+        margin-left: 30px;
+        margin-right: 30px;
+        cursor: pointer;
+        padding: 10px;
+    }
+
+        .addtaskrow:hover {
+            background-color: RGB(255,255,255,.1);
+        }
+
+    .q-input {
+        padding: 5px;
+        min-height: 0px;
+        max-height:30px;
+        align-content:center;
+        margin:5px;
+    }
+
+        .q-input:hover {
+            background-color: rgb(0,0,0,.3);
+            outline: 1px solid rgb(255,255,255,.4);
+            height: fit-content;
+        }
+
+        .q-field--focused {
+            background-color: rgb(0,0,0,.3);
+            outline: 1px solid rgb(255,255,255,.4);
+            height: fit-content;
+        }
+
+
+</style>
+
+<style>
+    .q-field__control-container{
+        max-height:20px;
+
+    }
 </style>
 
 <script>
@@ -450,24 +498,7 @@
             }
         },
         methods: {
-            getRows() {
-                //Get groups
-                let taskgroups = [];
-                axios.get('http://127.0.0.1:5000/api/StatusTypes')
-                    .then((response) => {
-                        this.statustypes = response.data;
-                        this.statustypes.forEach(status => {
-                            this.statusoptions.push({
-                                label: status.name,
-                                value: status,
-                                category: status.id,
-                            });
-                        });
-                    })
-                    .catch(function (error) {
-                        alert(error);
-                    });
-
+            getPriorityTypes() {
                 axios.get('http://127.0.0.1:5000/api/PriorityTypes')
                     .then((response) => {
                         this.prioritytypes = response.data;
@@ -482,12 +513,47 @@
                     .catch(function (error) {
                         alert(error);
                     });
-
+            },
+            getStatusTypes() {
+                axios.get('http://127.0.0.1:5000/api/StatusTypes')
+                    .then((response) => {
+                        this.statustypes = response.data;
+                        this.statustypes.forEach(status => {
+                            this.statusoptions.push({
+                                label: status.name,
+                                value: status,
+                                category: status.id,
+                            });
+                        });
+                    })
+                    .catch(function (error) {
+                        alert(error);
+                    });
+            },
+            getUsers() {
+                axios.get('http://127.0.0.1:5000/api/Users')
+                    .then((response) => {
+                        this.users = response.data;
+                        this.users.forEach(user => {
+                            this.useroptions.push({
+                                label: user.display_Name,
+                                value: user,
+                                category: user.id,
+                            });
+                        });
+                    })
+                    .catch(function (error) {
+                        alert(error);
+                    });
+            },
+            getRows() {
+                //Get groups
+                this.headerrows = [];
                 axios.get('http://127.0.0.1:5000/api/TaskStatusCategories')
                     .then((response) => {
-                        taskgroups = response.data;
-                        taskgroups.forEach(group => {
+                        response.data.forEach(group => {
                             this.headerrows.push({
+                                id: group.id,
                                 name: group.name,
                                 expanded: true,
                                 priorityhover: false,
@@ -505,23 +571,7 @@
                     })
                     .catch(function (error) {
                         alert(error);
-                    });
-
-                axios.get('http://127.0.0.1:5000/api/Users')
-                    .then((response) => {
-                        this.users = response.data;
-                        this.users.forEach(user => {
-                            this.useroptions.push({
-                                label: user.display_Name,
-                                value: user,
-                                category: user.id,
-                            });
-                        });
-                    })
-                    .catch(function (error) {
-                        alert(error);
-                    });
-
+                    }); 
             },
             openNav() {
                 this.$emit("open-nav");
@@ -530,13 +580,24 @@
                 this.$router.push('/Projects/' + row.id);
             },
             updatetask(task) {
-                axios.put('http://127.0.0.1:5000/api/Tasks/' + task.id, task)
-                    .then(response => {
-                        console.log(response);
-                    })
-                    .catch(error => {
-                        console.log(error);
-                    });
+                if (task.id > 0) {
+                    axios.put('http://127.0.0.1:5000/api/Tasks/' + task.id, task)
+                        .then(response => {
+                            console.log(response);
+                        })
+                        .catch(error => {
+                            console.log(error);
+                        });
+                }
+                else {
+                    axios.post('http://127.0.0.1:5000/api/Tasks/', task)
+                        .then(response => {
+                            console.log(response);
+                        })
+                        .catch(error => {
+                            console.log(error);
+                        });
+                }
             },
             assignuser() {
                 this.$nextTick(() => { this.$refs.userselect.showPopup() });
@@ -564,6 +625,29 @@
                 task.dates = {};
                 this.updatetask(task);
             },
+            addemptytask(category) {
+                var categoryname = category.row.name;
+                var matchresult = this.headerrows.filter(row => { return row.name === categoryname })[0];
+                matchresult.tasks.push({
+                    name: '',
+                    description: '',
+                    completed: false,
+                    startDate: '0001-01-01T00:00:00',
+                    endDate: '0001-01-01T00:00:00',
+                    statusCategoryID: category.row.id,
+                    projectID: this.project.id,
+                });
+                this.$nextTick(() => { this.$refs['nameinput'].focus(); });
+            },
+            tasklostfocus(task) {
+                console.log("!!")
+                console.log(task)
+                if (task.name === '') {
+                    this.getRows();
+                } else {
+                   this.updatetask(task);
+                }
+            },
 
         },
         computed: {
@@ -577,6 +661,9 @@
             }
         },
         mounted() {
+            this.getPriorityTypes();
+            this.getUsers();
+            this.getStatusTypes();
             this.getRows();
         }
     }
