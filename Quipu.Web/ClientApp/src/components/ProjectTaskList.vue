@@ -2,30 +2,6 @@
     <q-layout>
         <q-page-container>
             <div class="row" style="padding:15px 30px;">
-                <q-btn-dropdown label="Add new"
-                                icon="o_add"
-                                color="primary"
-                                split
-                                dense
-                                disable-dropdown>
-                    <q-list>
-                        <q-item clickable v-close-popup>
-                            <q-item-section>
-                                <q-item-label>
-                                    Add Task
-                                </q-item-label>
-                            </q-item-section>
-                        </q-item>
-                        <q-item clickable v-close-popup>
-                            <q-item-section>
-                                <q-item-label>
-                                    Add Section
-                                </q-item-label>
-                            </q-item-section>
-                        </q-item>
-                    </q-list>
-                </q-btn-dropdown>
-
                 <q-space />
                 <div id="heading-options">
                     <q-btn label="All Tasks" disable no-caps icon="o_check_circle_outline" dense />
@@ -161,6 +137,7 @@
 
                                                     <q-btn icon="o_calendar_today"
                                                            round
+                                                           flat
                                                            outline
                                                            dense
                                                            size="10px"
@@ -182,6 +159,7 @@
                                                         <q-space />
                                                         <q-btn dense
                                                                round
+                                                               flat
                                                                icon="o_close"
                                                                v-if="element.datehover"
                                                                size="12px"
@@ -281,7 +259,10 @@
 
                                     <template #footer>
                                         <div class="addtaskrow" @click="addemptytask(props)">
+                                            <a style="margin-left:40px; 
+                                                      color: darkgray;"> 
                                             Add task...
+                                            </a>
                                         </div>
                                     </template>
                                 </draggable>
@@ -304,7 +285,7 @@
 
     .button {
         margin-top: 35px;
-    }
+    }  
 
     .q-td {
         padding: 0;
@@ -438,12 +419,37 @@
         outline: 1px solid rgb(255,255,255,.4);
         height: fit-content;
     }
+
+
+    .q-focus-helper {
+        opacity: 0 !important;
+    }
+
+        .q-focus-helper ::before {
+            opacity: 0 !important;
+        }
+
+        .q-focus-helper ::after {
+            opacity: 0 !important;
+        }
 </style>
 
 <style>
     .q-field__control-container {
         max-height: 20px;
     }
+
+    .q-focus-helper{
+        opacity:0 !important;
+
+    }
+
+        .q-focus-helper ::before {
+            opacity: 0 !important;
+        }
+        .q-focus-helper ::after {
+            opacity: 0 !important;
+        }
 </style>
 
 <script>
