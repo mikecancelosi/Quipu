@@ -17,10 +17,10 @@
 
         <q-select dense
                   ref="userselect"
-                  v-model="task.assignedToUser"
+                  v-model="newuser"
                   :hide-dropdown-icon="!hover && !showdropdown"
                   :options="this.useroptions"
-                  @update:model-value="updatetask(element)"
+                  @update:model-value="updatetask()"
                   @popup-hide="showdropdown = false"
                   v-if="showdropdown || task.assignedToUser != null"
                   borderless
@@ -42,9 +42,18 @@
     </div>
 </template>
 
+<style scoped>
+    .cell{
+        width:100%;
+        height:100%;
+    }
+
+</style>
+
 <script>
     export default {
         name: "AssigneeCell",
+        emits: ["update-task"],
         props: {
             task: {},
             users: [],
@@ -54,6 +63,7 @@
             return {
                 hover: false,
                 showdropdown: false,
+                newuser: this.task.assignedToUser,
             }
         },
         methods: {
@@ -61,12 +71,12 @@
                 this.showdropdown = true;
                 this.$nextTick(() => { this.$refs.userselect.showPopup() });
             },
-            updatetask(element) {
-                
+            updatetask() {
+                this.$emit("update-task", this.newuser);
             },
         },
         mounted() {
-
+            console.log(this.task);
         },
 
     }

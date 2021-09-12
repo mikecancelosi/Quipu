@@ -91,48 +91,11 @@
                                                     </div>
                                                 </div>
 
-                                                <div class="tablecol assigncol"
-                                                     @mouseenter="element.assigneehover = true"
-                                                     @mouseleave="element.assigneehover = false">
-
-                                                    <q-btn icon="o_person_outline"
-                                                           round
-                                                           outline
-                                                           dense
-                                                           size="10px"
-                                                           v-if="element.assigneehover &&
-                                                                 !element.assigneedropdown &&
-                                                                 element.assignedToUser == null"
-                                                           @click=" element.assigneedropdown = true; assignuser()"
-                                                           :style="{
-                                                                    visibility: element.assignedToUser == null
-                                                                                                     ? 'visible'
-                                                                                                     : 'collapse'}" />
-
-                                                    <q-select dense
-                                                              ref="userselect"
-                                                              v-model="element.assignedToUser"
-                                                              :hide-dropdown-icon="!element.assigneehover && !element.assigneedropdown"
-                                                              :options="this.useroptions"
-                                                              @update:model-value="updatetask(element)"
-                                                              @popup-hide="element.assigneedropdown = false"
-                                                              v-if="element.assigneedropdown || element.assignedToUser != null"
-                                                              borderless
-                                                              emit-value>
-                                                        <template v-slot:option="scope">
-                                                            <q-item v-bind="scope.itemProps">
-                                                                <q-item-section>
-                                                                    {{scope.opt.label}}
-                                                                </q-item-section>
-                                                            </q-item>
-                                                        </template>
-
-                                                        <template v-slot:selected>
-                                                            {{element.assignedToUser != null ? element.assignedToUser.display_Name : ''}}
-                                                        </template>
-                                                    </q-select>
-
-
+                                                <div class="tablecol assigncol">
+                                                   <assigneecell :task="element" 
+                                                                 :users="this.users"
+                                                                 :useroptions="this.useroptions"
+                                                                 @updateTask="(newuser) => assignuser(element,newuser)"/>
                                                 </div>
 
                                                 <div class="tablecol datecol"
@@ -454,11 +417,11 @@
 <script>
     import axios from 'axios'
     import draggable from "vuedraggable";
-    import {assigneecell} from "/ProjectComponents/"
+    import { assigneecell} from "./ProjectComponents/ProjectTaskList_AssigneeCell"
 
     export default {
         name: "ProjectTaskList",
-        components: { draggable,assigneecell },
+        components: { draggable, assigneecell },
         props: {
             project: {},
         },
@@ -505,7 +468,6 @@
                 users: [],
                 useroptions: [],
                 taskstatusgroups:[],
-
             }
         },
         methods: {
@@ -665,7 +627,10 @@
                     this.updatetask(args.added.element);
                 }
             },
-
+            assignuser(task, newuser) {
+                task.assignedToUser = newuser;
+                this.updatetask(task);
+            },
         },
         computed: {
             dragOptions() {
@@ -682,6 +647,9 @@
             this.getUsers();
             this.getStatusTypes();
             this.getRows();
-        }
+        },
+        beforeCreate() {
+            this.$options.components.assigneecell = require('./ProjectComponents/ProjectTaskList_AssigneeCell.vue').default;
+        },
     }
 </script>
