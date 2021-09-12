@@ -74,7 +74,8 @@
                                            itemKey="name"
                                            v-bind="dragOptions"
                                            @start="drag = true"
-                                           @end="drag = false"
+                                           @end="drag = false;"
+                                           @change="(arg) => taskfinishedmoving(arg, props.row)"
                                            handle=".handle">
                                     <template #item="{ element }">
                                         <div class="list-row row" style="padding:0px 30px">
@@ -97,8 +98,9 @@
                                                                  debounce="1000"
                                                                  dense
                                                                  borderless
-                                                                 v-model="element.name" 
-                                                                 @blur="(evt)=>tasklostfocus(element)"/>
+                                                                 v-model="element.name"
+                                                                 @update:model-value="(val)=>tasklostfocus(element,true)"
+                                                                 @blur="(evt)=>tasklostfocus(element)" />
                                                         <q-space />
                                                         <q-btn label="Details"
                                                                icon-right="o_chevron_right"
@@ -224,7 +226,9 @@
                                                             </q-item>
                                                         </template>
                                                         <template v-slot:selected>
-                                                            <q-badge rounded :color="element.priority?.color ?? 'primary'">
+                                                            <q-badge rounded
+                                                                     :color="element.priority?.color ?? 'primary'"
+                                                                     v-if="element.priority != null">
                                                                 {{element.priority?.name ?? ''}}
                                                             </q-badge>
                                                         </template>
@@ -261,7 +265,9 @@
                                                             </q-item>
                                                         </template>
                                                         <template v-slot:selected>
-                                                            <q-badge rounded :color="element.status?.color ?? 'primary'">
+                                                            <q-badge rounded
+                                                                     :color="element.status?.color ?? 'primary'"
+                                                                     v-if="element.status != null">
                                                                 {{element.status?.name ?? ''}}
                                                             </q-badge>
                                                         </template>
@@ -406,6 +412,7 @@
         margin-right: 30px;
         cursor: pointer;
         padding: 10px;
+        border-top: 1px solid gray;
     }
 
         .addtaskrow:hover {
@@ -415,9 +422,9 @@
     .q-input {
         padding: 5px;
         min-height: 0px;
-        max-height:30px;
-        align-content:center;
-        margin:5px;
+        max-height: 30px;
+        align-content: center;
+        margin: 5px;
     }
 
         .q-input:hover {
@@ -426,19 +433,16 @@
             height: fit-content;
         }
 
-        .q-field--focused {
-            background-color: rgb(0,0,0,.3);
-            outline: 1px solid rgb(255,255,255,.4);
-            height: fit-content;
-        }
-
-
+    .q-field--focused {
+        background-color: rgb(0,0,0,.3);
+        outline: 1px solid rgb(255,255,255,.4);
+        height: fit-content;
+    }
 </style>
 
 <style>
-    .q-field__control-container{
-        max-height:20px;
-
+    .q-field__control-container {
+        max-height: 20px;
     }
 </style>
 
@@ -494,6 +498,7 @@
                 priorityoptions: [],
                 users: [],
                 useroptions: [],
+                taskstatusgroups:[],
 
             }
         },
@@ -549,9 +554,11 @@
             getRows() {
                 //Get groups
                 this.headerrows = [];
+                this.taskstatusgroups = [];
                 axios.get('http://127.0.0.1:5000/api/TaskStatusCategories')
                     .then((response) => {
-                        response.data.forEach(group => {
+                        this.taskstatusgroups = response.data;
+                        this.taskstatusgroups.forEach(group => {
                             this.headerrows.push({
                                 id: group.id,
                                 name: group.name,
@@ -571,7 +578,7 @@
                     })
                     .catch(function (error) {
                         alert(error);
-                    }); 
+                    });
             },
             openNav() {
                 this.$emit("open-nav");
@@ -639,13 +646,20 @@
                 });
                 this.$nextTick(() => { this.$refs['nameinput'].focus(); });
             },
-            tasklostfocus(task) {
-                console.log("!!")
-                console.log(task)
+            tasklostfocus(task, focus) {
                 if (task.name === '') {
                     this.getRows();
                 } else {
-                   this.updatetask(task);
+                    this.updatetask(task);
+                }
+                if (focus) {
+                    this.$nextTick(() => { this.$refs['nameinput'].focus(); });
+                }
+            },
+            taskfinishedmoving(args, group) {
+                if (args.added != null) {
+                    args.added.element.statusCategory = this.taskstatusgroups.filter(status => status.id === group.id)[0];
+                    this.updatetask(args.added.element);
                 }
             },
 
