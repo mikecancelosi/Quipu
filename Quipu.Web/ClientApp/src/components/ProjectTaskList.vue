@@ -68,6 +68,10 @@
                                                             <q-btn dense
                                                                    round
                                                                    flat
+                                                                   v-bind:style="{color: element.completed ? 'green'
+                                                                                                           : 'white'}"
+                                                                   @click="element.completed = !element.completed; updatetask(element);"
+                                                                   class="checkbox"
                                                                    icon="o_check_circle_outline" />
                                                         </div>
                                                         <q-input ref="nameinput"
@@ -420,18 +424,12 @@
         height: fit-content;
     }
 
-
-    .q-focus-helper {
-        opacity: 0 !important;
+    .checkbox:hover{
+        color:green;
     }
 
-        .q-focus-helper ::before {
-            opacity: 0 !important;
-        }
 
-        .q-focus-helper ::after {
-            opacity: 0 !important;
-        }
+   
 </style>
 
 <style>
@@ -450,15 +448,17 @@
         .q-focus-helper ::after {
             opacity: 0 !important;
         }
+    
 </style>
 
 <script>
     import axios from 'axios'
     import draggable from "vuedraggable";
+    import {assigneecell} from "/ProjectComponents/"
 
     export default {
         name: "ProjectTaskList",
-        components: { draggable },
+        components: { draggable,assigneecell },
         props: {
             project: {},
         },
@@ -611,10 +611,7 @@
                             console.log(error);
                         });
                 }
-            },
-            assignuser() {
-                this.$nextTick(() => { this.$refs.userselect.showPopup() });
-            },
+            },            
             formatdate(startDate, endDate) {
                 var sDate = new Date(startDate);
                 var eDate = new Date(endDate);
