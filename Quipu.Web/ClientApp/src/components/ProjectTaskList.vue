@@ -107,21 +107,21 @@
                                                 <div class="tablecol assigncol"
                                                      @mouseenter="element.assigneehover = true"
                                                      @mouseleave="element.assigneehover = false">
-                                                   
-                                                        <q-btn icon="o_person_outline"
-                                                               round
-                                                               outline
-                                                               dense
-                                                               size="10px"
-                                                               v-if="element.assigneehover &&
+
+                                                    <q-btn icon="o_person_outline"
+                                                           round
+                                                           outline
+                                                           dense
+                                                           size="10px"
+                                                           v-if="element.assigneehover &&
                                                                  !element.assigneedropdown &&
                                                                  element.assignedToUser == null"
-                                                               @click=" element.assigneedropdown = true; assignuser()"
-                                                               :style="{
+                                                           @click=" element.assigneedropdown = true; assignuser()"
+                                                           :style="{
                                                                     visibility: element.assignedToUser == null
                                                                                                      ? 'visible'
                                                                                                      : 'collapse'}" />
-                                         
+
                                                     <q-select dense
                                                               ref="userselect"
                                                               v-model="element.assignedToUser"
@@ -147,9 +147,50 @@
 
 
                                                 </div>
-                                                <div class="tablecol datecol">
-                                                    {{ element.date }}
+
+                                                <div class="tablecol datecol"
+                                                     @mouseenter="element.datehover = true"
+                                                     @mouseleave="element.datehover = false">
+
+                                                    <q-btn icon="o_calendar_today"
+                                                           round
+                                                           outline
+                                                           dense
+                                                           size="10px"
+                                                           v-if="element.datehover &&
+                                                                 !element.datedropdown &&
+                                                                 element.startDate == '0001-01-01T00:00:00'"
+                                                           @click=" element.datedropdown = true; "
+                                                           :style="{
+                                                                    visibility: element.startDate == '0001-01-01T00:00:00'
+                                                                                                     ? 'visible'
+                                                                                                     : 'collapse'}">
+
+                                                    </q-btn>
+
+                                                    <div class="row" v-if="element.startDate != '0001-01-01T00:00:00'">
+                                                        <div>
+                                                            {{formatdate(element.startDate,element.endDate)}}
+                                                        </div>
+                                                        <q-space />
+                                                        <q-btn dense
+                                                               round
+                                                               icon="o_close"
+                                                               v-if="element.datehover"
+                                                               size="12px"
+                                                               style="margin:5px;"
+                                                               @click="cleardates(element);" />
+                                                    </div>
+                                                    <q-menu v-bind:model-value="element.datedropdown"
+                                                            v-bind:no-parent-event="true"
+                                                            @hide="element.datedropdown=false">
+                                                        <q-date range
+                                                                v-model="element.dates"
+                                                                @range-end="(range)=>assigndate(range,element)" />
+                                                    </q-menu>
+
                                                 </div>
+
                                                 <div class="tablecol prioritycol"
                                                      @mouseenter="element.priorityhover = true"
                                                      @mouseleave="element.priorityhover = false">
@@ -365,7 +406,6 @@
         },
         data() {
             return {
-                expanded: true,
                 headercolumns: [
                     {
                         name: 'name',
@@ -454,17 +494,18 @@
                                 statushover: true,
                                 assigneehover: false,
                                 assigneedropdown: false,
+                                datehover: false,
+                                datedropdown: false,
                                 tasks: this.project.tasks.filter(task => {
                                     return task.statusCategory.id === group.id
                                 }),
                             });
                         });
-                        
+
                     })
                     .catch(function (error) {
                         alert(error);
                     });
-                console.log(this.headerrows);
 
                 axios.get('http://127.0.0.1:5000/api/Users')
                     .then((response) => {
@@ -488,9 +529,8 @@
             navigateToProject(evt, row) {
                 this.$router.push('/Projects/' + row.id);
             },
-            updatetask(value) {
-                console.log(value);
-                axios.put('http://127.0.0.1:5000/api/Tasks/' + value.id, value)
+            updatetask(task) {
+                axios.put('http://127.0.0.1:5000/api/Tasks/' + task.id, task)
                     .then(response => {
                         console.log(response);
                     })
@@ -500,7 +540,31 @@
             },
             assignuser() {
                 this.$nextTick(() => { this.$refs.userselect.showPopup() });
-            }
+            },
+            formatdate(startDate, endDate) {
+                var sDate = new Date(startDate);
+                var eDate = new Date(endDate);
+                return sDate.getMonth() + "/" + sDate.getDate() + "-" +
+                    eDate.getMonth() + "/" + eDate.getDate();
+            },
+            assigndate(range, task) {
+                task.startDate = new Date(range.from.month + " " + range.from.day + " " + range.from.year);
+                task.endDate = new Date(range.to.month + " " + range.to.day + " " + range.to.year);
+                axios.put('http://127.0.0.1:5000/api/Tasks/' + task.id, task)
+                    .then(response => {
+                        console.log(response);
+                    })
+                    .catch(error => {
+                        console.log(error);
+                    });
+            },
+            cleardates(task) {
+                task.startDate = '0001-01-01T00:00:00';
+                task.endDate = '0001-01-01T00:00:00';
+                task.dates = {};
+                this.updatetask(task);
+            },
+
         },
         computed: {
             dragOptions() {

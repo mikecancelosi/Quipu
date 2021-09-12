@@ -1,10 +1,8 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Quipu.Core.DomainModel
 {
@@ -22,6 +20,8 @@ namespace Quipu.Core.DomainModel
         public string Name { get; set; }
         public string Description { get; set; }
         public bool Completed { get; set; }
+        public DateTime StartDate { get; set; }
+        public DateTime EndDate { get; set; }
         [ForeignKey("Priority")]
         public int PriorityID { get; set; }
         [ForeignKey("Status")]
