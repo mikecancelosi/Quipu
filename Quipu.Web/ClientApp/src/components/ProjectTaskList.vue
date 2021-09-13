@@ -1,5 +1,15 @@
 ﻿<template>
     <q-layout>
+        <q-drawer v-model="showDetails"
+                  side="right"
+                  bordered
+                  overlay
+                  :width="600">
+            <div class="q-drawer-container">
+                <taskdetailpreview :task="this.detailtask"/>
+            </div>
+
+        </q-drawer>
         <q-page-container>
             <div class="row" style="padding:15px 30px;">
                 <q-space />
@@ -62,60 +72,36 @@
                                                     size="20px" />
                                             <div class="list-row-noicon row">
                                                 <div class="tablecol taskcol">
-
-                                                    <div class="row">
-                                                        <div>
-                                                            <q-btn dense
-                                                                   round
-                                                                   flat
-                                                                   v-bind:style="{color: element.completed ? 'green'
-                                                                                                           : 'white'}"
-                                                                   @click="element.completed = !element.completed; updatetask(element);"
-                                                                   class="checkbox"
-                                                                   icon="o_check_circle_outline" />
-                                                        </div>
-                                                        <q-input ref="nameinput"
-                                                                 debounce="1000"
-                                                                 dense
-                                                                 borderless
-                                                                 v-model="element.name"
-                                                                 @update:model-value="(val)=>tasklostfocus(element,true)"
-                                                                 @blur="(evt)=>tasklostfocus(element)" />
-                                                        <q-space />
-                                                        <q-btn label="Details"
-                                                               icon-right="o_chevron_right"
-                                                               flat
-                                                               dense
-                                                               no-caps
-                                                               class="showonhover" />
-                                                    </div>
+                                                    <namecell :task="element"
+                                                               @detailTask="showdetailtask(element)"
+                                                              @updateTask="(name,completed)=>assignname(element,name,completed)" />
                                                 </div>
 
                                                 <div class="tablecol assigncol">
-                                                   <assigneecell :task="element" 
-                                                                 :users="users"
-                                                                 :useroptions="useroptions"
-                                                                 @updateTask="(newuser) => assignuser(element,newuser)"/>
+                                                    <assigneecell :task="element"
+                                                                  :users="users"
+                                                                  :useroptions="useroptions"
+                                                                  @updateTask="(newuser) => assignuser(element,newuser)" />
                                                 </div>
 
                                                 <div class="tablecol datecol">
-                                                    
-                                                   <datecell :task="element" 
-                                                             @updateTask="(startDate,endDate) => assigndates(element,startDate,endDate)"/>
+
+                                                    <datecell :task="element"
+                                                              @updateTask="(startDate,endDate) => assigndates(element,startDate,endDate)" />
 
                                                 </div>
 
                                                 <div class="tablecol prioritycol">
                                                     <prioritycell :task="element"
                                                                   :priorityoptions=" this.priorityoptions"
-                                                                  @updateTask="(priority) => assignpriority(element,priority)"/>
+                                                                  @updateTask="(priority) => assignpriority(element,priority)" />
 
                                                 </div>
 
                                                 <div class="tablecol statuscol">
-                                                   <statuscell :task="element"
-                                                               @updateTask="(status) => assignstatus(element,status)"
-                                                               :statusoptions="this.statusoptions"/>
+                                                    <statuscell :task="element"
+                                                                @updateTask="(status) => assignstatus(element,status)"
+                                                                :statusoptions="this.statusoptions"/>
                                                 </div>
                                             </div>
 
@@ -124,9 +110,9 @@
 
                                     <template #footer>
                                         <div class="addtaskrow" @click="addemptytask(props)">
-                                            <a style="margin-left:40px; 
-                                                      color: darkgray;"> 
-                                            Add task...
+                                            <a style="margin-left:40px;
+                                                      color: darkgray;">
+                                                Add task...
                                             </a>
                                         </div>
                                     </template>
@@ -138,7 +124,10 @@
 
             </q-table>
 
+
+
         </q-page-container>
+
     </q-layout>
 
 </template>
@@ -196,15 +185,6 @@
         .list-row-noicon .tablecol:hover {
             background-color: RGB(255,255,255,.1);
         }
-
-        .list-row-noicon .tablecol .showonhover {
-            visibility: hidden;
-        }
-
-        .list-row-noicon .tablecol:hover .showonhover {
-            visibility: visible;
-        }
-
 
     .headercol {
         padding-top: 0px;
@@ -265,32 +245,6 @@
             background-color: RGB(255,255,255,.1);
         }
 
-    .q-input {
-        padding: 5px;
-        min-height: 0px;
-        max-height: 30px;
-        align-content: center;
-        margin: 5px;
-    }
-
-        .q-input:hover {
-            background-color: rgb(0,0,0,.3);
-            outline: 1px solid rgb(255,255,255,.4);
-            height: fit-content;
-        }
-
-    .q-field--focused {
-        background-color: rgb(0,0,0,.3);
-        outline: 1px solid rgb(255,255,255,.4);
-        height: fit-content;
-    }
-
-    .checkbox:hover{
-        color:green;
-    }
-
-
-   
 </style>
 
 <style>
@@ -314,7 +268,11 @@
         height:100%;
         width:100%;
     }
-    
+
+    .q-drawer--right.q-drawer--bordered {
+        top: 100px;
+    }
+
 </style>
 
 <script>
@@ -324,10 +282,12 @@
     import datecell from "./ProjectComponents/ProjectTaskList_DateCell"
     import prioritycell from "./ProjectComponents/ProjectTaskList_PriorityCell"
     import statuscell from "./ProjectComponents/ProjectTaskList_StatusCell"
+    import namecell from "./ProjectComponents/ProjectTaskList_NameCell"
+    import taskdetailpreview from "./ProjectComponents/ProjectTaskList_TaskDetailPreview"
 
     export default {
         name: "ProjectTaskList",
-        components: { draggable, assigneecell, datecell, prioritycell, statuscell },
+        components: { draggable, assigneecell, datecell, prioritycell, statuscell, namecell, taskdetailpreview },
         props: {
             project: {},
         },
@@ -373,7 +333,9 @@
                 priorityoptions: [],
                 users: [],
                 useroptions: [],
-                taskstatusgroups:[],
+                taskstatusgroups: [],
+                showDetails: false,
+                detailtask: {},
             }
         },
         methods: {
@@ -492,16 +454,6 @@
                 });
                 this.$nextTick(() => { this.$refs['nameinput'].focus(); });
             },
-            tasklostfocus(task, focus) {
-                if (task.name === '') {
-                    this.getRows();
-                } else {
-                    this.updatetask(task);
-                }
-                if (focus) {
-                    this.$nextTick(() => { this.$refs['nameinput'].focus(); });
-                }
-            },
             taskfinishedmoving(args, group) {
                 if (args.added != null) {
                     args.added.element.statusCategory = this.taskstatusgroups.filter(status => status.id === group.id)[0];
@@ -524,6 +476,15 @@
             assignstatus(task, status) {
                 task.status = status;
                 this.updatetask(task);
+            },
+            assignname(task, name, completed) {
+                task.name = name;
+                task.completed = completed;
+                this.updatetask(task);
+            },
+            showdetailtask(task) {
+                this.showDetails = true;
+                this.detailtask = task;
             }
         },
         computed: {

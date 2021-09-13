@@ -48,8 +48,7 @@
                                            border-radius:17px;
                                            border-width: 1px;
                                            margin-right:10px;
-                                           padding:5px;
-" />
+                                           padding:5px;" />
                                 <div>Add member</div>
                             </div>
                             <div class="row" v-for="member in this.team.Users" :key="member">
