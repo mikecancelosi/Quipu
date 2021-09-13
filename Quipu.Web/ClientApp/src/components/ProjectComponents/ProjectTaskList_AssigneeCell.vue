@@ -56,8 +56,8 @@
         emits: ["update-task"],
         props: {
             task: {},
-            users: [],
-            useroptions: [],
+            users: Array,
+            useroptions: Array,
         },
         data() {
             return {
@@ -72,11 +72,8 @@
                 this.$nextTick(() => { this.$refs.userselect.showPopup() });
             },
             updatetask() {
-                this.$emit("update-task", this.newuser);
+                this.$emit("update-task",this.newuser);
             },
-        },
-        mounted() {
-            console.log(this.task);
         },
 
     }

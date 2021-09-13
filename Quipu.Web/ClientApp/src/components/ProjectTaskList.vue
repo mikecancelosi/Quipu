@@ -93,53 +93,15 @@
 
                                                 <div class="tablecol assigncol">
                                                    <assigneecell :task="element" 
-                                                                 :users="this.users"
-                                                                 :useroptions="this.useroptions"
+                                                                 :users="users"
+                                                                 :useroptions="useroptions"
                                                                  @updateTask="(newuser) => assignuser(element,newuser)"/>
                                                 </div>
 
-                                                <div class="tablecol datecol"
-                                                     @mouseenter="element.datehover = true"
-                                                     @mouseleave="element.datehover = false">
-
-                                                    <q-btn icon="o_calendar_today"
-                                                           round
-                                                           flat
-                                                           outline
-                                                           dense
-                                                           size="10px"
-                                                           v-if="element.datehover &&
-                                                                 !element.datedropdown &&
-                                                                 element.startDate == '0001-01-01T00:00:00'"
-                                                           @click=" element.datedropdown = true; "
-                                                           :style="{
-                                                                    visibility: element.startDate == '0001-01-01T00:00:00'
-                                                                                                     ? 'visible'
-                                                                                                     : 'collapse'}">
-
-                                                    </q-btn>
-
-                                                    <div class="row" v-if="element.startDate != '0001-01-01T00:00:00'">
-                                                        <div>
-                                                            {{formatdate(element.startDate,element.endDate)}}
-                                                        </div>
-                                                        <q-space />
-                                                        <q-btn dense
-                                                               round
-                                                               flat
-                                                               icon="o_close"
-                                                               v-if="element.datehover"
-                                                               size="12px"
-                                                               style="margin:5px;"
-                                                               @click="cleardates(element);" />
-                                                    </div>
-                                                    <q-menu v-bind:model-value="element.datedropdown"
-                                                            v-bind:no-parent-event="true"
-                                                            @hide="element.datedropdown=false">
-                                                        <q-date range
-                                                                v-model="element.dates"
-                                                                @range-end="(range)=>assigndate(range,element)" />
-                                                    </q-menu>
+                                                <div class="tablecol datecol">
+                                                    
+                                                   <datecell :task="element" 
+                                                             @updateTask="(startDate,endDate) => assigndates(element,startDate,endDate)"/>
 
                                                 </div>
 
@@ -411,17 +373,23 @@
         .q-focus-helper ::after {
             opacity: 0 !important;
         }
+
+    .cell{
+        height:100%;
+        width:100%;
+    }
     
 </style>
 
 <script>
     import axios from 'axios'
     import draggable from "vuedraggable";
-    import { assigneecell} from "./ProjectComponents/ProjectTaskList_AssigneeCell"
+    import assigneecell from "./ProjectComponents/ProjectTaskList_AssigneeCell"
+    import datecell from "./ProjectComponents/ProjectTaskList_DateCell"
 
     export default {
         name: "ProjectTaskList",
-        components: { draggable, assigneecell },
+        components: { draggable, assigneecell,datecell },
         props: {
             project: {},
         },
@@ -573,30 +541,8 @@
                             console.log(error);
                         });
                 }
-            },            
-            formatdate(startDate, endDate) {
-                var sDate = new Date(startDate);
-                var eDate = new Date(endDate);
-                return sDate.getMonth() + "/" + sDate.getDate() + "-" +
-                    eDate.getMonth() + "/" + eDate.getDate();
             },
-            assigndate(range, task) {
-                task.startDate = new Date(range.from.month + " " + range.from.day + " " + range.from.year);
-                task.endDate = new Date(range.to.month + " " + range.to.day + " " + range.to.year);
-                axios.put('http://127.0.0.1:5000/api/Tasks/' + task.id, task)
-                    .then(response => {
-                        console.log(response);
-                    })
-                    .catch(error => {
-                        console.log(error);
-                    });
-            },
-            cleardates(task) {
-                task.startDate = '0001-01-01T00:00:00';
-                task.endDate = '0001-01-01T00:00:00';
-                task.dates = {};
-                this.updatetask(task);
-            },
+            
             addemptytask(category) {
                 var categoryname = category.row.name;
                 var matchresult = this.headerrows.filter(row => { return row.name === categoryname })[0];
@@ -631,6 +577,11 @@
                 task.assignedToUser = newuser;
                 this.updatetask(task);
             },
+            assigndates(task, startdate, enddate) {
+                task.startDate = startdate;
+                task.endDate = enddate;
+                this.updatetask(task);
+            }
         },
         computed: {
             dragOptions() {
@@ -650,6 +601,7 @@
         },
         beforeCreate() {
             this.$options.components.assigneecell = require('./ProjectComponents/ProjectTaskList_AssigneeCell.vue').default;
+
         },
     }
 </script>
