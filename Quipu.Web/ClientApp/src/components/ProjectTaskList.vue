@@ -105,81 +105,17 @@
 
                                                 </div>
 
-                                                <div class="tablecol prioritycol"
-                                                     @mouseenter="element.priorityhover = true"
-                                                     @mouseleave="element.priorityhover = false">
-                                                    <q-select :hide-dropdown-icon="!element.priorityhover"
-                                                              borderless
-                                                              v-model="element.priority"
-                                                              @update:model-value="updatetask(element)"
-                                                              :options="priorityoptions"
-                                                              dense
-                                                              emit-value>
-
-                                                        <template v-slot:option="scope">
-                                                            <q-item v-bind="scope.itemProps">
-                                                                <q-item-section>
-                                                                    <div>
-                                                                        <q-icon name="o_check"
-                                                                                size="16px"
-                                                                                :style="{visibility: scope.opt.category == (element.priority?.id ?? 0)
-                                                                                                                        ? 'visible'
-                                                                                                                        : 'hidden'}" />
-                                                                        <q-badge rounded :color="scope.opt.value.color">
-                                                                            {{scope.opt.label}}
-                                                                        </q-badge>
-                                                                    </div>
-                                                                </q-item-section>
-                                                            </q-item>
-                                                        </template>
-                                                        <template v-slot:selected>
-                                                            <q-badge rounded
-                                                                     :color="element.priority?.color ?? 'primary'"
-                                                                     v-if="element.priority != null">
-                                                                {{element.priority?.name ?? ''}}
-                                                            </q-badge>
-                                                        </template>
-
-                                                    </q-select>
+                                                <div class="tablecol prioritycol">
+                                                    <prioritycell :task="element"
+                                                                  :priorityoptions=" this.priorityoptions"
+                                                                  @updateTask="(priority) => assignpriority(element,priority)"/>
 
                                                 </div>
 
-                                                <div class="tablecol statuscol"
-                                                     @mouseenter="element.statushover = true"
-                                                     @mouseleave="element.statushover = false">
-                                                    <q-select :hide-dropdown-icon="!element.statushover"
-                                                              borderless
-                                                              v-model="element.status"
-                                                              @update:model-value="updatetask(element)"
-                                                              :options="statusoptions"
-                                                              dense
-                                                              emit-value>
-
-                                                        <template v-slot:option="scope">
-                                                            <q-item v-bind="scope.itemProps">
-                                                                <q-item-section>
-                                                                    <div>
-                                                                        <q-icon name="o_check"
-                                                                                size="16px"
-                                                                                :style="{visibility: scope.opt.category == (element.status?.id ?? 0)
-                                                                                                                        ? 'visible'
-                                                                                                                        : 'hidden'}" />
-                                                                        <q-badge rounded :color="scope.opt.value.color">
-                                                                            {{scope.opt.label}}
-                                                                        </q-badge>
-                                                                    </div>
-                                                                </q-item-section>
-                                                            </q-item>
-                                                        </template>
-                                                        <template v-slot:selected>
-                                                            <q-badge rounded
-                                                                     :color="element.status?.color ?? 'primary'"
-                                                                     v-if="element.status != null">
-                                                                {{element.status?.name ?? ''}}
-                                                            </q-badge>
-                                                        </template>
-
-                                                    </q-select>
+                                                <div class="tablecol statuscol">
+                                                   <statuscell :task="element"
+                                                               @updateTask="(status) => assignstatus(element,status)"
+                                                               :statusoptions="this.statusoptions"/>
                                                 </div>
                                             </div>
 
@@ -386,10 +322,12 @@
     import draggable from "vuedraggable";
     import assigneecell from "./ProjectComponents/ProjectTaskList_AssigneeCell"
     import datecell from "./ProjectComponents/ProjectTaskList_DateCell"
+    import prioritycell from "./ProjectComponents/ProjectTaskList_PriorityCell"
+    import statuscell from "./ProjectComponents/ProjectTaskList_StatusCell"
 
     export default {
         name: "ProjectTaskList",
-        components: { draggable, assigneecell,datecell },
+        components: { draggable, assigneecell, datecell, prioritycell, statuscell },
         props: {
             project: {},
         },
@@ -427,11 +365,11 @@
                         headerClasses: 'headercol tablecol statuscol',
                     }
                 ],
-                statustypes: [],
-                prioritytypes: [],
+                statustypes: [],               
                 headerrows: [],
                 drag: false,
                 statusoptions: [],
+                prioritytypes: [],
                 priorityoptions: [],
                 users: [],
                 useroptions: [],
@@ -519,9 +457,6 @@
             openNav() {
                 this.$emit("open-nav");
             },
-            navigateToProject(evt, row) {
-                this.$router.push('/Projects/' + row.id);
-            },
             updatetask(task) {
                 if (task.id > 0) {
                     axios.put('http://127.0.0.1:5000/api/Tasks/' + task.id, task)
@@ -581,6 +516,14 @@
                 task.startDate = startdate;
                 task.endDate = enddate;
                 this.updatetask(task);
+            },
+            assignpriority(task, priority) {
+                task.priority = priority;
+                this.updatetask(task);
+            },
+            assignstatus(task, status) {
+                task.status = status;
+                this.updatetask(task);
             }
         },
         computed: {
@@ -598,10 +541,6 @@
             this.getUsers();
             this.getStatusTypes();
             this.getRows();
-        },
-        beforeCreate() {
-            this.$options.components.assigneecell = require('./ProjectComponents/ProjectTaskList_AssigneeCell.vue').default;
-
         },
     }
 </script>

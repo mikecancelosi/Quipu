@@ -67,11 +67,7 @@
                 dates: {},
             }
         },
-        methods: {
-            assignUserClicked() {
-                this.showdropdown = true;
-                this.$nextTick(() => { this.$refs.userselect.showPopup() });
-            },
+        methods: {            
             updatetask() {
                 this.$emit("update-task", this.newstartdate, this.newenddate);
             },

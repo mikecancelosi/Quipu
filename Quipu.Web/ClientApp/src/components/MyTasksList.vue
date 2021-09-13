@@ -18,7 +18,7 @@
     export default {
         name: "MyTasksList",
         props: {
-            tasks:[]
+            tasks: Array,
         },
     }
 </script>
