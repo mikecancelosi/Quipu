@@ -7,7 +7,7 @@
                   borderless
                   v-model="priority"
                   @update:model-value="updatetask()"
-                  :options="priorityoptions"
+                  :options="allPriorityDropdownOptions"
                   dense
                   emit-value>
 
@@ -49,12 +49,17 @@
 </style>
 
 <script>
+    import { mapGetters, mapActions } from 'vuex'
+
     export default {
         name: "PriorityCell",
         emits: ["update-task"],
+        computed: mapGetters(['allPriorityDropdownOptions']),
+        created() {
+            this.fetchPriorityTypes();
+        },
         props: {
-            task: {},
-            priorityoptions: Array,
+            task: {},            
         },
         data() {
             return {
@@ -67,6 +72,7 @@
             updatetask() {
                 this.$emit("update-task", this.priority);
             },
+            ...mapActions(['fetchPriorityTypes']),
         },
     }
 </script>

@@ -7,7 +7,7 @@
                   borderless
                   v-model="status"
                   @update:model-value="updatetask()"
-                  :options="statusoptions"
+                  :options="allStatusDropdownOptions"
                   dense
                   emit-value>
 
@@ -47,12 +47,16 @@
 </style>
 
 <script>
+    import { mapGetters, mapActions } from 'vuex'
     export default {
         name: "StatusCell",
         emits: ["update-task"],
         props: {
             task: {},
-            statusoptions: Array,
+        },
+        computed: mapGetters(['allStatusDropdownOptions']),
+        created() {
+            this.fetchStatusTypes();
         },
         data() {
             return {
@@ -65,6 +69,7 @@
             updatetask() {
                 this.$emit("update-task", this.status);
             },
+            ...mapActions(['fetchStatusTypes']),
         },
     }
 </script>

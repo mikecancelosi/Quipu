@@ -19,7 +19,7 @@
                   ref="userselect"
                   v-model="newuser"
                   :hide-dropdown-icon="!hover && !showdropdown"
-                  :options="this.useroptions"
+                  :options="allUserDropdownOptions"
                   @update:model-value="updatetask()"
                   @popup-hide="showdropdown = false"
                   v-if="showdropdown || task.assignedToUser != null"
@@ -51,13 +51,17 @@
 </style>
 
 <script>
+    import { mapGetters, mapActions } from 'vuex'
+
     export default {
         name: "AssigneeCell",
         emits: ["update-task"],
+        computed: mapGetters(['allUsers', 'allUserDropdownOptions']),
+        created() {
+            this.fetchUsers();
+        },
         props: {
-            task: {},
-            users: Array,
-            useroptions: Array,
+            task: {},           
         },
         data() {
             return {
@@ -74,6 +78,7 @@
             updatetask() {
                 this.$emit("update-task",this.newuser);
             },
+            ...mapActions(['fetchUsers']),
         },
 
     }

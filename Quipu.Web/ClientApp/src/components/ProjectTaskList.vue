@@ -6,7 +6,8 @@
                   overlay
                   :width="600">
             <div class="q-drawer-container">
-                <taskdetailpreview :task="this.detailtask"/>
+                <taskdetailpreview :task="this.detailtask" 
+                                   @hideDetails="showDetails = false"/>
             </div>
 
         </q-drawer>
@@ -79,8 +80,6 @@
 
                                                 <div class="tablecol assigncol">
                                                     <assigneecell :task="element"
-                                                                  :users="users"
-                                                                  :useroptions="useroptions"
                                                                   @updateTask="(newuser) => assignuser(element,newuser)" />
                                                 </div>
 
@@ -285,6 +284,7 @@
     import namecell from "./ProjectComponents/ProjectTaskList_NameCell"
     import taskdetailpreview from "./ProjectComponents/ProjectTaskList_TaskDetailPreview"
 
+
     export default {
         name: "ProjectTaskList",
         components: { draggable, assigneecell, datecell, prioritycell, statuscell, namecell, taskdetailpreview },
@@ -331,62 +331,12 @@
                 statusoptions: [],
                 prioritytypes: [],
                 priorityoptions: [],
-                users: [],
-                useroptions: [],
                 taskstatusgroups: [],
                 showDetails: false,
                 detailtask: {},
             }
         },
         methods: {
-            getPriorityTypes() {
-                axios.get('http://127.0.0.1:5000/api/PriorityTypes')
-                    .then((response) => {
-                        this.prioritytypes = response.data;
-                        this.prioritytypes.forEach(priority => {
-                            this.priorityoptions.push({
-                                label: priority.name,
-                                value: priority,
-                                category: priority.id,
-                            });
-                        });
-                    })
-                    .catch(function (error) {
-                        alert(error);
-                    });
-            },
-            getStatusTypes() {
-                axios.get('http://127.0.0.1:5000/api/StatusTypes')
-                    .then((response) => {
-                        this.statustypes = response.data;
-                        this.statustypes.forEach(status => {
-                            this.statusoptions.push({
-                                label: status.name,
-                                value: status,
-                                category: status.id,
-                            });
-                        });
-                    })
-                    .catch(function (error) {
-                        alert(error);
-                    });
-            },
-            getUsers() {
-                axios.get('http://127.0.0.1:5000/api/Users')
-                    .then((response) => {
-                        this.users = response.data;
-                        this.users.forEach(user => {
-                            this.useroptions.push({
-                                label: user.display_Name,
-                                value: user,
-                                category: user.id,
-                            });
-                        });
-                    })
-                    .catch(function (error) {
-                        alert(error);
-                    });
-            },
             getRows() {
                 //Get groups
                 this.headerrows = [];
@@ -410,11 +360,12 @@
                                 }),
                             });
                         });
-
+                        console.log(this.project.tasks);
                     })
                     .catch(function (error) {
                         alert(error);
                     });
+                
             },
             openNav() {
                 this.$emit("open-nav");
@@ -498,9 +449,6 @@
             }
         },
         mounted() {
-            this.getPriorityTypes();
-            this.getUsers();
-            this.getStatusTypes();
             this.getRows();
         },
     }
