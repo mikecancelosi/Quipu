@@ -79,26 +79,26 @@
                                                 </div>
 
                                                 <div class="tablecol assigncol">
-                                                    <assigneecell :task="element"
+                                                    <assigneecell :user="element.assignedToUser"
                                                                   @updateTask="(newuser) => assignuser(element,newuser)" />
                                                 </div>
 
                                                 <div class="tablecol datecol">
 
-                                                    <datecell :task="element"
+                                                    <datecell :startDate="element.startDate" :endDate ="element.endDate"
                                                               @updateTask="(startDate,endDate) => assigndates(element,startDate,endDate)" />
 
                                                 </div>
 
                                                 <div class="tablecol prioritycol">
-                                                    <prioritycell :task="element"
+                                                    <prioritycell :priority="element.priority"
                                                                   :priorityoptions=" this.priorityoptions"
                                                                   @updateTask="(priority) => assignpriority(element,priority)" />
 
                                                 </div>
 
                                                 <div class="tablecol statuscol">
-                                                    <statuscell :task="element"
+                                                    <statuscell :status="element.status"
                                                                 @updateTask="(status) => assignstatus(element,status)"
                                                                 :statusoptions="this.statusoptions"/>
                                                 </div>
@@ -360,7 +360,6 @@
                                 }),
                             });
                         });
-                        console.log(this.project.tasks);
                     })
                     .catch(function (error) {
                         alert(error);
@@ -434,8 +433,11 @@
                 this.updatetask(task);
             },
             showdetailtask(task) {
-                this.showDetails = true;
-                this.detailtask = task;
+                this.detailtask = null;
+                this.detailtask = { ...task };
+                console.log(this.detailtask);
+                
+                this.showDetails = true;    
             }
         },
         computed: {

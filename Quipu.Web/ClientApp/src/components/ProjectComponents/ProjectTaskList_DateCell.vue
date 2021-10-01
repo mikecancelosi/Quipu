@@ -17,20 +17,19 @@
                                                        : 'collapse'}">
 
         </q-btn>
-
         <div class="row" v-if="newstartDate != '0001-01-01T00:00:00'">
+            
             <div>
-                {{formatdate(newstartDate,newendDate)}}
+                {{formattedDate}}
             </div>
             <q-space />
             <q-btn dense
                    round
                    flat
                    icon="o_close"
-                   v-if="hover"
                    size="12px"
-                   style="margin:5px;"
-                   @click="cleardates(element);" />
+                   style="margin:0px 5px;"
+                   @click="cleardates();" />
         </div>
         <q-menu v-bind:model-value="showdropdown"
                 v-bind:no-parent-event="true"
@@ -53,18 +52,18 @@
     export default {
         name: "AssigneeCell",
         emits: ["update-task"],
-        props: {
-            task: {},
-            users: [],
-            useroptions: [],
+        props: ['startDate', 'endDate'],
+        computed: {
+            formattedDate() {
+                return this.formatdate(this.newstartDate, this.newendDate)
+            }
         },
         data() {
             return {
                 hover: false,
                 showdropdown: false,
-                newstartDate: this.task.startDate,
-                newendDate: this.task.endDate,
-                dates: {},
+                newstartDate: this.startDate,
+                newendDate: this.endDate,
             }
         },
         methods: {            
@@ -80,19 +79,19 @@
             assigndate(range) {
                 this.newstartDate = new Date(range.from.month + " " + range.from.day + " " + range.from.year);
                 this.newendDate = new Date(range.to.month + " " + range.to.day + " " + range.to.year);
-                console.log(this.newstartDate);
-                console.log(this.newendDate);
                 this.updatetask();
             },
-            cleardates(task) {
+            cleardates() {
                 this.newstartDate = '0001-01-01T00:00:00';
                 this.newDate = '0001-01-01T00:00:00';
-                task.dates = {};
-                this.updatetask(task);
+                this.updatetask();
             },
-            mounted() {
-            },
+           
         },
+        updated() {
+            this.newstartDate = this.startDate;
+            this.newendDate = this.endDate;
+        }
 
     }
 </script>

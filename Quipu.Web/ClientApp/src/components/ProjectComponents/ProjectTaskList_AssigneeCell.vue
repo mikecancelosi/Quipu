@@ -9,11 +9,11 @@
                size="10px"
                v-if="hover &&
                      !showdropdown &&
-                     task.assignedToUser == null"
+                     newuser == null"
                @click="assignUserClicked()"
-               :style="{ visibility: task.assignedToUser == null
-                                                            ? 'visible'
-                                                            : 'collapse'}" />
+               :style="{ visibility: newuser == null
+                                             ? 'visible'
+                                             : 'collapse'}" />
 
         <q-select dense
                   ref="userselect"
@@ -22,7 +22,7 @@
                   :options="allUserDropdownOptions"
                   @update:model-value="updatetask()"
                   @popup-hide="showdropdown = false"
-                  v-if="showdropdown || task.assignedToUser != null"
+                  v-if="showdropdown ||  newuser != null"
                   borderless
                   emit-value>
             <template v-slot:option="scope">
@@ -34,7 +34,7 @@
             </template>
 
             <template v-slot:selected>
-                {{task.assignedToUser != null ? task.assignedToUser.display_Name : ''}}
+                {{newuser != null ? newuser.display_Name : ''}}
             </template>
         </q-select>
 
@@ -61,13 +61,13 @@
             this.fetchUsers();
         },
         props: {
-            task: {},           
+            user: {},           
         },
         data() {
             return {
                 hover: false,
                 showdropdown: false,
-                newuser: this.task.assignedToUser,
+                newuser: this.user,
             }
         },
         methods: {
@@ -80,6 +80,9 @@
             },
             ...mapActions(['fetchUsers']),
         },
+        updated() {
+            this.newuser = this.user;
+        }
 
     }
 </script>

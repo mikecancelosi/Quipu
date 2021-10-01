@@ -5,7 +5,7 @@
 
         <q-select :hide-dropdown-icon="!hover"
                   borderless
-                  v-model="status"
+                  v-model="newstatus"
                   @update:model-value="updatetask()"
                   :options="allStatusDropdownOptions"
                   dense
@@ -17,7 +17,7 @@
                         <div>
                             <q-icon name="o_check"
                                     size="16px"
-                                    :style="{visibility: scope.opt.category == (status?.id ?? 0)
+                                    :style="{visibility: scope.opt.category == (newstatus.id)
                                                                                                                         ? 'visible'
                                                                                                                         : 'hidden'}" />
                             <q-badge rounded :color="scope.opt.value.color">
@@ -29,9 +29,9 @@
             </template>
             <template v-slot:selected>
                 <q-badge rounded
-                         :color="status?.color ?? 'primary'"
-                         v-if="status != null">
-                    {{status?.name ?? ''}}
+                         :color="newstatus.color ?? 'primary'"
+                         v-if="newstatus != null">
+                    {{newstatus.name ?? ''}}
                 </q-badge>
             </template>
 
@@ -52,7 +52,7 @@
         name: "StatusCell",
         emits: ["update-task"],
         props: {
-            task: {},
+            status: {},
         },
         computed: mapGetters(['allStatusDropdownOptions']),
         created() {
@@ -62,14 +62,17 @@
             return {
                 hover: false,
                 showdropdown: false,
-                status: this.task.status,
+                newstatus: this.status,
             }
         },
         methods: {
             updatetask() {
-                this.$emit("update-task", this.status);
+                this.$emit("update-task", this.newstatus);
             },
             ...mapActions(['fetchStatusTypes']),
         },
+        updated() {
+            this.newstatus = this.status;
+        }
     }
 </script>

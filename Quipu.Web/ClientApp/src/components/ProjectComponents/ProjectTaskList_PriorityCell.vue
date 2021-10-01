@@ -5,7 +5,7 @@
 
         <q-select :hide-dropdown-icon="!hover"
                   borderless
-                  v-model="priority"
+                  v-model="newpriority"
                   @update:model-value="updatetask()"
                   :options="allPriorityDropdownOptions"
                   dense
@@ -17,7 +17,7 @@
                         <div>
                             <q-icon name="o_check"
                                     size="16px"
-                                    :style="{visibility: scope.opt.category == (priority?.id ?? 0)
+                                    :style="{visibility: scope.opt.category == (newpriority.id ?? 0)
                                                                               ? 'visible'
                                                                               : 'hidden'}" />
                             <q-badge rounded 
@@ -30,9 +30,9 @@
             </template>
             <template v-slot:selected>
                 <q-badge rounded
-                         :color="priority?.color ?? 'primary'"
-                         v-if="priority != null">
-                    {{priority?.name ?? ''}}
+                         :color="newpriority.color ?? 'primary'"
+                         v-if="newpriority != null">
+                    {{newpriority.name }}
                 </q-badge>
             </template>
 
@@ -59,20 +59,23 @@
             this.fetchPriorityTypes();
         },
         props: {
-            task: {},            
+            priority: {},            
         },
         data() {
             return {
                 hover: false,
                 showdropdown: false,
-                priority: this.task.priority,
+                newpriority: this.priority,
             }
         },
         methods: {
             updatetask() {
-                this.$emit("update-task", this.priority);
+                this.$emit("update-task", this.newpriority);
             },
             ...mapActions(['fetchPriorityTypes']),
         },
+        updated() {
+            this.newpriority = this.priority;
+        }
     }
 </script>
