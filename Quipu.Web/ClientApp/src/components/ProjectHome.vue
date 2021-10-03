@@ -1,67 +1,6 @@
 ﻿<template>
     <q-header elevated>
-        <q-toolbar class="headingContainer">
-            <q-btn flat
-                   dense
-                   round
-                   @click="openNav"
-                   aria-label="Menu"
-                   v-show="!this.leftDrawerOpen"
-                   icon="mdi-forwardburger" />
-            <div class="row"
-                 style="align-items:center;">
-
-                <q-btn icon="o_groups" size="24px" dense flat style="margin-right:15px; padding:0px;" />
-                <a style="font-size:24px">
-                    {{project.name}}
-                </a>
-                <q-btn flat round disable dense icon="o_expand_more" />
-                <q-btn flat round disable dense icon="o_info" />
-                <q-btn flat round disable dense icon="o_star_outline" />
-                <q-btn flat rounded disable no-caps dense>
-                    <q-icon left name="o_circle" size="10px" />
-                    <div>Set status</div>
-                </q-btn>
-            </div>
-
-
-        </q-toolbar>
-
-        <q-tabs dense style="position:absolute; bottom:0;">
-
-            <q-tab @click="this.$router.push('/Projects/'+ this.id +'/Overview')">
-                Overview
-            </q-tab>
-
-            <q-tab @click="this.$router.push('/Projects/'+ this.id +'/TaskList')">
-                Task List
-            </q-tab>
-
-            <q-tab disable>
-                Task Board
-            </q-tab>
-
-            <q-tab disable>
-                Timeline
-            </q-tab>
-
-            <q-tab disable>
-                Calendar
-            </q-tab>
-
-            <q-tab disable>
-                Dashboard
-            </q-tab>
-
-            <q-tab disable>
-                Messages
-            </q-tab>
-
-            <q-tab disable>
-                Files
-            </q-tab>
-
-        </q-tabs>
+        <pageheader :title="project.name" :tabs ="this.tabs"/>     
     </q-header>
 
     <q-page-container style="padding: 0 0 0 0">
@@ -81,16 +20,52 @@
 
 <script>
     import axios from 'axios'
+    import pageheader from './PageHeader'
     export default {
         name: "ProjectHome",
-        emits: ["openNav"],
         props: {
             id: String,
-            leftDrawerOpen: Boolean,
         },
+        components: {pageheader},
         data() {
             return {
                 project: {},
+                tabs: [
+                    {
+                        title: 'Overview',
+                        link: '/Projects/' + this.id + '/Overview',
+                        disable: false,
+                    },
+                    {
+                        title: 'Task List',
+                        link: '/Projects/' + this.id + '/TaskList',
+                        disable: false,
+                    },
+                    {
+                        title: 'Task Board',
+                        diable: true
+                    },
+                    {
+                        title: 'Timeline',
+                        disable: true,
+                    },
+                    {
+                        title: 'Calendar',
+                        disable: true,
+                    },
+                    {
+                        title: 'Dashboard',
+                        disable: true,
+                    },
+                    {
+                        title: 'Messages',
+                        disable: true,
+                    },
+                    {
+                        title: 'Files',
+                        disable: true,
+                    },
+                ]
             }
         },
         methods: {
@@ -102,9 +77,6 @@
                     .catch(function (error) {
                         alert(error);
                     });
-            },
-            openNav() {
-                this.$emit("open-nav");
             },
         },
         mounted() {

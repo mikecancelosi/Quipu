@@ -1,24 +1,7 @@
-﻿<template>
-
-    <q-header style="align-items:center;min-height:1px; height:100px; background-color:transparent;">
-        <q-toolbar style="height:100%;">
-            <q-btn flat
-                   dense
-                   round
-                   @click="openNav"
-                   aria-label="Menu"
-                   v-show="!this.leftDrawerOpen"
-                   icon="mdi-forwardburger" />
-            <div class="row"
-                 style="align-items:center;">
-
-                <q-btn icon="o_groups" size="24px" dense flat style="margin-right:15px; padding:0px;" />
-                <h5>Projects</h5>
-            </div>
-
-
-        </q-toolbar>
-
+﻿<template>    
+    <q-header elevated>
+        <pageheader  title="Projects"
+                     icon="o_groups" />
     </q-header>
     <q-separator />
 
@@ -71,13 +54,12 @@
 
 <script>
     import axios from 'axios'
-    import {  ref } from 'vue'
+    import { ref } from 'vue'
+    import pageheader from './PageHeader'
+
     export default {
         name: "ProjectsList",
-        emits:["openNav"],
-        props: {
-            leftDrawerOpen: Boolean,
-        },      
+        components: {pageheader},   
         data() {
             return {
                 columns:
@@ -107,9 +89,6 @@
                     .catch(function (error) {
                         alert(error);
                     });
-            },
-            openNav() {
-                this.$emit("open-nav");
             },
             navigateToProject(evt,row) {
                 this.$router.push('/Projects/' + row.id);

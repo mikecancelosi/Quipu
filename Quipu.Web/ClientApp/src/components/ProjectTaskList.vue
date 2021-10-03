@@ -161,10 +161,6 @@
         align-items: center;
     }
 
-    .q-field__marginal {
-        min-height: 0px;
-    }
-
     .list-row .q-icon {
         cursor: grab;
         visibility: hidden
@@ -215,21 +211,6 @@
         border-right: 0px;
     }
 
-    .q-badge {
-        font-size: 12px;
-        padding: 5px 10px;
-        width: fit-content;
-    }
-
-    .q-list {
-        min-width: 200px;
-    }
-
-    .q-item .q-icon {
-        align-self: center;
-        margin-right: 10px;
-    }
-
     .addtaskrow {
         font-size: 14px;
         border-bottom: 0px;
@@ -246,7 +227,7 @@
 
 </style>
 
-<style>
+<style scoped>
     .q-field__control-container {
         max-height: 20px;
     }

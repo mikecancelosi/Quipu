@@ -27,8 +27,9 @@
                    round
                    flat
                    icon="o_close"
-                   size="12px"
-                   style="margin:0px 5px;"
+                   size="12px"                   
+                   v-if="hover"
+                   style="margin:0px 5px; min-height:0px;"
                    @click="cleardates();" />
         </div>
         <q-menu v-bind:model-value="showdropdown"
@@ -60,7 +61,7 @@
         },
         data() {
             return {
-                hover: false,
+                hover: false, 
                 showdropdown: false,
                 newstartDate: this.startDate,
                 newendDate: this.endDate,

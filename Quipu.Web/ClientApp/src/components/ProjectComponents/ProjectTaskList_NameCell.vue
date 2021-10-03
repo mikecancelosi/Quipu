@@ -18,6 +18,7 @@
                      dense
                      borderless
                      v-model="name"
+                     style="height:100%;"
                      @update:model-value="(val)=>tasklostfocus(true)"
                      @blur="(evt)=>tasklostfocus()" />
             <q-space />
@@ -32,7 +33,7 @@
     </div>
 </template>
 
-<style scoped>
+<style>
     .cell {
         width: 100%;
         height: 100%;
@@ -47,25 +48,6 @@
 
     .list-row-noicon .tablecol:hover .showonhover {
         visibility: visible;
-    }
-    .q-input {
-        padding: 5px;
-        min-height: 0px;
-        max-height: 30px;
-        align-content: center;
-        margin: 5px;
-    }
-
-        .q-input:hover {
-            background-color: rgb(0,0,0,.3);
-            outline: 1px solid rgb(255,255,255,.4);
-            height: fit-content;
-        }
-
-    .q-field--focused {
-        background-color: rgb(0,0,0,.3);
-        outline: 1px solid rgb(255,255,255,.4);
-        height: fit-content;
     }
 </style>
 

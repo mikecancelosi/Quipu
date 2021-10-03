@@ -82,16 +82,7 @@
         margin: 0px;
         font-size: 20px;
         font-weight: 400;
-    }
-
-    .q-drawer-container {
-        padding: 10px;
-    }
-
-    .q-btn {
-        margin-right: 10px;
-        padding: 0px 10px;
-    }
+    }  
 
     #collab-section {
         margin-bottom: 50px;

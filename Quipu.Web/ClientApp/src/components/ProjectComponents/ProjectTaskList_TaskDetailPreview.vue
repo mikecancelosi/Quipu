@@ -26,17 +26,13 @@
                 <div class="row descriptor">
                     <div class="label">Assignee</div>
                     <assigneecell :user="this.task.assignedToUser"
+                                  class="value"
                                   @updateTask="(newuser) => assignuser(element,newuser)" />
                 </div>
 
                 <div class="row descriptor">
                     <div class="label">Date</div>
-                    <datecell :startDate="this.task.startDate" :endDate="this.task.endDate" :key="componentKey" />
-                </div>
-
-                <div class="row descriptor">
-                    <div class="label">Project</div>
-                    <div class="value">Michael Cancelosi</div>
+                    <datecell class="value" :startDate="this.task.startDate" :endDate="this.task.endDate" :key="componentKey" />
                 </div>
 
                 <div class="row descriptor">
@@ -46,20 +42,20 @@
 
                 <div class="row descriptor">
                     <div class="label">Priority</div>
-                    <prioritycell :priority="this.task.priority" style="max-width:150px;" :key="componentKey" />
+                    <prioritycell class="value" :priority="this.task.priority"  :key="componentKey" />
                 </div>
 
                 <div class="row descriptor">
                     <div class="label">Status</div>
-                    <statuscell :status="this.task.status" style="max-width:150px;" :key="componentKey" />
+                    <statuscell class="value" :status="this.task.status"  :key="componentKey" />
                 </div>
 
-                <div class="row ">
-                    <div class="label">Description</div>
-                    <div class="value" style="width:100%; float:left;">
+                <div>
+                    <div >Description</div>
+                    <div style="width:100%; float:left;">
                         <q-input textarea
-                                 outlined
-                                 v-model="description" />
+                                 autogrow
+                                 v-model="this.description" />
                     </div>
                 </div>
 
@@ -138,6 +134,10 @@
         margin-bottom: 10px;
     }
 
+    .value{
+        max-width:150px;
+    }
+
     .reply {
         padding: 5px 20px;
     }
@@ -164,16 +164,13 @@
         name: "TaskDetailPreview",
         components: { assigneecell, datecell, prioritycell, statuscell},
         emits: ["update-task", "hide-details"],
-        computed:{
-            gettask() { return this.task;}
-        },
         props: {
             task: reactive({}),
         },
         data() {
             return {
                 hover: false,
-                description: "",
+                description: this.task.description,
                 componentKey: 0,
             }
         },
@@ -189,6 +186,9 @@
                 this.componentKey += 1;
             }
         },
+        updated() {
+            this.description = this.task.description;
+        }
 
     }
 </script>
