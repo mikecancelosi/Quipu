@@ -50,26 +50,24 @@
                     <statuscell class="value" :status="this.task.status"  :key="componentKey" />
                 </div>
 
-                <div>
+                <div class="descriptor">
                     <div >Description</div>
-                    <div style="width:100%; float:left;">
                         <q-input textarea
                                  autogrow
-                                 v-model="this.description" />
-                    </div>
+                                 outlined
+                                 v-model="this.description" 
+                                 class="descriptionInput"/>
                 </div>
 
-                <div id="subtasks-container">
-                    <div class="label">Subtasks</div>
-
-                </div>
-
-                <q-space />
-                <q-separator />
+                <subtasks />
+                
 
                 <div class="reply fixed-bottom row">
                     <div class="col-1">
-                        <q-avatar color="red" text-color="white" size="35px">M</q-avatar>
+                        <q-avatar
+                                  color="red"
+                                  text-color="white"
+                                  size="35px">M</q-avatar>
                     </div>
                     <div class="col-11">
                         <div class="column">
@@ -80,9 +78,9 @@
                                 <a style="margin-right:20px; font-size:12px; color:rgb(255,255,255,.3)">Collaborators</a>
 
                                 <div id="collab-section">
-                                    <q-avatar color="yellow" text-color="black" size="24px">MC</q-avatar>
-                                    <q-avatar color="yellow" text-color="black" size="24px">ED</q-avatar>
-                                    <q-avatar color="yellow" text-color="black" size="24px">D</q-avatar>
+                                    <q-avatar class="contributorIcons" color="yellow" text-color="black" size="24px">MC</q-avatar>
+                                    <q-avatar class="contributorIcons" color="yellow" text-color="black" size="24px">ED</q-avatar>
+                                    <q-avatar class="contributorIcons" color="yellow" text-color="black" size="24px">D</q-avatar>
                                 </div>
                                 <q-btn icon="o_add" disable flat rounded dense />
 
@@ -121,8 +119,7 @@
         width:150px;
         min-width:150px;
         color:rgb(255,255,255,.5);
-        font-size:12px;
-       
+        font-size:12px;       
     }
     .row{
         width:100%;
@@ -147,8 +144,13 @@
         align-items:center;
     }
 
-    .q-avatar{
+    .contributorIcons{
         margin-right:4px;
+    }
+
+    .descriptionInput {
+        width:100%; 
+        margin-bottom:10px;
     }
 
 </style>
@@ -158,11 +160,12 @@
     import datecell from "./ProjectTaskList_DateCell"
     import prioritycell from "./ProjectTaskList_PriorityCell"
     import statuscell from "./ProjectTaskList_StatusCell"
+    import subtasks from "./ProjectTaskList_Subtasks"
     import {reactive } from 'vue'
 
     export default {
         name: "TaskDetailPreview",
-        components: { assigneecell, datecell, prioritycell, statuscell},
+        components: { assigneecell, datecell, prioritycell, statuscell, subtasks},
         emits: ["update-task", "hide-details"],
         props: {
             task: reactive({}),

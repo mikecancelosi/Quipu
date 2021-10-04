@@ -11,21 +11,15 @@
              style="align-items:center;">
 
             <q-btn id="headerIcon" :icon="icon" size="24px" dense flat />
-            <a id="headerTitle" >
+            <a id="headerTitle" :class="{'denseTitle':hasTabs}" >
                 {{title}}
             </a>
         </div>
 
         <q-tabs id="tabsContainer" v-if="hasTabs" dense >
             <div v-for="tab in tabs" :key="tab">
-                <div v-if="tab.disable">
-                    <q-tab disable>
-                        {{tab.title}}
-                    </q-tab>
-                </div>
-
-                <div v-if="!tab.disable">
-                    <q-tab @click="this.$router.push(tab.link)">
+                <div>
+                    <q-tab class="tabOption" :disable="tab.disable" @click="this.$router.push(tab.link)">
                         {{tab.title}}
                     </q-tab>
                 </div>
@@ -35,7 +29,7 @@
     </q-toolbar>
 </template>
 
-<style scoped>
+<style>
     #headingContainer{
         height:70px;
     }
@@ -43,6 +37,7 @@
     #tabsContainer{
         position:absolute;
         bottom:0;
+        left:70px;
     }
 
     #headerIcon {
@@ -54,6 +49,14 @@
         font-size: 24px
     }
 
+    .tabOption{
+    }
+
+    .denseTitle {
+        margin-bottom:25px;
+    }
+
+    
 </style>
 
 <script>
@@ -70,7 +73,7 @@
         props: {           
             title: String,
             icon: String,
-            tabs:[],
+            tabs: Array,
         },
         data() {
             return {
@@ -80,5 +83,6 @@
         methods: {
             ...mapActions(['toggleLeftDrawerOpen']),
         },
+
     }
 </script>

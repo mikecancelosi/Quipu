@@ -1,7 +1,7 @@
 <template>
     <q-layout view="lHh Lpr lFf">
 
-        <q-drawer v-model="leftDrawerOpen"
+        <q-drawer :model-value="leftDrawerOpen"
                   show-if-above
                   bordered>           
             <navmenu />
@@ -14,6 +14,19 @@
 </template>
 
 <style>
+    body.desktop .q-focusable:focus .q-focus-helper,
+    body.desktop .q-hoverable:hover .q-focus-helper {
+        opacity: 0 !important;
+    }
+
+    .q-header .q-tab__content{
+        min-width:0px !important;
+    }
+
+    .q-textarea .q-field__native{
+        padding-top:5px !important;
+    }
+
 </style>
 
 <script>

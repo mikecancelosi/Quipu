@@ -12,6 +12,7 @@ namespace Quipu.Core.DomainModel
         {
             Discussions = new HashSet<Discussion>();
             Alerts = new HashSet<Alert>();
+            Subtasks = new HashSet<Task>();
         }
 
         [Key]
@@ -32,6 +33,8 @@ namespace Quipu.Core.DomainModel
         public int? AssignedToUserID { get; set; }
         [ForeignKey("StatusCategory")]
         public int? StatusCategoryID { get; set; }
+        [ForeignKey("ParentTask")]
+        public int? ParentTaskID { get; set; }
 
         public virtual Project Project { get; set; }
         public virtual PriorityType Priority { get; set; }
@@ -40,5 +43,7 @@ namespace Quipu.Core.DomainModel
         public virtual User AssignedToUser { get; set; }
         public virtual ICollection<Discussion> Discussions { get; set; }
         public virtual ICollection<Alert> Alerts { get; set; }
+        public virtual Task ParentTask { get; set; }
+        public virtual ICollection<Task> Subtasks { get; set; }
     }
 }

@@ -15,11 +15,7 @@ import TeamOverview from "@/components/TeamOverview.vue"
 import TeamProjects from "@/components/TeamProjects.vue"
 
 const routes = [
-    {
-        path: "/",
-        name: "Home",
-        component: Home,
-    },
+   
     {
         path: "/Home",
         name: "Home",

@@ -1,6 +1,8 @@
 ﻿<template>
     <q-header elevated>
-        <pageheader :title="project.name" :tabs ="this.tabs"/>     
+        <pageheader :title="project.name"
+                    :tabs ="this.tabs"
+                    icon ="mdi-google-circles-group"/>     
     </q-header>
 
     <q-page-container style="padding: 0 0 0 0">
@@ -43,7 +45,7 @@
                     },
                     {
                         title: 'Task Board',
-                        diable: true
+                        disable: true
                     },
                     {
                         title: 'Timeline',

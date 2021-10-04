@@ -44,7 +44,8 @@
 
                 <template v-slot:body="props">
                     <q-tr :props="props">
-                        <q-td key="name"
+                        <q-td id="datacell"
+                              key="name"
                               :props="props"
                               colspan="100%">
                             <q-expansion-item :label="props.row.name"
@@ -138,10 +139,10 @@
 
     .button {
         margin-top: 35px;
-    }  
+    }
 
-    .q-td {
-        padding: 0;
+    #datacell {
+        padding: 0 !important;
     }
 
     .flip-list-move {
@@ -416,7 +417,6 @@
             showdetailtask(task) {
                 this.detailtask = null;
                 this.detailtask = { ...task };
-                console.log(this.detailtask);
                 
                 this.showDetails = true;    
             }
