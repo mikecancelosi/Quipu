@@ -118,13 +118,8 @@
         },
         data() {
             return {
-                rightDrawerOpen: true,
+                rightDrawerOpen: false,
             }
         },
-        methods: {
-
-        },
-        mounted() {
-        }
     }
 </script>

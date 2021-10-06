@@ -20,7 +20,7 @@
                          borderless
                          dense
                          placeholder="Task name"
-                         @blur="onTaskLostFocus()"
+                         @blur="onTaskLostFocus(task)"
                          ref="nameinput"/>
             </div>
         </div>
@@ -70,6 +70,10 @@
     export default {
         name: 'Subtasks',
         props: {
+            taskID: {
+                type: Number,
+                default: 0,
+            },
             subtasks: {
                 type: Array,
                 default: () => []
@@ -81,8 +85,7 @@
             const mutSubTasks = ref(props.subtasks);
             const hasSubTasks = computed(() => mutSubTasks.value.length > 0);
 
-            const addTask = (async () => {
-                clearEmptyTasks();
+            const addTask = (async () => {             
 
                 mutSubTasks.value.push({
                     name: "",
@@ -97,16 +100,26 @@
                 inputElement.focus();
             });
 
-            const onTaskLostFocus = () => {
-                //TODO: Push updates to DB
-                clearEmptyTasks();
+            const onTaskLostFocus = (task) => {
+                if (task.name === "") {
+                    const index = mutSubTasks.value.indexOf(task);
+                    mutSubTasks.value.splice(index, 1);
+                } else {
+                    pushToDB();
+                }
             };
 
             const clearEmptyTasks = () => {
                mutSubTasks.value = mutSubTasks.value.filter(task => task.name.length > 0);
             };
 
-            return { hasSubTasks, mutSubTasks, addTask, clearEmptyTasks, taskDivs, onTaskLostFocus }
+            const pushToDB = () => {
+
+            };
+
+          
+
+            return { hasSubTasks, mutSubTasks, addTask, clearEmptyTasks, taskDivs, onTaskLostFocus, pushToDB }
         }
     }
 </script>

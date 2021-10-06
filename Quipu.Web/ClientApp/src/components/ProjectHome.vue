@@ -21,8 +21,10 @@
 </style>
 
 <script>
-    import axios from 'axios'
     import pageheader from './PageHeader'
+    import { RepositoryFactory } from './../repositories/RepositoryFactory'
+    const ProjectRepository = RepositoryFactory.get('projects')
+
     export default {
         name: "ProjectHome",
         props: {
@@ -71,18 +73,13 @@
             }
         },
         methods: {
-            async getProject() {
-                await axios.get('http://127.0.0.1:5000/api/Projects/' + this.id)
-                    .then((response) => {
-                        this.project = response.data;
-                    })
-                    .catch(function (error) {
-                        alert(error);
-                    });
+            async fetch() {
+                this.project = (await ProjectRepository.getProject(this.id)).data;
             },
+
         },
         mounted() {
-            this.getProject().then(() => {
+            this.fetch().then(() => {
                 this.$router.push({ name: "ProjectOverview", params: { project: this.project } });
             })
         }

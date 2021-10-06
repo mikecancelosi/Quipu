@@ -33,29 +33,31 @@
 
         </div>
         <q-space />
-        <q-separator />
 
-        <q-table :rows="rows" 
+        <q-table :rows="projects" 
                  :columns="columns"
                  :loading="loading"
-                 @row-dblclick="navigateToProject"/>
+                 @row-dblclick="navigateToProject"
+                 id="projectTable"/>
     </div>
 </template>
 
 <style scoped>
-    .q-space {
-        min-height: 10px;
-    }
 
     #contentContainer {
-        padding: 10px 20px;
+        padding: 20px;
+    }
+
+    #projectTable {
+        margin-top:10px;
     }
 </style>
 
 <script>
-    import axios from 'axios'
     import { ref } from 'vue'
     import pageheader from './PageHeader'
+    import { RepositoryFactory } from './../repositories/RepositoryFactory'
+    const ProjectRepository = RepositoryFactory.get('projects')
 
     export default {
         name: "ProjectsList",
@@ -68,34 +70,28 @@
                         { name: "status", label: "Status", field: "status", align: 'left' },
                         { name: "priority", label: "Priority", field: "priority", align: 'left' },
                     ],
-                rows:[],                
+                projects: [],                
                 pagination: ref({
                     sortBy: 'desc',
                     descending: false,
                     page: 1,
-                    rowsPerPage: 3,
+                    rowsPerPage: 10,
                     rowsNumber: 10
                 }),
                 loading:true,
             }
         },
         methods: {
-            getProjects() {
-                axios.get('http://127.0.0.1:5000/api/Projects')
-                    .then((response) => {
-                        this.loading = false;
-                        this.rows= response.data;
-                    })
-                    .catch(function (error) {
-                        alert(error);
-                    });
+            async fetch() {
+                this.projects = (await ProjectRepository.get()).data;
+                this.loading = false;
             },
             navigateToProject(evt,row) {
                 this.$router.push('/Projects/' + row.id);
             }
         },
         mounted() {
-            this.getProjects();
+            this.fetch();
         }
     }
 </script>

@@ -66,46 +66,7 @@
                                            @change="(arg) => taskfinishedmoving(arg, props.row)"
                                            handle=".handle">
                                     <template #item="{ element }">
-                                        <div class="list-row row" style="padding:0px 30px">
-                                            <q-icon name="o_drag_indicator"
-                                                    class="handle"
-                                                    @click="element.fixed = !element.fixed"
-                                                    style="position:absolute; left:5px"
-                                                    size="20px" />
-                                            <div class="list-row-noicon row">
-                                                <div class="tablecol taskcol">
-                                                    <namecell :task="element"
-                                                               @detailTask="showdetailtask(element)"
-                                                              @updateTask="(name,completed)=>assignname(element,name,completed)" />
-                                                </div>
-
-                                                <div class="tablecol assigncol">
-                                                    <assigneecell :user="element.assignedToUser"
-                                                                  @updateTask="(newuser) => assignuser(element,newuser)" />
-                                                </div>
-
-                                                <div class="tablecol datecol">
-
-                                                    <datecell :startDate="element.startDate" :endDate ="element.endDate"
-                                                              @updateTask="(startDate,endDate) => assigndates(element,startDate,endDate)" />
-
-                                                </div>
-
-                                                <div class="tablecol prioritycol">
-                                                    <prioritycell :priority="element.priority"
-                                                                  :priorityoptions=" this.priorityoptions"
-                                                                  @updateTask="(priority) => assignpriority(element,priority)" />
-
-                                                </div>
-
-                                                <div class="tablecol statuscol">
-                                                    <statuscell :status="element.status"
-                                                                @updateTask="(status) => assignstatus(element,status)"
-                                                                :statusoptions="this.statusoptions"/>
-                                                </div>
-                                            </div>
-
-                                        </div>
+                                       <row :id ="element.id"/>
                                     </template>
 
                                     <template #footer>
@@ -124,8 +85,6 @@
 
             </q-table>
 
-
-
         </q-page-container>
 
     </q-layout>
@@ -135,6 +94,22 @@
 <style scoped>
     #heading-options > .q-btn {
         margin-right: 20px;
+    }
+
+    .tablecol {
+        width: 10%;
+        border-right: 1px solid gray;
+        min-height: 40px;
+        line-height: 40px;
+        padding-left: 10px;
+    }
+
+    .statuscol {
+        border-right: 0px;
+    }
+
+    .taskcol {
+        width: 60%;
     }
 
     .button {
@@ -155,61 +130,11 @@
 
     .q-table--dark tbody td:before {
         background-color: transparent;
-    }
-
-    .list-row {
-        min-height: 40px;
-        align-items: center;
-    }
-
-    .list-row .q-icon {
-        cursor: grab;
-        visibility: hidden
-    }
-
-    .list-row:hover .q-icon {
-        visibility: visible
-    }
-
-    .list-row-noicon {
-        border-top: 1px solid gray;
-        position: relative;
-        width: 100%;
-        font-size: 14px;
-    }
-
-        .list-row-noicon .tablecol:hover {
-            background-color: RGB(255,255,255,.1);
-        }
+    }    
 
     .headercol {
         padding-top: 0px;
         padding-bottom: 0px;
-    }
-
-    .tablecol {
-        width: 10%;
-        border-right: 1px solid gray;
-        min-height: 40px;
-        line-height: 40px;
-        padding-left: 10px;
-    }
-
-    .taskcol {
-        width: 60%;
-    }
-
-    .assigncol {
-    }
-
-    .datecol {
-    }
-
-    .prioritycol {
-    }
-
-    .statuscol {
-        border-right: 0px;
     }
 
     .addtaskrow {
@@ -228,48 +153,17 @@
 
 </style>
 
-<style scoped>
-    .q-field__control-container {
-        max-height: 20px;
-    }
-
-    .q-focus-helper{
-        opacity:0 !important;
-
-    }
-
-        .q-focus-helper ::before {
-            opacity: 0 !important;
-        }
-        .q-focus-helper ::after {
-            opacity: 0 !important;
-        }
-
-    .cell{
-        height:100%;
-        width:100%;
-    }
-
-    .q-drawer--right.q-drawer--bordered {
-        top: 100px;
-    }
-
-</style>
-
 <script>
-    import axios from 'axios'
-    import draggable from "vuedraggable";
-    import assigneecell from "./ProjectComponents/ProjectTaskList_AssigneeCell"
-    import datecell from "./ProjectComponents/ProjectTaskList_DateCell"
-    import prioritycell from "./ProjectComponents/ProjectTaskList_PriorityCell"
-    import statuscell from "./ProjectComponents/ProjectTaskList_StatusCell"
-    import namecell from "./ProjectComponents/ProjectTaskList_NameCell"
+    import draggable from "vuedraggable";   
     import taskdetailpreview from "./ProjectComponents/ProjectTaskList_TaskDetailPreview"
-
+    import row from "./ProjectComponents/ProjectTaskList_Row"
+    import { RepositoryFactory } from './../repositories/RepositoryFactory'
+    const TaskStatusRepo = RepositoryFactory.get('taskstatuscategories')
+    const TaskRepo = RepositoryFactory.get('tasks')
 
     export default {
         name: "ProjectTaskList",
-        components: { draggable, assigneecell, datecell, prioritycell, statuscell, namecell, taskdetailpreview },
+        components: { draggable,taskdetailpreview, row },
         props: {
             project: {},
         },
@@ -306,72 +200,35 @@
                         align: 'left',
                         headerClasses: 'headercol tablecol statuscol',
                     }
-                ],
-                statustypes: [],               
+                ],             
                 headerrows: [],
-                drag: false,
-                statusoptions: [],
-                prioritytypes: [],
-                priorityoptions: [],
-                taskstatusgroups: [],
+                drag: false,               
                 showDetails: false,
                 detailtask: {},
             }
         },
         methods: {
-            getRows() {
-                //Get groups
-                this.headerrows = [];
-                this.taskstatusgroups = [];
-                axios.get('http://127.0.0.1:5000/api/TaskStatusCategories')
-                    .then((response) => {
-                        this.taskstatusgroups = response.data;
-                        this.taskstatusgroups.forEach(group => {
-                            this.headerrows.push({
-                                id: group.id,
-                                name: group.name,
-                                expanded: true,
-                                priorityhover: false,
-                                statushover: true,
-                                assigneehover: false,
-                                assigneedropdown: false,
-                                datehover: false,
-                                datedropdown: false,
-                                tasks: this.project.tasks.filter(task => {
-                                    return task.statusCategory.id === group.id
-                                }),
-                            });
-                        });
-                    })
-                    .catch(function (error) {
-                        alert(error);
+            async fetch() {
+                this.taskstatusgroups = (await TaskStatusRepo.get()).data;
+                this.taskstatusgroups.forEach(group => {
+                    this.headerrows.push({
+                        id: group.id,
+                        name: group.name,
+                        expanded: true,
+                        tasks: this.project.tasks.filter(task => {
+                            return task.statusCategory.id === group.id
+                        }),
                     });
-                
-            },
-            openNav() {
-                this.$emit("open-nav");
+                });
             },
             updatetask(task) {
                 if (task.id > 0) {
-                    axios.put('http://127.0.0.1:5000/api/Tasks/' + task.id, task)
-                        .then(response => {
-                            console.log(response);
-                        })
-                        .catch(error => {
-                            console.log(error);
-                        });
+                    TaskRepo.updateTask(task);
                 }
                 else {
-                    axios.post('http://127.0.0.1:5000/api/Tasks/', task)
-                        .then(response => {
-                            console.log(response);
-                        })
-                        .catch(error => {
-                            console.log(error);
-                        });
+                    TaskRepo.createTask(task);
                 }
-            },
-            
+            },            
             addemptytask(category) {
                 var categoryname = category.row.name;
                 var matchresult = this.headerrows.filter(row => { return row.name === categoryname })[0];
@@ -391,35 +248,7 @@
                     args.added.element.statusCategory = this.taskstatusgroups.filter(status => status.id === group.id)[0];
                     this.updatetask(args.added.element);
                 }
-            },
-            assignuser(task, newuser) {
-                task.assignedToUser = newuser;
-                this.updatetask(task);
-            },
-            assigndates(task, startdate, enddate) {
-                task.startDate = startdate;
-                task.endDate = enddate;
-                this.updatetask(task);
-            },
-            assignpriority(task, priority) {
-                task.priority = priority;
-                this.updatetask(task);
-            },
-            assignstatus(task, status) {
-                task.status = status;
-                this.updatetask(task);
-            },
-            assignname(task, name, completed) {
-                task.name = name;
-                task.completed = completed;
-                this.updatetask(task);
-            },
-            showdetailtask(task) {
-                this.detailtask = null;
-                this.detailtask = { ...task };
-                
-                this.showDetails = true;    
-            }
+            },           
         },
         computed: {
             dragOptions() {
@@ -432,7 +261,7 @@
             }
         },
         mounted() {
-            this.getRows();
+            this.fetch();
         },
     }
 </script>

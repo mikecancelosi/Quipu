@@ -52,38 +52,40 @@
 </style>
 
 <script>
+    import { ref } from 'vue'
+
     export default {
         name: "StatusCell",
-        emits: ["update-task", "detail-task"],
+        emits: ["update-task", "detail-task", "remove-element"],
         props: {
             task: {},
         },
-        data() {
-            return {
-                hover: false,
-                showdropdown: false,
-                name: this.task.name,
-                completed: this.task.completed
-            }
-        },
-        methods: {
-            updatetask() {
+        setup(props) {
+            const hover = ref(false);
+            const showdropdown = ref(false);
+            const name = ref(props.task.value.name );
+            const completed = ref(props.task.value.completed);
+            const updatetask = () => {
                 this.$emit("update-task", this.name, this.completed);
-            },
+            };
 
-            tasklostfocus(focus) {
-                if (name === '') {
-                    this.getRows();
+            const tasklostfocus = () => {
+                if (name.value === '') {
+                    this.$emit("update-task", this.task);
                 } else {
                     this.updatetask();
                 }
                 if (focus) {
                     this.$nextTick(() => { this.$refs['nameinput'].focus(); });
                 }
-            },
-            detailtask() {
+            };          
+
+            const detailtask = () => {
                 this.$emit("detail-task");
-            },
+            };
+
+            return {hover, showdropdown,name,completed, updatetask,tasklostfocus,detailtask}
         },
+       
     }
 </script>

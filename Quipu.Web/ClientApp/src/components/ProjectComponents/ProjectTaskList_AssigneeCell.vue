@@ -1,7 +1,8 @@
 ﻿<template>
     <div class="cell"
          @mouseenter="hover = true"
-         @mouseleave="hover = false">
+         @mouseleave="hover = false"
+         v-if="loaded">
         <q-btn icon="o_person_outline"
                round
                outline
@@ -52,6 +53,9 @@
 
 <script>
     import { mapGetters, mapActions } from 'vuex'
+    import { ref, reactive } from 'vue'
+    import { RepositoryFactory } from '../../repositories/RepositoryFactory'
+    const UserRepo = RepositoryFactory.get('users')
 
     export default {
         name: "AssigneeCell",
@@ -61,28 +65,39 @@
             this.fetchUsers();
         },
         props: {
-            user: {},           
+            userid: {},
         },
-        data() {
-            return {
-                hover: false,
-                showdropdown: false,
-                newuser: this.user,
+        setup(props) {
+            const hover = ref(false);
+            const showdropdown = ref(false);
+            const newuser = reactive({});
+            const loaded = ref(false);
+
+            console.log(props);
+            if (props.userid != null) {
+
+
+                (async () => {
+                    const res = await UserRepo.getById(props.userid);
+                    newuser.value = res.data;
+                    loaded.value = true;
+                })();
             }
-        },
-        methods: {
-            assignUserClicked() {
+
+            const assignUserClicked = () => {
                 this.showdropdown = true;
                 this.$nextTick(() => { this.$refs.userselect.showPopup() });
-            },
-            updatetask() {
-                this.$emit("update-task",this.newuser);
-            },
+            };
+            const updatetask = () => {
+                this.$emit("update-task", this.newuser);
+            };
+
+            return { hover,loaded, showdropdown, newuser, assignUserClicked, updatetask}
+        },
+        methods: {
+            
             ...mapActions(['fetchUsers']),
         },
-        updated() {
-            this.newuser = this.user;
-        }
 
     }
 </script>

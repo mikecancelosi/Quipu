@@ -60,7 +60,7 @@ const actions = {
 
         commit('setStatusTypes', statuses);
         commit('setStatusDropdownOptions', statusoptions);
-    },
+    }
 };
 
 const mutations = {
@@ -72,7 +72,7 @@ const mutations = {
     },
     setPriorityTypes: (state, priorities) => { state.priorityTypes = priorities },
     setPriorityDropdownOptions: (state, options) => { state.priorityDropdownOptions = options },
-
+    
 };
 
 export default {

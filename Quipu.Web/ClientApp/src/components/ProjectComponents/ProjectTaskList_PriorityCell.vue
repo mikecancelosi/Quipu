@@ -50,6 +50,7 @@
 
 <script>
     import { mapGetters, mapActions } from 'vuex'
+    import { ref,reactive } from 'vue'
 
     export default {
         name: "PriorityCell",
@@ -61,18 +62,19 @@
         props: {
             priority: {},            
         },
-        data() {
-            return {
-                hover: false,
-                showdropdown: false,
-                newpriority: this.priority,
-            }
+        setup(props) {
+            const hover = ref(false);
+            const showdropdown = ref(false);
+            const newpriority = reactive(props?.priority ?? {});
+
+            const updatetask = () => {
+                this.$emit("update-task", this.newpriority);
+            };          
+
+            return {hover,showdropdown,newpriority,updatetask}
         },
         methods: {
-            updatetask() {
-                this.$emit("update-task", this.newpriority);
-            },
-            ...mapActions(['fetchPriorityTypes']),
+             ...mapActions(['fetchPriorityTypes']),
         },
         updated() {
             this.newpriority = this.priority;
