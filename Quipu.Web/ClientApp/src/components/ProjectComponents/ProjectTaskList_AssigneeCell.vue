@@ -15,10 +15,9 @@
                :style="{ visibility: newuser == null
                                              ? 'visible'
                                              : 'collapse'}" />
-
         <q-select dense
                   ref="userselect"
-                  v-model="newuser"
+                  v-model="newuser.value"
                   :hide-dropdown-icon="!hover && !showdropdown"
                   :options="allUserDropdownOptions"
                   @update:model-value="updatetask()"
@@ -35,7 +34,7 @@
             </template>
 
             <template v-slot:selected>
-                {{newuser != null ? newuser.display_Name : ''}}
+                {{newuser?.value?.label ?? ''}}
             </template>
         </q-select>
 
@@ -52,37 +51,32 @@
 </style>
 
 <script>
-    import { mapGetters, mapActions } from 'vuex'
-    import { ref, reactive } from 'vue'
-    import { RepositoryFactory } from '../../repositories/RepositoryFactory'
-    const UserRepo = RepositoryFactory.get('users')
+    import { useStore, mapActions } from 'vuex'
+    import { ref, reactive, computed } from 'vue'
 
     export default {
         name: "AssigneeCell",
         emits: ["update-task"],
-        computed: mapGetters(['allUsers', 'allUserDropdownOptions']),
         created() {
             this.fetchUsers();
         },
         props: {
-            userid: {},
-        },
+            userid: {
+                type: Number,
+                default: 0,
+            }
+        },        
         setup(props) {
             const hover = ref(false);
             const showdropdown = ref(false);
             const newuser = reactive({});
             const loaded = ref(false);
+            const store = useStore();
+            const allUserDropdownOptions = computed(() => store.getters.allUserDropdownOptions).value;
 
-            console.log(props);
-            if (props.userid != null) {
-
-
-                (async () => {
-                    const res = await UserRepo.getById(props.userid);
-                    newuser.value = res.data;
-                    loaded.value = true;
-                })();
-            }
+            newuser.value = allUserDropdownOptions.find(x => x.category === props.userid);
+            loaded.value = true;          
+            
 
             const assignUserClicked = () => {
                 this.showdropdown = true;
@@ -92,10 +86,12 @@
                 this.$emit("update-task", this.newuser);
             };
 
-            return { hover,loaded, showdropdown, newuser, assignUserClicked, updatetask}
+            return {
+                hover, loaded, showdropdown, newuser, assignUserClicked, updatetask, allUserDropdownOptions
+               
+            }
         },
-        methods: {
-            
+        methods: {            
             ...mapActions(['fetchUsers']),
         },
 

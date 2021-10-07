@@ -5,7 +5,7 @@
 
         <q-select :hide-dropdown-icon="!hover"
                   borderless
-                  v-model="newstatus"
+                  v-model="newstatus.value"
                   @update:model-value="updatetask()"
                   :options="allStatusDropdownOptions"
                   dense
@@ -17,7 +17,7 @@
                         <div>
                             <q-icon name="o_check"
                                     size="16px"
-                                    :style="{visibility: scope.opt.category == (newstatus.id)
+                                    :style="{visibility: scope.opt.category == (newstatus.value?.value?.id)
                                                                                                                         ? 'visible'
                                                                                                                         : 'hidden'}" />
                             <q-badge rounded :color="scope.opt.value.color">
@@ -29,9 +29,9 @@
             </template>
             <template v-slot:selected>
                 <q-badge rounded
-                         :color="newstatus.color ?? 'primary'"
-                         v-if="newstatus != null">
-                    {{newstatus.name ?? ''}}
+                         :color="newstatus.value?.value?.color ?? 'primary'"
+                         v-if="newstatus.value.label != null">
+                    {{newstatus.value?.label ?? ''}}
                 </q-badge>
             </template>
 
@@ -47,32 +47,36 @@
 </style>
 
 <script>
-    import { mapGetters, mapActions } from 'vuex'
+    import {  mapActions, useStore } from 'vuex'
+    import {ref, reactive, computed} from 'vue'
     export default {
         name: "StatusCell",
         emits: ["update-task"],
         props: {
-            status: {},
+            statusid: {
+                type: Number,
+                default: 0,
+            },
         },
-        computed: mapGetters(['allStatusDropdownOptions']),
+        setup(props) {
+            const hover = ref(false);
+            const showdropdown = ref(false);
+            const newstatus = reactive({});
+            const store = useStore()
+            const allStatusDropdownOptions = computed(() => store.getters.allStatusDropdownOptions).value;
+
+            newstatus.value = allStatusDropdownOptions.find(x => x.category === props.statusid) ?? {};
+
+            return { hover, showdropdown, newstatus, store, allStatusDropdownOptions }
+        },
         created() {
             this.fetchStatusTypes();
         },
-        data() {
-            return {
-                hover: false,
-                showdropdown: false,
-                newstatus: this.status,
-            }
-        },
         methods: {
             updatetask() {
-                this.$emit("update-task", this.newstatus);
+                
             },
             ...mapActions(['fetchStatusTypes']),
         },
-        updated() {
-            this.newstatus = this.status;
-        }
     }
 </script>

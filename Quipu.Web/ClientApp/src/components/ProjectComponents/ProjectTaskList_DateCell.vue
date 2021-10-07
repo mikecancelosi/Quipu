@@ -10,14 +10,14 @@
                size="10px"
                v-if="hover &&
                      !showdropdown &&
-                     newstartDate == '0001-01-01T00:00:00'"
+                     newStartDate == '0001-01-01T00:00:00'"
                @click="showdropdown = true; "
-               :style="{visibility: newstartDate == '0001-01-01T00:00:00'
+               :style="{visibility: newStartDate == '0001-01-01T00:00:00'
                                                        ? 'visible'
                                                        : 'collapse'}">
 
         </q-btn>
-        <div class="row" v-if="newstartDate != '0001-01-01T00:00:00'">
+        <div class="row" v-if="newStartDate != '0001-01-01T00:00:00'">
             
             <div>
                 {{formattedDate}}
@@ -50,44 +50,56 @@
 </style>
 
 <script>
+    import {ref, computed} from 'vue'
+
     export default {
         name: "AssigneeCell",
         emits: ["update-task"],
-        props: ['startDate', 'endDate'],
-        computed: {
-            formattedDate() {
-                return this.formatdate(this.newstartDate, this.newendDate)
-            }
-        },
-        data() {
-            return {
-                hover: false, 
-                showdropdown: false,
-                newstartDate: this.startDate,
-                newendDate: this.endDate,
-            }
-        },
-        methods: {            
-            updatetask() {
-                this.$emit("update-task", this.newstartdate, this.newenddate);
+        props: {
+            startDate: {
+                type: String,
+                default: "0001-01-01T00:00:00",
             },
-            formatdate(startDate, endDate) {
-                var sDate = new Date(startDate);
-                var eDate = new Date(endDate);             
+            endDate: {
+                type: String,
+                default: "0001-01-01T00:00:00",
+            }
+        },
+        setup(props) {
+            const hover = ref(false);
+            const showdropdown = ref(false);
+            const newStartDate = ref(props.startDate);
+            const newEndDate = ref(props.endDate);
+
+            const updatetask = () => {
+                this.$emit("update-task", this.newStartdate, this.newEnddate);
+            };
+
+            const formattedDate = computed(() => {
+                const sDate = new Date(newStartDate.value);
+                const eDate = new Date(newEndDate.value);               
                 return sDate.getMonth() + "/" + sDate.getDate() + "-" +
                     eDate.getMonth() + "/" + eDate.getDate();
-            },
-            assigndate(range) {
-                this.newstartDate = new Date(range.from.month + " " + range.from.day + " " + range.from.year);
-                this.newendDate = new Date(range.to.month + " " + range.to.day + " " + range.to.year);
-                this.updatetask();
-            },
-            cleardates() {
+            });
+
+
+            const cleardates = () => {
                 this.newstartDate = '0001-01-01T00:00:00';
                 this.newDate = '0001-01-01T00:00:00';
                 this.updatetask();
-            },
-           
+            };
+
+            const assigndate = (range) => {
+                this.newStartDate = new Date(range.from.month + " " + range.from.day + " " + range.from.year);
+                this.newEndDate = new Date(range.to.month + " " + range.to.day + " " + range.to.year);
+                this.updatetask();
+            };
+
+            return {
+                hover, showdropdown, newStartDate, newEndDate,
+                updatetask, formattedDate, cleardates, assigndate
+            }
+
         },
         updated() {
             this.newstartDate = this.startDate;

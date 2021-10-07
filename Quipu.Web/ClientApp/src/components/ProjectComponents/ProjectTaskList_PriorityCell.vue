@@ -17,7 +17,7 @@
                         <div>
                             <q-icon name="o_check"
                                     size="16px"
-                                    :style="{visibility: scope.opt.category == (newpriority.id ?? 0)
+                                    :style="{visibility: scope.opt.category == (newpriority.value?.value?.id ?? 0)
                                                                               ? 'visible'
                                                                               : 'hidden'}" />
                             <q-badge rounded 
@@ -30,9 +30,9 @@
             </template>
             <template v-slot:selected>
                 <q-badge rounded
-                         :color="newpriority.color ?? 'primary'"
-                         v-if="newpriority != null">
-                    {{newpriority.name }}
+                         :color="newpriority.value?.value?.color ?? 'primary'"
+                         v-if="newpriority.value.label != null">
+                    {{newpriority.value?.label ?? "" }}
                 </q-badge>
             </template>
 
@@ -49,8 +49,8 @@
 </style>
 
 <script>
-    import { mapGetters, mapActions } from 'vuex'
-    import { ref,reactive } from 'vue'
+    import { mapGetters, mapActions, useStore } from 'vuex'
+    import { ref,reactive, computed } from 'vue'
 
     export default {
         name: "PriorityCell",
@@ -60,24 +60,28 @@
             this.fetchPriorityTypes();
         },
         props: {
-            priority: {},            
+            priorityid: {
+                type: Number,
+                default: 0
+            },
         },
         setup(props) {
             const hover = ref(false);
             const showdropdown = ref(false);
-            const newpriority = reactive(props?.priority ?? {});
-
+            const newpriority = reactive({});
+            const store = useStore()
+            const allPriorityDropdownOptions = computed(() => store.getters.allPriorityDropdownOptions).value;
+            
+            newpriority.value = allPriorityDropdownOptions.find(x => x.category === props.priorityid) ?? {};
+            console.log(newpriority.value.label);
             const updatetask = () => {
                 this.$emit("update-task", this.newpriority);
             };          
 
-            return {hover,showdropdown,newpriority,updatetask}
+            return { hover, showdropdown, newpriority, updatetask, allPriorityDropdownOptions}
         },
         methods: {
              ...mapActions(['fetchPriorityTypes']),
         },
-        updated() {
-            this.newpriority = this.priority;
-        }
     }
 </script>

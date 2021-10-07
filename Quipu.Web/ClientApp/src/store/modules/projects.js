@@ -11,12 +11,12 @@ const state = {
 
 const getters = {
     allUsers: (state) => state.users,
-    allUserDropdownOptions: (state) => state.userDropdownOptions,
+   
     allPriorityTypes: (state) => state.priorityTypes,
     allPriorityDropdownOptions: (state) => state.priorityDropdownOptions,
     allStatusTypes: (state) => state.statusTypes,
     allStatusDropdownOptions: (state) => state.statusDropdownOptions,
-    
+    allUserDropdownOptions(state) { return state.userDropdownOptions }
 };
 
 const actions = {

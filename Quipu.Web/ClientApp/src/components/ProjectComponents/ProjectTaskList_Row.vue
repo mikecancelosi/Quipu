@@ -13,25 +13,25 @@
             </div>
 
             <div class="tablecol">
-                <assigneecell :userid="task.assignedToUserID"
+                <assigneecell :userid="task.value.assignedToUserID"
                               @updateTask="(newuser) => assignuser(task,newuser)" />
             </div>
 
             <div class="tablecol">
 
-                <datecell :startDate="task.startDate" :endDate="task.endDate"
+                <datecell :startDate="task.value.startDate" :endDate="task.value.endDate"
                           @updateTask="(startDate,endDate) => assigndates(task,startDate,endDate)" />
 
             </div>
 
             <div class="tablecol">
-                <prioritycell :priority="task.priority"
+                <prioritycell :priorityid="task.value.priorityID"
                               @updateTask="(priority) => assignpriority(task,priority)" />
 
             </div>
 
             <div class="tablecol statuscol">
-                <statuscell :status="task.status"
+                <statuscell :statusid="task.value.statusID"
                             @updateTask="(status) => assignstatus(task,status)"/>
             </div>
         </div>
@@ -106,10 +106,10 @@
             (async () => {
                 const res = await TaskRepo.getTask(props.id);            
                 task.value = res.data;
-                loaded.value = true;                
+                loaded.value = true;
             })();
                        
-
+           
             const assignuser = (task, newuser) => {
                 task.assignedToUser = newuser;
                 this.updatetask(task);
