@@ -18,7 +18,6 @@ const getters = {
                 }),
             });
         });
-        console.log(groups);
         return groups;
     },
     

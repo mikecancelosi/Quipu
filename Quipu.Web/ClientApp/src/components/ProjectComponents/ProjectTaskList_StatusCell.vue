@@ -48,7 +48,7 @@
 
 <script>
     import {   useStore } from 'vuex'
-    import {ref, reactive, computed} from 'vue'
+    import { ref, reactive, computed} from 'vue'
     export default {
         name: "StatusCell",
         emits: ["update-task"],
@@ -58,16 +58,21 @@
                 default: 0,
             },
         },
-        setup(props) {
+        setup(props, { emit }) {
             const hover = ref(false);
             const showdropdown = ref(false);
             const newstatus = reactive({});
             const store = useStore()
             const allStatusDropdownOptions = computed(() => store.getters.allStatusDropdownOptions).value;
-            console.log(props.statusid);
+            const newid = computed(() => newstatus.value.id ?? 0);
             newstatus.value = allStatusDropdownOptions.find(x => x.category === props.statusid) ?? {};
 
-            return { hover, showdropdown, newstatus, store, allStatusDropdownOptions }
+            const updatetask = () => {
+                emit("update-task", newid.value);
+                newstatus.value = allStatusDropdownOptions.find(x => x.category === newstatus.value.id);
+            };
+
+            return { hover, updatetask, showdropdown, newstatus, store, allStatusDropdownOptions }
         },
     }
 </script>

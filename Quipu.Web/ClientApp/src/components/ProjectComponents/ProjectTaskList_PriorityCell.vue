@@ -5,7 +5,7 @@
 
         <q-select :hide-dropdown-icon="!hover"
                   borderless
-                  v-model="newpriority"
+                  v-model="newpriority.value"
                   @update:model-value="updatetask()"
                   :options="allPriorityDropdownOptions"
                   dense
@@ -31,7 +31,7 @@
             <template v-slot:selected>
                 <q-badge rounded
                          :color="newpriority.value?.value?.color ?? 'primary'"
-                         v-if="newpriority.value.label != null">
+                         v-if="newpriority.value?.label ?? null != null">
                     {{newpriority.value?.label ?? "" }}
                 </q-badge>
             </template>
@@ -62,20 +62,23 @@
                 default: 0
             },
         },
-        setup(props) {
+        setup(props, { emit }) {
             const hover = ref(false);
             const showdropdown = ref(false);
             const newpriority = reactive({});
             const store = useStore()
             const allPriorityDropdownOptions = computed(() => store.getters.allPriorityDropdownOptions).value;
-            
-            newpriority.value = allPriorityDropdownOptions.find(x => x.category === props.priorityid) ?? {};
+
+            const newid = computed(() => newpriority.value.id ?? 0);
+
+            newpriority.value = allPriorityDropdownOptions.find(x => x.category === props.priorityid);
            
             const updatetask = () => {
-                this.$emit("update-task", this.newpriority);
+                emit("update-task", newid.value);
+                newpriority.value = allPriorityDropdownOptions.find(x => x.category === newpriority.value.id);
             };          
 
-            return { hover, showdropdown, newpriority, updatetask, allPriorityDropdownOptions}
+            return { hover, newid, showdropdown, newpriority, updatetask, allPriorityDropdownOptions}
         },
     }
 </script>

@@ -6,15 +6,15 @@ export default {
         return Repository.get(`${resource}`);
     },
 
-    getTask(projectId) {
-        return Repository.get(`${resource}/${projectId}`);
+    getTask(Id) {
+        return Repository.get(`${resource}/${Id}`);
     },
 
-    createTask(payload) {
+    post(payload) {
         return Repository.post(`${resource}`, payload);
     },
 
-    updateTask(payload) {
-        return Repository.put(`${resource}`, payload);
+    put(payload) {
+        return Repository.put(`${resource}/${payload.id}`, payload);
     }
 }

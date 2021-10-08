@@ -61,7 +61,6 @@
             task: {},
         },
         setup(props, { emit }) {
-            console.log(props.task);
             const hover = ref(false);
             const showdropdown = ref(false);
             const name = ref(props.task.name );

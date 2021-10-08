@@ -42,7 +42,7 @@ const mutations = {
         if (index !== -1) {
             state.users[index] = user;
         } else {
-            state.user.add(user);
+            state.users.add(user);
         }
     },
 };

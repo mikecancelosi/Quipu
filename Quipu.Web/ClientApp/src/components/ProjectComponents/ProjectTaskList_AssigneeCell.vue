@@ -16,13 +16,12 @@
                                              ? 'visible'
                                              : 'collapse'}" />
         <q-select dense
-                  ref="userselect"
                   v-model="newuser.value"
                   :hide-dropdown-icon="!hover && !showdropdown"
                   :options="allUserDropdownOptions"
                   @update:model-value="updatetask()"
                   @popup-hide="showdropdown = false"
-                  v-if="showdropdown ||  newuser != null"
+                  v-if="showdropdown ||  newuser.value != null"
                   borderless
                   emit-value>
             <template v-slot:option="scope">
@@ -70,21 +69,18 @@
             const loaded = ref(false);
             const store = useStore();
             const allUserDropdownOptions = computed(() => store.getters.allUserDropdownOptions).value;
-            const newid = computed(() => newuser.id ?? 0);
+            const newid = computed(() => newuser.value.id ?? 0);
 
             newuser.value = allUserDropdownOptions.find(x => x.category === props.userid);
-            loaded.value = true;            
-            
-            const assignUserClicked = () => {
-                this.showdropdown = true;
-                this.$nextTick(() => { this.$refs.userselect.showPopup() });
-            };
+            loaded.value = true;
+
             const updatetask = () => {
                 emit("update-task", newid.value);
+                newuser.value = allUserDropdownOptions.find(x => x.category === newuser.value.id);
             };
 
             return {
-                hover, newid ,loaded, showdropdown, newuser, assignUserClicked, updatetask, allUserDropdownOptions
+                hover, newid ,loaded, showdropdown, newuser, updatetask, allUserDropdownOptions
                
             }
         },

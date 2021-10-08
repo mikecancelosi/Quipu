@@ -13,26 +13,26 @@
             </div>
 
             <div class="tablecol">
-                <assigneecell :userid="task.assignedToUserID"
+                <assigneecell :userid="task.value.assignedToUserID"
                               @updateTask="(newuserid) => assignuser(task,newuserid)" />
             </div>
 
             <div class="tablecol">
 
-                <datecell :startDate="task.startDate" :endDate="task.endDate"
+                <datecell :startDate="task.value.startDate" :endDate="task.value.endDate"
                           @updateTask="(startDate,endDate) => assigndates(task,startDate,endDate)" />
 
             </div>
 
             <div class="tablecol">
-                <prioritycell :priorityid="task.priorityID"
-                              @updateTask="(priority) => assignpriority(task,priority)" />
+                <prioritycell :priorityid="task.value.priorityID"
+                              @updateTask="(priorityid) => assignpriority(task,priorityid)" />
 
             </div>
 
             <div class="tablecol statuscol">
-                <statuscell :statusid="task.statusID"
-                            @updateTask="(status) => assignstatus(task,status)"/>
+                <statuscell :statusid="task.value.statusID"
+                            @updateTask="(statusid) => assignstatus(task,statusid)"/>
             </div>
         </div>
 
@@ -106,32 +106,31 @@
             const showDetails = ref(false);
 
             (async () => {
-                task.value = await store.getters.getTaskByID(props.id);
-                console.log(props.id,task);
+                task.value = await store.getters.getTaskByID(props.id);                
                 loaded.value = true;
-            })();                       
-           
+            })();
+
             const assignuser = (task, newuserid) => {
-                task.assignedToUserID = newuserid;
-                updatetask(task);
+                task.value.assignedToUserID = newuserid;
+                updatetask();
             };
             const assigndates =(task, startdate, enddate) => {
-                task.startDate = startdate;
-                task.endDate = enddate;
-                updatetask(task);
+                task.value.startDate = startdate;
+                task.value.endDate = enddate;
+                updatetask();
             };
-            const assignpriority = (task, priority) => {
-                task.priority = priority;
-                updatetask(task);
+            const assignpriority = (task, priorityid) => {
+                task.value.priorityID = priorityid;
+                updatetask();
             };
-            const assignstatus =(task, status) => {
-                task.status = status;
-                updatetask(task);
+            const assignstatus =(task, statusid) => {
+                task.value.statusID = statusid;
+                updatetask();
             };
             const assignname = (task, name, completed) => {
-                task.name = name;
-                task.completed = completed;
-                updatetask(task);
+                task.value.name = name;
+                task.value.completed = completed;
+                updatetask();
             };
             const showdetailtask = (task) => {
                 detailtask.value = null;
@@ -141,7 +140,7 @@
             };
 
             const updatetask = () => {
-                
+                store.dispatch('updateTask', task.value)
             };
 
             return { task, showDetails, loaded, detailtask, updatetask, assignuser, assigndates, assignpriority, assignstatus, assignname, showdetailtask }
