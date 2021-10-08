@@ -12,7 +12,7 @@
                      !showdropdown &&
                      newuser == null"
                @click="assignUserClicked()"
-               :style="{ visibility: newuser == null
+               :style="{ visibility: newuser.value.value.id === null
                                              ? 'visible'
                                              : 'collapse'}" />
         <q-select dense
@@ -51,48 +51,42 @@
 </style>
 
 <script>
-    import { useStore, mapActions } from 'vuex'
+    import { useStore } from 'vuex'
     import { ref, reactive, computed } from 'vue'
 
     export default {
         name: "AssigneeCell",
         emits: ["update-task"],
-        created() {
-            this.fetchUsers();
-        },
         props: {
             userid: {
                 type: Number,
                 default: 0,
             }
         },        
-        setup(props) {
+        setup(props, {emit }) {
             const hover = ref(false);
             const showdropdown = ref(false);
             const newuser = reactive({});
             const loaded = ref(false);
             const store = useStore();
             const allUserDropdownOptions = computed(() => store.getters.allUserDropdownOptions).value;
+            const newid = computed(() => newuser.id ?? 0);
 
             newuser.value = allUserDropdownOptions.find(x => x.category === props.userid);
-            loaded.value = true;          
+            loaded.value = true;            
             
-
             const assignUserClicked = () => {
                 this.showdropdown = true;
                 this.$nextTick(() => { this.$refs.userselect.showPopup() });
             };
             const updatetask = () => {
-                this.$emit("update-task", this.newuser);
+                emit("update-task", newid.value);
             };
 
             return {
-                hover, loaded, showdropdown, newuser, assignUserClicked, updatetask, allUserDropdownOptions
+                hover, newid ,loaded, showdropdown, newuser, assignUserClicked, updatetask, allUserDropdownOptions
                
             }
-        },
-        methods: {            
-            ...mapActions(['fetchUsers']),
         },
 
     }

@@ -30,20 +30,32 @@
 </style>
 
 <script>
-    
+    import { mapActions } from 'vuex'
     import navmenu from './components/NavMenu'
     import { mapGetters } from 'vuex'
 
     export default {
         name: 'LayoutDefault',      
         components: { navmenu },
-        computed: mapGetters(['leftDrawerOpen']),       
+        computed: mapGetters(['leftDrawerOpen']),
+        created() {
+            this.fetchStatusTypes();
+            this.fetchPriorityTypes();
+            this.fetchTaskStatusCategories();
+            this.fetchTasks();
+            this.fetchUsers();
+        },
         mounted() {
-            this.$router.push('/Home');
-            
-        }
-
+            this.$router.push('/Home');            
+        },         
+        methods: {           
+            ...mapActions(['fetchStatusTypes',
+                'fetchPriorityTypes',
+                'fetchTaskStatusCategories',
+                'fetchTasks',
+                'fetchUsers',
+            ]),
+        },
     }
-
 
 </script>

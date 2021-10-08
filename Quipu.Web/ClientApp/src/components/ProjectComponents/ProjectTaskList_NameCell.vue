@@ -60,28 +60,29 @@
         props: {
             task: {},
         },
-        setup(props) {
+        setup(props, { emit }) {
+            console.log(props.task);
             const hover = ref(false);
             const showdropdown = ref(false);
-            const name = ref(props.task.value.name );
-            const completed = ref(props.task.value.completed);
+            const name = ref(props.task.name );
+            const completed = ref(props.task.completed);
             const updatetask = () => {
-                this.$emit("update-task", this.name, this.completed);
+                emit("update-task", name, completed);
             };
 
             const tasklostfocus = () => {
                 if (name.value === '') {
-                    this.$emit("update-task", this.task);
+                    emit("update-task", props.task);
                 } else {
-                    this.updatetask();
+                  //  this.updatetask();
                 }
                 if (focus) {
-                    this.$nextTick(() => { this.$refs['nameinput'].focus(); });
+                  //  root.$nextTick(() => { this.$refs['nameinput'].focus(); });
                 }
             };          
 
             const detailtask = () => {
-                this.$emit("detail-task");
+                emit("detail-task");
             };
 
             return {hover, showdropdown,name,completed, updatetask,tasklostfocus,detailtask}

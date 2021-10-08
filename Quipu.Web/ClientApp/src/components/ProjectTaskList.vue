@@ -157,9 +157,8 @@
     import draggable from "vuedraggable";   
     import taskdetailpreview from "./ProjectComponents/ProjectTaskList_TaskDetailPreview"
     import row from "./ProjectComponents/ProjectTaskList_Row"
-    import { RepositoryFactory } from './../repositories/RepositoryFactory'
-    const TaskStatusRepo = RepositoryFactory.get('taskstatuscategories')
-    const TaskRepo = RepositoryFactory.get('tasks')
+    import { ref, reactive, computed } from 'vue'
+    import {useStore} from 'vuex'
 
     export default {
         name: "ProjectTaskList",
@@ -167,71 +166,52 @@
         props: {
             project: {},
         },
-        data() {
-            return {
-                headercolumns: [
-                    {
-                        name: 'name',
-                        label: 'Task Name',
-                        align: 'left',
-                        headerClasses: 'headercol tablecol taskcol',
-                    },
-                    {
-                        name: 'assignee',
-                        label: 'Assignee',
-                        align: 'left',
-                        headerClasses: 'headercol tablecol assigncol',
-                    },
-                    {
-                        name: 'date',
-                        label: 'Date',
-                        align: 'left',
-                        headerClasses: 'headercol tablecol datecol',
-                    },
-                    {
-                        name: 'priority',
-                        label: 'Priority',
-                        align: 'left',
-                        headerClasses: 'headercol tablecol prioritycol',
-                    },
-                    {
-                        name: 'status',
-                        label: 'Status',
-                        align: 'left',
-                        headerClasses: 'headercol tablecol statuscol',
-                    }
-                ],             
-                headerrows: [],
-                drag: false,               
-                showDetails: false,
-                detailtask: {},
-            }
-        },
-        methods: {
-            async fetch() {
-                this.taskstatusgroups = (await TaskStatusRepo.get()).data;
-                this.taskstatusgroups.forEach(group => {
-                    this.headerrows.push({
-                        id: group.id,
-                        name: group.name,
-                        expanded: true,
-                        tasks: this.project.tasks.filter(task => {
-                            return task.statusCategory.id === group.id
-                        }),
-                    });
-                });
-            },
-            updatetask(task) {
-                if (task.id > 0) {
-                    TaskRepo.updateTask(task);
+        setup(props) {
+            const store = useStore();
+            const headercolumns = [
+                {
+                    name: 'name',
+                    label: 'Task Name',
+                    align: 'left',
+                    headerClasses: 'headercol tablecol taskcol',
+                },
+                {
+                    name: 'assignee',
+                    label: 'Assignee',
+                    align: 'left',
+                    headerClasses: 'headercol tablecol assigncol',
+                },
+                {
+                    name: 'date',
+                    label: 'Date',
+                    align: 'left',
+                    headerClasses: 'headercol tablecol datecol',
+                },
+                {
+                    name: 'priority',
+                    label: 'Priority',
+                    align: 'left',
+                    headerClasses: 'headercol tablecol prioritycol',
+                },
+                {
+                    name: 'status',
+                    label: 'Status',
+                    align: 'left',
+                    headerClasses: 'headercol tablecol statuscol',
                 }
-                else {
-                    TaskRepo.createTask(task);
-                }
-            },            
-            addemptytask(category) {
+            ];
+
+            const headerrows = computed(() => store.getters.getTaskStatusCategoryGroups(props.project)).value;
+            const drag = ref(false);
+            const showDetails = ref(false);
+            const detailtask = reactive({});
+            
+
+            const updatetask = () => {
+            };
+            const addemptytask = (category) => {
                 var categoryname = category.row.name;
-                var matchresult = this.headerrows.filter(row => { return row.name === categoryname })[0];
+                var matchresult = headerrows.filter(row => { return row.name === categoryname })[0];
                 matchresult.tasks.push({
                     name: '',
                     description: '',
@@ -239,29 +219,30 @@
                     startDate: '0001-01-01T00:00:00',
                     endDate: '0001-01-01T00:00:00',
                     statusCategoryID: category.row.id,
-                    projectID: this.project.id,
+                    projectID: props.project.id,
                 });
-                this.$nextTick(() => { this.$refs['nameinput'].focus(); });
-            },
-            taskfinishedmoving(args, group) {
+                //root.$nextTick(() => { root.$refs['nameinput'].focus(); });
+            };
+            const taskfinishedmoving = (args, group) =>{
                 if (args.added != null) {
-                    args.added.element.statusCategory = this.taskstatusgroups.filter(status => status.id === group.id)[0];
-                    this.updatetask(args.added.element);
+                    args.added.element.statusCategory = headerrows.filter(status => status.id === group.id)[0];
+                    updatetask(args.added.element);
                 }
-            },           
-        },
-        computed: {
-            dragOptions() {
+            };
+
+            const dragOptions = computed(() => {
                 return {
                     animation: 200,
                     group: "description",
                     disabled: false,
                     ghostClass: "ghost"
                 };
+            });
+
+            return {
+                headercolumns, headerrows, drag, showDetails, detailtask,
+                updatetask, addemptytask, taskfinishedmoving, dragOptions
             }
-        },
-        mounted() {
-            this.fetch();
-        },
+        }
     }
 </script>

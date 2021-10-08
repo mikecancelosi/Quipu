@@ -47,7 +47,7 @@
 </style>
 
 <script>
-    import {  mapActions, useStore } from 'vuex'
+    import {   useStore } from 'vuex'
     import {ref, reactive, computed} from 'vue'
     export default {
         name: "StatusCell",
@@ -64,19 +64,10 @@
             const newstatus = reactive({});
             const store = useStore()
             const allStatusDropdownOptions = computed(() => store.getters.allStatusDropdownOptions).value;
-
+            console.log(props.statusid);
             newstatus.value = allStatusDropdownOptions.find(x => x.category === props.statusid) ?? {};
 
             return { hover, showdropdown, newstatus, store, allStatusDropdownOptions }
-        },
-        created() {
-            this.fetchStatusTypes();
-        },
-        methods: {
-            updatetask() {
-                
-            },
-            ...mapActions(['fetchStatusTypes']),
         },
     }
 </script>

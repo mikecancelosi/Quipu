@@ -1,0 +1,43 @@
+﻿import TaskStatusCategoryRepository from '../../repositories/TaskStatusCategoryRepository'
+
+const state = {
+    taskStatusCategories: [],
+};
+
+const getters = {
+    getTaskStatusCategories: (state) => state.taskStatusCategories,
+    getTaskStatusCategoryGroups: (state) => (project) => {
+        const groups = [];
+        state.taskStatusCategories.forEach(group => {
+            groups.push({
+                id: group.id,
+                name: group.name,
+                expanded: true,
+                tasks: project.tasks.filter(task => {
+                    return task.statusCategory.id === group.id
+                }),
+            });
+        });
+        console.log(groups);
+        return groups;
+    },
+    
+};
+
+const actions = {
+    async fetchTaskStatusCategories({ commit }) {
+        const taskStatusCategories = (await TaskStatusCategoryRepository.get()).data;
+        commit('setTaskStatusCategories', taskStatusCategories);
+    },
+};
+
+const mutations = {
+    setTaskStatusCategories: (state, categories) => { state.taskStatusCategories = categories },
+    };
+
+export default {
+    state,
+    getters,
+    actions,
+    mutations
+};

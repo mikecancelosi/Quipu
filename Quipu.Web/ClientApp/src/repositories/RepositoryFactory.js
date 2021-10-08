@@ -1,4 +1,4 @@
-﻿import ProjectRepository from "./projectRepository";
+﻿import ProjectRepository from "./ProjectRepository";
 import TaskRepository from "./TaskRepository";
 import TaskStatusCategoryRepository from "./TaskStatusCategoryRepository";
 import UserRepository from "./UserRepository";

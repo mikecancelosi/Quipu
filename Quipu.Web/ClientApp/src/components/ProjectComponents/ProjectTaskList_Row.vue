@@ -7,31 +7,31 @@
                 size="20px" />
         <div class="list-row-noicon row">
             <div class="tablecol taskcol ">
-                <namecell :task="this.task"
+                <namecell :task="this.task.value"
                           @detailTask="showdetailtask(element)"
                           @updateTask="(name,completed)=>assignname(task,name,completed)" />
             </div>
 
             <div class="tablecol">
-                <assigneecell :userid="task.value.assignedToUserID"
-                              @updateTask="(newuser) => assignuser(task,newuser)" />
+                <assigneecell :userid="task.assignedToUserID"
+                              @updateTask="(newuserid) => assignuser(task,newuserid)" />
             </div>
 
             <div class="tablecol">
 
-                <datecell :startDate="task.value.startDate" :endDate="task.value.endDate"
+                <datecell :startDate="task.startDate" :endDate="task.endDate"
                           @updateTask="(startDate,endDate) => assigndates(task,startDate,endDate)" />
 
             </div>
 
             <div class="tablecol">
-                <prioritycell :priorityid="task.value.priorityID"
+                <prioritycell :priorityid="task.priorityID"
                               @updateTask="(priority) => assignpriority(task,priority)" />
 
             </div>
 
             <div class="tablecol statuscol">
-                <statuscell :statusid="task.value.statusID"
+                <statuscell :statusid="task.statusID"
                             @updateTask="(status) => assignstatus(task,status)"/>
             </div>
         </div>
@@ -90,8 +90,7 @@
     import statuscell from "./ProjectTaskList_StatusCell"
     import namecell from "./ProjectTaskList_NameCell"
     import { ref,reactive } from 'vue'
-    import { RepositoryFactory } from '../../repositories/RepositoryFactory'
-    const TaskRepo = RepositoryFactory.get('tasks')
+    import { useStore } from 'vuex'
 
     export default {
         name: "ProjectTaskList_Row",
@@ -102,44 +101,50 @@
         setup(props) {
             const task = reactive({});
             const loaded = ref(false);
+            const store = useStore();
+            const detailtask = reactive({});
+            const showDetails = ref(false);
 
             (async () => {
-                const res = await TaskRepo.getTask(props.id);            
-                task.value = res.data;
+                task.value = await store.getters.getTaskByID(props.id);
+                console.log(props.id,task);
                 loaded.value = true;
-            })();
-                       
+            })();                       
            
-            const assignuser = (task, newuser) => {
-                task.assignedToUser = newuser;
-                this.updatetask(task);
+            const assignuser = (task, newuserid) => {
+                task.assignedToUserID = newuserid;
+                updatetask(task);
             };
             const assigndates =(task, startdate, enddate) => {
                 task.startDate = startdate;
                 task.endDate = enddate;
-                this.updatetask(task);
+                updatetask(task);
             };
             const assignpriority = (task, priority) => {
                 task.priority = priority;
-                this.updatetask(task);
+                updatetask(task);
             };
             const assignstatus =(task, status) => {
                 task.status = status;
-                this.updatetask(task);
+                updatetask(task);
             };
             const assignname = (task, name, completed) => {
                 task.name = name;
                 task.completed = completed;
-                this.updatetask(task);
+                updatetask(task);
             };
             const showdetailtask = (task) => {
-                this.detailtask = null;
-                this.detailtask = { ...task };
+                detailtask.value = null;
+                detailtask.value = { ...task };
 
-                this.showDetails = true;
+                showDetails.value = true;
             };
 
-            return { task,loaded, assignuser, assigndates, assignpriority, assignstatus, assignname, showdetailtask }
+            const updatetask = () => {
+                
+            };
+
+            return { task, showDetails, loaded, detailtask, updatetask, assignuser, assigndates, assignpriority, assignstatus, assignname, showdetailtask }
         }
     }
 </script>

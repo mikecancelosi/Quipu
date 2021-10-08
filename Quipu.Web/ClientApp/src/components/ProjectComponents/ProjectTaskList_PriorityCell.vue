@@ -49,16 +49,13 @@
 </style>
 
 <script>
-    import { mapGetters, mapActions, useStore } from 'vuex'
+    import { mapGetters,  useStore } from 'vuex'
     import { ref,reactive, computed } from 'vue'
 
     export default {
         name: "PriorityCell",
         emits: ["update-task"],
         computed: mapGetters(['allPriorityDropdownOptions']),
-        created() {
-            this.fetchPriorityTypes();
-        },
         props: {
             priorityid: {
                 type: Number,
@@ -73,15 +70,12 @@
             const allPriorityDropdownOptions = computed(() => store.getters.allPriorityDropdownOptions).value;
             
             newpriority.value = allPriorityDropdownOptions.find(x => x.category === props.priorityid) ?? {};
-            console.log(newpriority.value.label);
+           
             const updatetask = () => {
                 this.$emit("update-task", this.newpriority);
             };          
 
             return { hover, showdropdown, newpriority, updatetask, allPriorityDropdownOptions}
-        },
-        methods: {
-             ...mapActions(['fetchPriorityTypes']),
         },
     }
 </script>
