@@ -8,7 +8,7 @@
         <div class="list-row-noicon row">
             <div class="tablecol taskcol ">
                 <namecell :task="this.task.value"
-                          @detailTask="showdetailtask(element)"
+                          @detailTask="showdetailtask()"
                           @updateTask="(name,completed)=>assignname(task,name,completed)" />
             </div>
 
@@ -98,12 +98,12 @@
         props: {
             id: Number,
         },
-        setup(props) {
+        emits: ["show-detailtask"],
+        setup(props, { emit }) {
             const task = reactive({});
             const loaded = ref(false);
             const store = useStore();
             const detailtask = reactive({});
-            const showDetails = ref(false);
 
             (async () => {
                 task.value = await store.getters.getTaskByID(props.id);                
@@ -132,18 +132,19 @@
                 task.value.completed = completed;
                 updatetask();
             };
-            const showdetailtask = (task) => {
-                detailtask.value = null;
-                detailtask.value = { ...task };
-
-                showDetails.value = true;
+            const showdetailtask = () => {
+                emit("show-detailtask", task.value.id);
             };
 
             const updatetask = () => {
                 store.dispatch('updateTask', task.value)
             };
 
-            return { task, showDetails, loaded, detailtask, updatetask, assignuser, assigndates, assignpriority, assignstatus, assignname, showdetailtask }
+            return {
+                task, loaded, detailtask, updatetask,
+                assignuser, assigndates, assignpriority, assignstatus,
+                assignname, showdetailtask
+            }
         }
     }
 </script>

@@ -71,9 +71,9 @@
 
             const tasklostfocus = () => {
                 if (name.value === '') {
-                    emit("update-task", props.task);
+                    emit("remove-element", props.task);
                 } else {
-                  //  this.updatetask();
+                   updatetask();
                 }
                 if (focus) {
                   //  root.$nextTick(() => { this.$refs['nameinput'].focus(); });

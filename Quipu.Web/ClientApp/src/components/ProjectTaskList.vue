@@ -5,7 +5,7 @@
                   bordered
                   overlay
                   :width="600">
-            <div class="q-drawer-container">
+            <div class="q-drawer-container" v-if="detailtask.value != null">
                 <taskdetailpreview :task="this.detailtask" 
                                    @hideDetails="showDetails = false"/>
             </div>
@@ -66,7 +66,8 @@
                                            @change="(arg) => taskfinishedmoving(arg, props.row)"
                                            handle=".handle">
                                     <template #item="{ element }">
-                                       <row :id ="element.id"/>
+                                       <row :id ="element.id" 
+                                            @show-detailtask="showTaskDetail(element)"/>
                                     </template>
 
                                     <template #footer>
@@ -239,9 +240,15 @@
                 };
             });
 
+            const showTaskDetail = (task) => {
+                detailtask.value = task;
+                showDetails.value = true;
+            };
+
             return {
                 headercolumns, headerrows, drag, showDetails, detailtask,
-                updatetask, addemptytask, taskfinishedmoving, dragOptions
+                updatetask, addemptytask, taskfinishedmoving, dragOptions,
+                showTaskDetail
             }
         }
     }

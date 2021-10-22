@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Quipu.Core.DAL;
 
 namespace Quipu.Core.Migrations
 {
     [DbContext(typeof(QContext))]
-    partial class QContextModelSnapshot : ModelSnapshot
+    [Migration("20211010031201_TaskRemoveDiscussionReference")]
+    partial class TaskRemoveDiscussionReference
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -128,6 +130,9 @@ namespace Quipu.Core.Migrations
                     b.Property<string>("Message_Contents")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("ParentID")
+                        .HasColumnType("int");
+
                     b.Property<int>("RecordID")
                         .HasColumnType("int");
 
@@ -135,6 +140,8 @@ namespace Quipu.Core.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("ID");
+
+                    b.HasIndex("ParentID");
 
                     b.HasIndex("UserID");
 
@@ -503,9 +510,15 @@ namespace Quipu.Core.Migrations
 
             modelBuilder.Entity("Quipu.Core.DomainModel.Discussion", b =>
                 {
+                    b.HasOne("Quipu.Core.DomainModel.Discussion", "Parent")
+                        .WithMany("Children")
+                        .HasForeignKey("ParentID");
+
                     b.HasOne("Quipu.Core.DomainModel.User", "User")
                         .WithMany("Discussions")
                         .HasForeignKey("UserID");
+
+                    b.Navigation("Parent");
 
                     b.Navigation("User");
                 });
@@ -622,6 +635,11 @@ namespace Quipu.Core.Migrations
                         .HasForeignKey("TeamsID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Quipu.Core.DomainModel.Discussion", b =>
+                {
+                    b.Navigation("Children");
                 });
 
             modelBuilder.Entity("Quipu.Core.DomainModel.Permission", b =>

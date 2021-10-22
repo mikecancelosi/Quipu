@@ -10,7 +10,6 @@ namespace Quipu.Core.DomainModel
     {
         public Task()
         {
-            Discussions = new HashSet<Discussion>();
             Alerts = new HashSet<Alert>();
             Subtasks = new HashSet<Task>();
         }
@@ -41,7 +40,6 @@ namespace Quipu.Core.DomainModel
         public virtual StatusType Status { get; set; }
         public virtual TaskStatusCategory StatusCategory { get; set; }
         public virtual User AssignedToUser { get; set; }
-        public virtual ICollection<Discussion> Discussions { get; set; }
         public virtual ICollection<Alert> Alerts { get; set; }
         public virtual Task ParentTask { get; set; }
         public virtual ICollection<Task> Subtasks { get; set; }
