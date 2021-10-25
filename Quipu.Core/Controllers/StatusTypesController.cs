@@ -25,14 +25,14 @@ namespace Quipu.Core.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<StatusType>>> GetStatusType()
         {
-            return await _context.StatusType.ToListAsync();
+            return await _context.StatusTypes.ToListAsync();
         }
 
         // GET: api/StatusTypes/5
         [HttpGet("{id}")]
         public async Task<ActionResult<StatusType>> GetStatusType(int id)
         {
-            var statusType = await _context.StatusType.FindAsync(id);
+            var statusType = await _context.StatusTypes.FindAsync(id);
 
             if (statusType == null)
             {
@@ -78,7 +78,7 @@ namespace Quipu.Core.Controllers
         [HttpPost]
         public async Task<ActionResult<StatusType>> PostStatusType(StatusType statusType)
         {
-            _context.StatusType.Add(statusType);
+            _context.StatusTypes.Add(statusType);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetStatusType", new { id = statusType.ID }, statusType);
@@ -88,13 +88,13 @@ namespace Quipu.Core.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteStatusType(int id)
         {
-            var statusType = await _context.StatusType.FindAsync(id);
+            var statusType = await _context.StatusTypes.FindAsync(id);
             if (statusType == null)
             {
                 return NotFound();
             }
 
-            _context.StatusType.Remove(statusType);
+            _context.StatusTypes.Remove(statusType);
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -102,7 +102,7 @@ namespace Quipu.Core.Controllers
 
         private bool StatusTypeExists(int id)
         {
-            return _context.StatusType.Any(e => e.ID == id);
+            return _context.StatusTypes.Any(e => e.ID == id);
         }
     }
 }

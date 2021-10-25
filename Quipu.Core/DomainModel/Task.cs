@@ -12,6 +12,7 @@ namespace Quipu.Core.DomainModel
         {
             Alerts = new HashSet<Alert>();
             Subtasks = new HashSet<Task>();
+            Revisions = new HashSet<TaskRevision>();
         }
 
         [Key]
@@ -43,5 +44,6 @@ namespace Quipu.Core.DomainModel
         public virtual ICollection<Alert> Alerts { get; set; }
         public virtual Task ParentTask { get; set; }
         public virtual ICollection<Task> Subtasks { get; set; }
+        public virtual ICollection<TaskRevision> Revisions { get; set; }
     }
 }

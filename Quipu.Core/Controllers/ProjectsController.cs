@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Quipu.Core.BLL;
 using Quipu.Core.DAL;
 using Quipu.Core.DomainModel;
 
@@ -14,33 +15,25 @@ namespace Quipu.Core.Controllers
     [ApiController]
     public class ProjectsController : ControllerBase
     {
-        private readonly QContext _context;
+        private IModelService<Project> _modelService;
 
-        public ProjectsController(QContext context)
+        public ProjectsController(IModelService<Project> modelService)
         {
-            _context = context;
+            _modelService = modelService;
         }
 
         // GET: api/Projects
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Project>>> GetProjects()
         {
-            return await _context.Projects.ToListAsync();
+            return await _modelService.Get();
         }
 
         // GET: api/Projects/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Project>> GetProject(int id)
         {
-            var project = await _context.Projects.FindAsync(id);
-            _context.Entry(project).Collection(p => p.Tasks).Load();
-            foreach(var task in project.Tasks)
-            {
-                _context.Entry(task).Reference(t => t.StatusCategory).Load();
-                _context.Entry(task).Reference(t => t.Status).Load();
-                _context.Entry(task).Reference(t => t.Priority).Load();
-                _context.Entry(task).Reference(t => t.AssignedToUser).Load();
-            }
+            var project = await _modelService.Get(id);
 
             if (project == null)
             {
@@ -60,25 +53,14 @@ namespace Quipu.Core.Controllers
                 return BadRequest();
             }
 
-            _context.Entry(project).State = EntityState.Modified;
-
-            try
+            if (await _modelService.Put(project))
             {
-                await _context.SaveChangesAsync();
+                return NoContent();
             }
-            catch (DbUpdateConcurrencyException)
+            else
             {
-                if (!ProjectExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return BadRequest();
             }
-
-            return NoContent();
         }
 
         // POST: api/Projects
@@ -86,31 +68,31 @@ namespace Quipu.Core.Controllers
         [HttpPost]
         public async Task<ActionResult<Project>> PostProject(Project project)
         {
-            _context.Projects.Add(project);
-            await _context.SaveChangesAsync();
+            var postedProject = await _modelService.Post(project);
+            if (postedProject != null)
+            {
+                return CreatedAtAction("GetProject", new { id = postedProject.ID }, postedProject);
+            }
+            else
+            {
+                return BadRequest();
+            }
 
-            return CreatedAtAction("GetProject", new { id = project.ID }, project);
+
         }
 
         // DELETE: api/Projects/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProject(int id)
         {
-            var project = await _context.Projects.FindAsync(id);
-            if (project == null)
+            if(await _modelService.Delete(id))
             {
-                return NotFound();
+                return NoContent();
             }
-
-            _context.Projects.Remove(project);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
-        }
-
-        private bool ProjectExists(int id)
-        {
-            return _context.Projects.Any(e => e.ID == id);
+            else
+            {
+                return BadRequest();
+            }
         }
     }
 }

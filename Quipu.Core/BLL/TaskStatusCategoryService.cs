@@ -8,27 +8,27 @@ using Quipu.Core.DomainModel;
 
 namespace Quipu.Core.BLL
 {
-    public class UserPermissionOverrideService : IModelService<UserPermissionOverride>
+    public class TaskStatusCategoryService : IModelService<TaskStatusCategory>
     {
         private QContext _context;
 
-        public UserPermissionOverrideService(QContext context)
+        public TaskStatusCategoryService(QContext context)
         {
             _context = context;
         }
 
-        public async Task<ActionResult<IEnumerable<UserPermissionOverride>>> Get()
+        public async Task<ActionResult<IEnumerable<TaskStatusCategory>>> Get()
         {
-            return await _context.UserPermissionOverrides.ToListAsync();
+            return await _context.TaskStatusCategories.ToListAsync();
         }
 
-        public async Task<ActionResult<UserPermissionOverride>> Get(int id)
+        public async Task<ActionResult<TaskStatusCategory>> Get(int id)
         {
-            var entity = await _context.UserPermissionOverrides.FindAsync(id);
+            var entity = await _context.TaskStatusCategories.FindAsync(id);
             return entity;
         }
 
-        public async Task<bool> Put(UserPermissionOverride entity)
+        public async Task<bool> Put(TaskStatusCategory entity)
         {
             _context.Entry(entity).State = EntityState.Modified;
             try
@@ -49,24 +49,24 @@ namespace Quipu.Core.BLL
             }
         }
 
-        public async Task<UserPermissionOverride> Post(UserPermissionOverride entity)
+        public async Task<TaskStatusCategory> Post(TaskStatusCategory entity)
         {
-            _context.UserPermissionOverrides.Add(entity);
+            _context.TaskStatusCategories.Add(entity);
             await _context.SaveChangesAsync();
             return entity;
         }
 
         public async Task<bool> Delete(int id)
         {
-            var entity = await _context.UserPermissionOverrides.FindAsync(id);
-            _context.UserPermissionOverrides.Remove(entity);
+            var entity = await _context.TaskStatusCategories.FindAsync(id);
+            _context.TaskStatusCategories.Remove(entity);
             await _context.SaveChangesAsync();
             return true;
         }
 
         private bool EntityExists(int id)
         {
-            return _context.UserPermissionOverrides.Any(x => x.ID == id);
+            return _context.TaskStatusCategories.Any(x => x.ID == id);
         }
     }
 }

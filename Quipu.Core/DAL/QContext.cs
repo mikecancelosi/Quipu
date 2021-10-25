@@ -13,20 +13,20 @@ namespace Quipu.Core.DAL
         }
 
         public DbSet<Alert> Alerts { get; set; }
-        public DbSet<Change> Changes { get; set; }
         public DbSet<Discussion> Discussions { get; set; }
         public DbSet<Permission> Permissions { get; set; }
         public DbSet<PermissionGroup> PermissionGroups { get; set; }
         public DbSet<Settings> Settings { get; set; }
         public DbSet<Task> Tasks { get; set; }
+        public DbSet<TaskRevision> TaskRevisions { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<UserPermissionOverride> UserPermissionOverrides { get; set; }
         public DbSet<Project> Projects { get; set; }
         public DbSet<Team> Teams { get; set; }
         public DbSet<TeamMessage> TeamMessages { get; set; }
-        public DbSet<TaskStatusCategory> TaskStatusCategory { get; set; }
-        public DbSet<PriorityType> PriorityType { get; set; }
-        public DbSet<StatusType> StatusType { get; set; }
+        public DbSet<TaskStatusCategory> TaskStatusCategories { get; set; }
+        public DbSet<PriorityType> PriorityTypes { get; set; }
+        public DbSet<StatusType> StatusTypes { get; set; }
 
         protected override void OnModelCreating(ModelBuilder model)
         {

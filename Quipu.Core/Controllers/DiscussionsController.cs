@@ -15,28 +15,25 @@ namespace Quipu.Core.Controllers
     [ApiController]
     public class DiscussionsController : ControllerBase
     {
-        private readonly QContext _context;
-        private readonly IModelService<Discussion> modelService;
+        private readonly IModelService<Discussion> _modelService;
 
-        public DiscussionsController(QContext context,
-                                     IModelService<Discussion> service)
+        public DiscussionsController(IModelService<Discussion> service)
         {
-            _context = context;
-            modelService = service;
+            _modelService = service;
         }
 
         // GET: api/Discussions
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Discussion>>> GetDiscussions()
         {
-            return await _context.Discussions.ToListAsync();
+            return await _modelService.Get();
         }
 
         // GET: api/Discussions/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Discussion>> GetDiscussion(int id)
         {
-            var discussion = await _context.Discussions.FindAsync(id);
+            var discussion = await _modelService.Get(id);
 
             if (discussion == null)
             {
@@ -56,25 +53,14 @@ namespace Quipu.Core.Controllers
                 return BadRequest();
             }
 
-            _context.Entry(discussion).State = EntityState.Modified;
-
-            try
+            if (await _modelService.Put(discussion))
             {
-                await _context.SaveChangesAsync();
+                return NoContent();
             }
-            catch (DbUpdateConcurrencyException)
+            else
             {
-                if (!DiscussionExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return BadRequest();
             }
-
-            return NoContent();
         }
 
         // POST: api/Discussions
@@ -82,31 +68,31 @@ namespace Quipu.Core.Controllers
         [HttpPost]
         public async Task<ActionResult<Discussion>> PostDiscussion(Discussion discussion)
         {
-            _context.Discussions.Add(discussion);
-            await _context.SaveChangesAsync();
+            var postedDiscussion = await _modelService.Post(discussion);
+            if (postedDiscussion != null)
+            {
+                return CreatedAtAction("GetDiscussion", new { id = postedDiscussion.ID }, postedDiscussion);
+            }
 
-            return CreatedAtAction("GetDiscussion", new { id = discussion.ID }, discussion);
+            return BadRequest();
         }
 
         // DELETE: api/Discussions/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteDiscussion(int id)
         {
-            var discussion = await _context.Discussions.FindAsync(id);
+            var discussion = await _modelService.Get(id);
             if (discussion == null)
             {
                 return NotFound();
             }
 
-            _context.Discussions.Remove(discussion);
-            await _context.SaveChangesAsync();
+            if (await _modelService.Delete(id))
+            {
+                return NoContent();
+            }
 
-            return NoContent();
-        }
-
-        private bool DiscussionExists(int id)
-        {
-            return _context.Discussions.Any(e => e.ID == id);
+            return BadRequest();
         }
     }
 }

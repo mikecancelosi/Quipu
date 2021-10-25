@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Quipu.Core.BLL;
-using Quipu.Core.DAL;
 using Quipu.Core.DomainModel;
 
 namespace Quipu.Core.Controllers
@@ -15,28 +10,25 @@ namespace Quipu.Core.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
-        private readonly QContext _context;
-        private readonly IModelService<User> modelService;
+        private readonly IModelService<User> _modelService;
 
-        public UsersController(QContext context,
-                                     IModelService<User> service)
+        public UsersController(IModelService<User> service)
         {
-            _context = context;
-            modelService = service;
+            _modelService = service;
         }
 
         // GET: api/Users
         [HttpGet]
         public async Task<ActionResult<IEnumerable<User>>> GetUsers()
         {
-            return await _context.Users.ToListAsync();
+            return await _modelService.Get();
         }
 
         // GET: api/Users/5
         [HttpGet("{id}")]
         public async Task<ActionResult<User>> GetUser(int id)
         {
-            var user = await _context.Users.FindAsync(id);
+            var user = await _modelService.Get(id);
 
             if (user == null)
             {
@@ -56,25 +48,12 @@ namespace Quipu.Core.Controllers
                 return BadRequest();
             }
 
-            _context.Entry(user).State = EntityState.Modified;
-
-            try
+            if(await _modelService.Put(user))
             {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!UserExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return NoContent();
             }
 
-            return NoContent();
+            return BadRequest();
         }
 
         // POST: api/Users
@@ -82,31 +61,27 @@ namespace Quipu.Core.Controllers
         [HttpPost]
         public async Task<ActionResult<User>> PostUser(User user)
         {
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();
+            User postedUser = await _modelService.Post(user);
+            if(postedUser != null)
+            {
+                return CreatedAtAction("GetUser", new { id = postedUser.ID }, postedUser);
+            }
 
-            return CreatedAtAction("GetUser", new { id = user.ID }, user);
+            return BadRequest();
         }
 
         // DELETE: api/Users/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(int id)
         {
-            var user = await _context.Users.FindAsync(id);
-            if (user == null)
+            if(await _modelService.Delete(id))
             {
-                return NotFound();
+                return NoContent();
             }
-
-            _context.Users.Remove(user);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
-        }
-
-        private bool UserExists(int id)
-        {
-            return _context.Users.Any(e => e.ID == id);
+            else
+            {
+                return BadRequest();
+            }
         }
     }
 }

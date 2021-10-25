@@ -8,27 +8,27 @@ using Quipu.Core.DomainModel;
 
 namespace Quipu.Core.BLL
 {
-    public class UserPermissionOverrideService : IModelService<UserPermissionOverride>
+    public class TeamService : IModelService<Team>
     {
         private QContext _context;
 
-        public UserPermissionOverrideService(QContext context)
+        public TeamService(QContext context)
         {
             _context = context;
         }
 
-        public async Task<ActionResult<IEnumerable<UserPermissionOverride>>> Get()
+        public async Task<ActionResult<IEnumerable<Team>>> Get()
         {
-            return await _context.UserPermissionOverrides.ToListAsync();
+            return await _context.Teams.ToListAsync();
         }
 
-        public async Task<ActionResult<UserPermissionOverride>> Get(int id)
+        public async Task<ActionResult<Team>> Get(int id)
         {
-            var entity = await _context.UserPermissionOverrides.FindAsync(id);
+            var entity = await _context.Teams.FindAsync(id);
             return entity;
         }
 
-        public async Task<bool> Put(UserPermissionOverride entity)
+        public async Task<bool> Put(Team entity)
         {
             _context.Entry(entity).State = EntityState.Modified;
             try
@@ -49,24 +49,24 @@ namespace Quipu.Core.BLL
             }
         }
 
-        public async Task<UserPermissionOverride> Post(UserPermissionOverride entity)
+        public async Task<Team> Post(Team entity)
         {
-            _context.UserPermissionOverrides.Add(entity);
+            _context.Teams.Add(entity);
             await _context.SaveChangesAsync();
             return entity;
         }
 
         public async Task<bool> Delete(int id)
         {
-            var entity = await _context.UserPermissionOverrides.FindAsync(id);
-            _context.UserPermissionOverrides.Remove(entity);
+            var entity = await _context.Teams.FindAsync(id);
+            _context.Teams.Remove(entity);
             await _context.SaveChangesAsync();
             return true;
         }
 
         private bool EntityExists(int id)
         {
-            return _context.UserPermissionOverrides.Any(x => x.ID == id);
+            return _context.Teams.Any(x => x.ID == id);
         }
     }
 }

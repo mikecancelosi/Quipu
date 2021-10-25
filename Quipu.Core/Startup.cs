@@ -42,14 +42,8 @@ namespace Quipu.Core
             });
 
             //Model Service
-            services.AddScoped<IModelService<Alert>, AlertService>();
-            services.AddScoped<IModelService<Change>, ChangeService>();
             services.AddScoped<IModelService<Discussion>, DiscussionService>();
-            services.AddScoped<IModelService<PermissionGroup>, PermissionGroupService>();
-            services.AddScoped<IModelService<Permission>, PermissionService>();
-            services.AddScoped<IModelService<Settings>, SettingsService>();
             services.AddScoped<IModelService<Task>, TaskService>();
-            services.AddScoped<IModelService<UserPermissionOverride>, UserPermissionOverrideService>();
             services.AddScoped<IModelService<User>, UserService>();
             services.AddDbContext<QContext>(options => options.UseLazyLoadingProxies().UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddControllersWithViews().AddNewtonsoftJson(options =>

@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Quipu.Core.BLL;
-using Quipu.Core.DAL;
-using Quipu.Core.DomainModel;
 
 namespace Quipu.Core.Controllers
 {
@@ -15,13 +9,10 @@ namespace Quipu.Core.Controllers
     [ApiController]
     public class TasksController : ControllerBase
     {
-        private readonly QContext _context;
         private readonly IModelService<DomainModel.Task> modelService;
 
-        public TasksController(QContext context,
-                                     IModelService<DomainModel.Task> service)
+        public TasksController(IModelService<DomainModel.Task> service)
         {
-            _context = context;
             modelService = service;
         }
 
@@ -29,14 +20,14 @@ namespace Quipu.Core.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<DomainModel.Task>>> GetTasks()
         {
-            return await _context.Tasks.ToListAsync();
+            return await modelService.Get();
         }
 
         // GET: api/Tasks/5
         [HttpGet("{id}")]
         public async Task<ActionResult<DomainModel.Task>> GetTask(int id)
         {
-            var task = await _context.Tasks.FindAsync(id);
+            var task = await modelService.Get(id);
 
             if (task == null)
             {
@@ -56,32 +47,14 @@ namespace Quipu.Core.Controllers
                 return BadRequest();
             }
 
-            task.ProjectID = task.Project?.ID ?? task.ProjectID;
-            task.StatusCategoryID = task.StatusCategory?.ID ?? task.StatusCategoryID;
-            task.AssignedToUserID = task.AssignedToUser?.ID ?? task.AssignedToUserID;
-            task.PriorityID = task.Priority?.ID ?? task.PriorityID;
-            task.StatusID = task.Status?.ID ?? task.StatusID;
-
-            _context.Entry(task).State = EntityState.Modified;
-
-
-            try
+            if(await modelService.Put(task))
             {
-                await _context.SaveChangesAsync();
+                return NoContent();
             }
-            catch (DbUpdateConcurrencyException)
+            else
             {
-                if (!TaskExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return NotFound();
             }
-
-            return NoContent();
         }
 
         // POST: api/Tasks
@@ -89,31 +62,24 @@ namespace Quipu.Core.Controllers
         [HttpPost]
         public async Task<ActionResult<DomainModel.Task>> PostTask(DomainModel.Task task)
         {
-            _context.Tasks.Add(task);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetTask", new { id = task.ID }, task);
+            DomainModel.Task postedTask = await modelService.Post(task);
+            if(postedTask != null)
+            {
+               return CreatedAtAction("GetTask", new { id = postedTask.ID }, postedTask);
+            }
+            else
+            {
+                return BadRequest();
+            }
         }
 
         // DELETE: api/Tasks/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTask(int id)
         {
-            var task = await _context.Tasks.FindAsync(id);
-            if (task == null)
-            {
-                return NotFound();
-            }
-
-            _context.Tasks.Remove(task);
-            await _context.SaveChangesAsync();
+            await modelService.Delete(id);
 
             return NoContent();
-        }
-
-        private bool TaskExists(int id)
-        {
-            return _context.Tasks.Any(e => e.ID == id);
         }
     }
 }

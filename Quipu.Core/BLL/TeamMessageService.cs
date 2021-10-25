@@ -8,27 +8,27 @@ using Quipu.Core.DomainModel;
 
 namespace Quipu.Core.BLL
 {
-    public class UserPermissionOverrideService : IModelService<UserPermissionOverride>
+    public class TeamMessageService : IModelService<TeamMessage>
     {
         private QContext _context;
 
-        public UserPermissionOverrideService(QContext context)
+        public TeamMessageService(QContext context)
         {
             _context = context;
         }
 
-        public async Task<ActionResult<IEnumerable<UserPermissionOverride>>> Get()
+        public async Task<ActionResult<IEnumerable<TeamMessage>>> Get()
         {
-            return await _context.UserPermissionOverrides.ToListAsync();
+            return await _context.TeamMessages.ToListAsync();
         }
 
-        public async Task<ActionResult<UserPermissionOverride>> Get(int id)
+        public async Task<ActionResult<TeamMessage>> Get(int id)
         {
-            var entity = await _context.UserPermissionOverrides.FindAsync(id);
+            var entity = await _context.TeamMessages.FindAsync(id);
             return entity;
         }
 
-        public async Task<bool> Put(UserPermissionOverride entity)
+        public async Task<bool> Put(TeamMessage entity)
         {
             _context.Entry(entity).State = EntityState.Modified;
             try
@@ -49,24 +49,24 @@ namespace Quipu.Core.BLL
             }
         }
 
-        public async Task<UserPermissionOverride> Post(UserPermissionOverride entity)
+        public async Task<TeamMessage> Post(TeamMessage entity)
         {
-            _context.UserPermissionOverrides.Add(entity);
+            _context.TeamMessages.Add(entity);
             await _context.SaveChangesAsync();
             return entity;
         }
 
         public async Task<bool> Delete(int id)
         {
-            var entity = await _context.UserPermissionOverrides.FindAsync(id);
-            _context.UserPermissionOverrides.Remove(entity);
+            var entity = await _context.TeamMessages.FindAsync(id);
+            _context.TeamMessages.Remove(entity);
             await _context.SaveChangesAsync();
             return true;
         }
 
         private bool EntityExists(int id)
         {
-            return _context.UserPermissionOverrides.Any(x => x.ID == id);
+            return _context.TeamMessages.Any(x => x.ID == id);
         }
     }
 }

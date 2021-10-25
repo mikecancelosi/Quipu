@@ -8,27 +8,27 @@ using Quipu.Core.DomainModel;
 
 namespace Quipu.Core.BLL
 {
-    public class UserPermissionOverrideService : IModelService<UserPermissionOverride>
+    public class TaskRevisionService : IModelService<TaskRevision>
     {
         private QContext _context;
 
-        public UserPermissionOverrideService(QContext context)
+        public TaskRevisionService(QContext context)
         {
             _context = context;
         }
 
-        public async Task<ActionResult<IEnumerable<UserPermissionOverride>>> Get()
+        public async Task<ActionResult<IEnumerable<TaskRevision>>> Get()
         {
-            return await _context.UserPermissionOverrides.ToListAsync();
+            return await _context.TaskRevisions.ToListAsync();
         }
 
-        public async Task<ActionResult<UserPermissionOverride>> Get(int id)
+        public async Task<ActionResult<TaskRevision>> Get(int id)
         {
-            var entity = await _context.UserPermissionOverrides.FindAsync(id);
+            var entity = await _context.TaskRevisions.FindAsync(id);
             return entity;
         }
 
-        public async Task<bool> Put(UserPermissionOverride entity)
+        public async Task<bool> Put(TaskRevision entity)
         {
             _context.Entry(entity).State = EntityState.Modified;
             try
@@ -49,24 +49,24 @@ namespace Quipu.Core.BLL
             }
         }
 
-        public async Task<UserPermissionOverride> Post(UserPermissionOverride entity)
+        public async Task<TaskRevision> Post(TaskRevision entity)
         {
-            _context.UserPermissionOverrides.Add(entity);
+            _context.TaskRevisions.Add(entity);
             await _context.SaveChangesAsync();
             return entity;
         }
 
         public async Task<bool> Delete(int id)
         {
-            var entity = await _context.UserPermissionOverrides.FindAsync(id);
-            _context.UserPermissionOverrides.Remove(entity);
+            var entity = await _context.TaskRevisions.FindAsync(id);
+            _context.TaskRevisions.Remove(entity);
             await _context.SaveChangesAsync();
             return true;
         }
 
         private bool EntityExists(int id)
         {
-            return _context.UserPermissionOverrides.Any(x => x.ID == id);
+            return _context.TaskRevisions.Any(x => x.ID == id);
         }
     }
 }

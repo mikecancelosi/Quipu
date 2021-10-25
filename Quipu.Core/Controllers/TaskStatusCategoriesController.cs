@@ -23,14 +23,14 @@ namespace Quipu.Core.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<TaskStatusCategory>>> GetTaskStatusCategory()
         {
-            return await _context.TaskStatusCategory.ToListAsync();
+            return await _context.TaskStatusCategories.ToListAsync();
         }
 
         // GET: api/TaskStatusCategories/5
         [HttpGet("{id}")]
         public async Task<ActionResult<TaskStatusCategory>> GetTaskStatusCategory(int id)
         {
-            var taskStatusCategory = await _context.TaskStatusCategory.FindAsync(id);
+            var taskStatusCategory = await _context.TaskStatusCategories.FindAsync(id);
 
             if (taskStatusCategory == null)
             {
@@ -76,7 +76,7 @@ namespace Quipu.Core.Controllers
         [HttpPost]
         public async Task<ActionResult<TaskStatusCategory>> PostTaskStatusCategory(TaskStatusCategory taskStatusCategory)
         {
-            _context.TaskStatusCategory.Add(taskStatusCategory);
+            _context.TaskStatusCategories.Add(taskStatusCategory);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetTaskStatusCategory", new { id = taskStatusCategory.ID }, taskStatusCategory);
@@ -86,13 +86,13 @@ namespace Quipu.Core.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTaskStatusCategory(int id)
         {
-            var taskStatusCategory = await _context.TaskStatusCategory.FindAsync(id);
+            var taskStatusCategory = await _context.TaskStatusCategories.FindAsync(id);
             if (taskStatusCategory == null)
             {
                 return NotFound();
             }
 
-            _context.TaskStatusCategory.Remove(taskStatusCategory);
+            _context.TaskStatusCategories.Remove(taskStatusCategory);
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -100,7 +100,7 @@ namespace Quipu.Core.Controllers
 
         private bool TaskStatusCategoryExists(int id)
         {
-            return _context.TaskStatusCategory.Any(e => e.ID == id);
+            return _context.TaskStatusCategories.Any(e => e.ID == id);
         }
     }
 }

@@ -1,4 +1,8 @@
-﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Quipu.Core.DAL;
 using Quipu.Core.DomainModel;
 
@@ -6,24 +10,63 @@ namespace Quipu.Core.BLL
 {
     public class PermissionService : IModelService<Permission>
     {
-        public bool Delete(Permission instance, QContext context)
+        private QContext _context;
+
+        public PermissionService(QContext context)
         {
-            throw new NotImplementedException();
+            _context = context;
         }
 
-        public bool Delete(int id, QContext context)
+        public async Task<ActionResult<IEnumerable<Permission>>> Get()
         {
-            throw new NotImplementedException();
+            return await _context.Permissions.ToListAsync();
         }
 
-        public bool Post(Permission instance, QContext context)
+        public async Task<ActionResult<Permission>> Get(int id)
         {
-            throw new NotImplementedException();
+            var entity = await _context.Permissions.FindAsync(id);
+            return entity;
         }
 
-        public bool Update(Permission instance, QContext context)
+        public async Task<bool> Put(Permission entity)
         {
-            throw new NotImplementedException();
+            _context.Entry(entity).State = EntityState.Modified;
+            try
+            {
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!EntityExists(entity.ID))
+                {
+                    throw;
+                }
+                else
+                {
+                    throw;
+                }
+            }
+        }
+
+        public async Task<Permission> Post(Permission entity)
+        {
+            _context.Permissions.Add(entity);
+            await _context.SaveChangesAsync();
+            return entity;
+        }
+
+        public async Task<bool> Delete(int id)
+        {
+            var entity = await _context.Permissions.FindAsync(id);
+            _context.Permissions.Remove(entity);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        private bool EntityExists(int id)
+        {
+            return _context.Permissions.Any(x => x.ID == id);
         }
     }
 }

@@ -1,15 +1,17 @@
-﻿using Quipu.Core.DAL;
+﻿using Microsoft.AspNetCore.Mvc;
+using Quipu.Core.DAL;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Quipu.Core.BLL
 {
     public interface IModelService<T> 
-    {
-        public bool Post(T instance, QContext context);
+    {      
+        public Task<ActionResult<IEnumerable<T>>> Get();
+        public Task<ActionResult<T>> Get(int id);
+        public Task<bool> Put(T entity);
+        public Task<T> Post(T entity);
+        public Task<bool> Delete(int id);
 
-        public bool Update(T instance, QContext context);
-
-        public bool Delete(T instance, QContext context);
-
-        public bool Delete(int id, QContext context);
     }
 }

@@ -25,14 +25,14 @@ namespace Quipu.Core.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<PriorityType>>> GetPriorityType()
         {
-            return await _context.PriorityType.ToListAsync();
+            return await _context.PriorityTypes.ToListAsync();
         }
 
         // GET: api/PriorityTypes/5
         [HttpGet("{id}")]
         public async Task<ActionResult<PriorityType>> GetPriorityType(int id)
         {
-            var priorityType = await _context.PriorityType.FindAsync(id);
+            var priorityType = await _context.PriorityTypes.FindAsync(id);
 
             if (priorityType == null)
             {
@@ -78,7 +78,7 @@ namespace Quipu.Core.Controllers
         [HttpPost]
         public async Task<ActionResult<PriorityType>> PostPriorityType(PriorityType priorityType)
         {
-            _context.PriorityType.Add(priorityType);
+            _context.PriorityTypes.Add(priorityType);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetPriorityType", new { id = priorityType.ID }, priorityType);
@@ -88,13 +88,13 @@ namespace Quipu.Core.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePriorityType(int id)
         {
-            var priorityType = await _context.PriorityType.FindAsync(id);
+            var priorityType = await _context.PriorityTypes.FindAsync(id);
             if (priorityType == null)
             {
                 return NotFound();
             }
 
-            _context.PriorityType.Remove(priorityType);
+            _context.PriorityTypes.Remove(priorityType);
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -102,7 +102,7 @@ namespace Quipu.Core.Controllers
 
         private bool PriorityTypeExists(int id)
         {
-            return _context.PriorityType.Any(e => e.ID == id);
+            return _context.PriorityTypes.Any(e => e.ID == id);
         }
     }
 }

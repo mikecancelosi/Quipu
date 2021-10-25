@@ -1,4 +1,8 @@
-﻿using System;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Quipu.Core.DAL;
 using Quipu.Core.DomainModel;
 
@@ -6,24 +10,65 @@ namespace Quipu.Core.BLL
 {
     public class DiscussionService : IModelService<Discussion>
     {
-        public bool Delete(Discussion instance, QContext context)
+        private QContext _context;
+        public DiscussionService(QContext context)
         {
-            throw new NotImplementedException();
+            _context = context;
         }
 
-        public bool Delete(int id, QContext context)
+        public async Task<ActionResult<IEnumerable<Discussion>>> Get()
         {
-            throw new NotImplementedException();
+            return await _context.Discussions.ToListAsync();
         }
 
-        public bool Post(Discussion instance, QContext context)
+        public async Task<ActionResult<Discussion>> Get(int id)
         {
-            throw new NotImplementedException();
+            var discussion = await _context.Discussions.FindAsync(id);
+
+            return discussion;
         }
 
-        public bool Update(Discussion instance, QContext context)
+        public async Task<bool> Put(Discussion discussion)
         {
-            throw new NotImplementedException();
+            _context.Entry(discussion).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!DiscussionExists(discussion.ID))
+                {
+                    throw;
+                }
+                else
+                {
+                    throw;
+                }
+            }
+        }
+
+        public async Task<Discussion> Post(Discussion discussion)
+        {
+            _context.Discussions.Add(discussion);
+            await _context.SaveChangesAsync();
+
+            return discussion;
+        }
+
+        public async Task<bool> Delete(int id)
+        {
+            var task = await _context.Discussions.FindAsync(id);
+            _context.Discussions.Remove(task);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        private bool DiscussionExists(int id)
+        {
+            return _context.Discussions.Any(e => e.ID == id);
         }
     }
 }
