@@ -61,6 +61,14 @@ namespace Quipu.CodeGen
             string output = "";
             string modelName = modelType.Name;
             string modelControllerTitle = modelType.Name + "s";
+            if(modelType == typeof(Settings))
+            {
+                modelControllerTitle = "Settings";
+            }
+            else if(modelType == typeof(TaskStatusCategory))
+            {
+                modelControllerTitle = "TaskStatusCategories";
+            }
             string className = modelControllerTitle + "Controller";
 
             output += "using System.Collections.Generic;\n" +

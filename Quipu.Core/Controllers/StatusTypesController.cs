@@ -1,11 +1,7 @@
-﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Quipu.Core.DAL;
+using Quipu.Core.BLL;
 using Quipu.Core.DomainModel;
 
 namespace Quipu.Core.Controllers
@@ -14,95 +10,84 @@ namespace Quipu.Core.Controllers
     [ApiController]
     public class StatusTypesController : ControllerBase
     {
-        private readonly QContext _context;
+        private readonly IModelService<StatusType> _modelService;
 
-        public StatusTypesController(QContext context)
+        public StatusTypesController(IModelService<StatusType> service)
         {
-            _context = context;
+            _modelService = service;
         }
 
         // GET: api/StatusTypes
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<StatusType>>> GetStatusType()
+        public async Task<ActionResult<IEnumerable<StatusType>>> GetStatusTypes()
         {
-            return await _context.StatusTypes.ToListAsync();
+            return await _modelService.Get();
         }
 
         // GET: api/StatusTypes/5
         [HttpGet("{id}")]
         public async Task<ActionResult<StatusType>> GetStatusType(int id)
         {
-            var statusType = await _context.StatusTypes.FindAsync(id);
+            var entity = await _modelService.Get(id);
 
-            if (statusType == null)
+            if (entity == null)
             {
                 return NotFound();
             }
 
-            return statusType;
+            return entity;
         }
 
         // PUT: api/StatusTypes/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutStatusType(int id, StatusType statusType)
+        public async Task<IActionResult> PutStatusType(int id, StatusType entity)
         {
-            if (id != statusType.ID)
+            if (id != entity.ID)
             {
                 return BadRequest();
             }
 
-            _context.Entry(statusType).State = EntityState.Modified;
-
-            try
+            if (await _modelService.Put(entity))
             {
-                await _context.SaveChangesAsync();
+                return NoContent();
             }
-            catch (DbUpdateConcurrencyException)
+            else
             {
-                if (!StatusTypeExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return BadRequest();
             }
-
-            return NoContent();
         }
 
         // POST: api/StatusTypes
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<StatusType>> PostStatusType(StatusType statusType)
+        public async Task<ActionResult<StatusType>> PostStatusType(StatusType entity)
         {
-            _context.StatusTypes.Add(statusType);
-            await _context.SaveChangesAsync();
+            var postedEntity = await _modelService.Post(entity);
+            if (postedEntity != null)
+            {
+                return CreatedAtAction("GetStatusType", new { id = postedEntity.ID }, postedEntity);
+            }
 
-            return CreatedAtAction("GetStatusType", new { id = statusType.ID }, statusType);
+            return BadRequest();
         }
 
         // DELETE: api/StatusTypes/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteStatusType(int id)
         {
-            var statusType = await _context.StatusTypes.FindAsync(id);
-            if (statusType == null)
+            var entity = await _modelService.Get(id);
+            if (entity == null)
             {
                 return NotFound();
             }
 
-            _context.StatusTypes.Remove(statusType);
-            await _context.SaveChangesAsync();
+            if (await _modelService.Delete(id))
+            {
+                return NoContent();
+            }
 
-            return NoContent();
-        }
-
-        private bool StatusTypeExists(int id)
-        {
-            return _context.StatusTypes.Any(e => e.ID == id);
+            return BadRequest();
         }
     }
 }

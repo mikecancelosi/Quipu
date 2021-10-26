@@ -45,7 +45,21 @@ namespace Quipu.Core
             services.AddScoped<IModelService<Discussion>, DiscussionService>();
             services.AddScoped<IModelService<Task>, TaskService>();
             services.AddScoped<IModelService<User>, UserService>();
+            services.AddScoped<IModelService<Alert>, AlertService>();
+            services.AddScoped<IModelService<PermissionGroup>, PermissionGroupService>();
+            services.AddScoped<IModelService<Permission>, PermissionService>();
+            services.AddScoped<IModelService<PriorityType>, PriorityTypeService>();
+            services.AddScoped<IModelService<Project>, ProjectService>();
+            services.AddScoped<IModelService<Settings>, SettingsService>();
+            services.AddScoped<IModelService<StatusType>, StatusTypeService>();
+            services.AddScoped<IModelService<TaskRevision>, TaskRevisionService>();
+            services.AddScoped<IModelService<TaskStatusCategory>, TaskStatusCategoryService>();
+            services.AddScoped<IModelService<TeamMessage>, TeamMessageService>();
+            services.AddScoped<IModelService<Team>, TeamService>();
+            services.AddScoped<IModelService<UserPermissionOverride>, UserPermissionOverrideService>();
             services.AddDbContext<QContext>(options => options.UseLazyLoadingProxies().UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+           
+            
             services.AddControllersWithViews().AddNewtonsoftJson(options =>
             {
                 options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;

@@ -1,9 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Quipu.Core.DAL;
+using Quipu.Core.BLL;
 using Quipu.Core.DomainModel;
 
 namespace Quipu.Core.Controllers
@@ -12,95 +10,84 @@ namespace Quipu.Core.Controllers
     [ApiController]
     public class TaskStatusCategoriesController : ControllerBase
     {
-        private readonly QContext _context;
+        private readonly IModelService<TaskStatusCategory> _modelService;
 
-        public TaskStatusCategoriesController(QContext context)
+        public TaskStatusCategoriesController(IModelService<TaskStatusCategory> service)
         {
-            _context = context;
+            _modelService = service;
         }
 
         // GET: api/TaskStatusCategories
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<TaskStatusCategory>>> GetTaskStatusCategory()
+        public async Task<ActionResult<IEnumerable<TaskStatusCategory>>> GetTaskStatusCategories()
         {
-            return await _context.TaskStatusCategories.ToListAsync();
+            return await _modelService.Get();
         }
 
         // GET: api/TaskStatusCategories/5
         [HttpGet("{id}")]
         public async Task<ActionResult<TaskStatusCategory>> GetTaskStatusCategory(int id)
         {
-            var taskStatusCategory = await _context.TaskStatusCategories.FindAsync(id);
+            var entity = await _modelService.Get(id);
 
-            if (taskStatusCategory == null)
+            if (entity == null)
             {
                 return NotFound();
             }
 
-            return taskStatusCategory;
+            return entity;
         }
 
         // PUT: api/TaskStatusCategories/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutTaskStatusCategory(int id, TaskStatusCategory taskStatusCategory)
+        public async Task<IActionResult> PutTaskStatusCategory(int id, TaskStatusCategory entity)
         {
-            if (id != taskStatusCategory.ID)
+            if (id != entity.ID)
             {
                 return BadRequest();
             }
 
-            _context.Entry(taskStatusCategory).State = EntityState.Modified;
-
-            try
+            if (await _modelService.Put(entity))
             {
-                await _context.SaveChangesAsync();
+                return NoContent();
             }
-            catch (DbUpdateConcurrencyException)
+            else
             {
-                if (!TaskStatusCategoryExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return BadRequest();
             }
-
-            return NoContent();
         }
 
         // POST: api/TaskStatusCategories
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<TaskStatusCategory>> PostTaskStatusCategory(TaskStatusCategory taskStatusCategory)
+        public async Task<ActionResult<TaskStatusCategory>> PostTaskStatusCategory(TaskStatusCategory entity)
         {
-            _context.TaskStatusCategories.Add(taskStatusCategory);
-            await _context.SaveChangesAsync();
+            var postedEntity = await _modelService.Post(entity);
+            if (postedEntity != null)
+            {
+                return CreatedAtAction("GetTaskStatusCategory", new { id = postedEntity.ID }, postedEntity);
+            }
 
-            return CreatedAtAction("GetTaskStatusCategory", new { id = taskStatusCategory.ID }, taskStatusCategory);
+            return BadRequest();
         }
 
         // DELETE: api/TaskStatusCategories/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTaskStatusCategory(int id)
         {
-            var taskStatusCategory = await _context.TaskStatusCategories.FindAsync(id);
-            if (taskStatusCategory == null)
+            var entity = await _modelService.Get(id);
+            if (entity == null)
             {
                 return NotFound();
             }
 
-            _context.TaskStatusCategories.Remove(taskStatusCategory);
-            await _context.SaveChangesAsync();
+            if (await _modelService.Delete(id))
+            {
+                return NoContent();
+            }
 
-            return NoContent();
-        }
-
-        private bool TaskStatusCategoryExists(int id)
-        {
-            return _context.TaskStatusCategories.Any(e => e.ID == id);
+            return BadRequest();
         }
     }
 }

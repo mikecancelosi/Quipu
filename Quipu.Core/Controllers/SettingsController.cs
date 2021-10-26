@@ -8,23 +8,23 @@ namespace Quipu.Core.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class SettingssController : ControllerBase
+    public class SettingsController : ControllerBase
     {
         private readonly IModelService<Settings> _modelService;
 
-        public SettingssController(IModelService<Settings> service)
+        public SettingsController(IModelService<Settings> service)
         {
             _modelService = service;
         }
 
-        // GET: api/Settingss
+        // GET: api/Settings
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Settings>>> GetSettingss()
+        public async Task<ActionResult<IEnumerable<Settings>>> GetSettings()
         {
             return await _modelService.Get();
         }
 
-        // GET: api/Settingss/5
+        // GET: api/Settings/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Settings>> GetSettings(int id)
         {
@@ -38,7 +38,7 @@ namespace Quipu.Core.Controllers
             return entity;
         }
 
-        // PUT: api/Settingss/5
+        // PUT: api/Settings/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutSettings(int id, Settings entity)
@@ -58,7 +58,7 @@ namespace Quipu.Core.Controllers
             }
         }
 
-        // POST: api/Settingss
+        // POST: api/Settings
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<Settings>> PostSettings(Settings entity)
@@ -72,7 +72,7 @@ namespace Quipu.Core.Controllers
             return BadRequest();
         }
 
-        // DELETE: api/Settingss/5
+        // DELETE: api/Settings/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteSettings(int id)
         {

@@ -1,11 +1,7 @@
-﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Quipu.Core.DAL;
+using Quipu.Core.BLL;
 using Quipu.Core.DomainModel;
 
 namespace Quipu.Core.Controllers
@@ -14,95 +10,84 @@ namespace Quipu.Core.Controllers
     [ApiController]
     public class TeamMessagesController : ControllerBase
     {
-        private readonly QContext _context;
+        private readonly IModelService<TeamMessage> _modelService;
 
-        public TeamMessagesController(QContext context)
+        public TeamMessagesController(IModelService<TeamMessage> service)
         {
-            _context = context;
+            _modelService = service;
         }
 
         // GET: api/TeamMessages
         [HttpGet]
         public async Task<ActionResult<IEnumerable<TeamMessage>>> GetTeamMessages()
         {
-            return await _context.TeamMessages.ToListAsync();
+            return await _modelService.Get();
         }
 
         // GET: api/TeamMessages/5
         [HttpGet("{id}")]
         public async Task<ActionResult<TeamMessage>> GetTeamMessage(int id)
         {
-            var teamMessage = await _context.TeamMessages.FindAsync(id);
+            var entity = await _modelService.Get(id);
 
-            if (teamMessage == null)
+            if (entity == null)
             {
                 return NotFound();
             }
 
-            return teamMessage;
+            return entity;
         }
 
         // PUT: api/TeamMessages/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutTeamMessage(int id, TeamMessage teamMessage)
+        public async Task<IActionResult> PutTeamMessage(int id, TeamMessage entity)
         {
-            if (id != teamMessage.ID)
+            if (id != entity.ID)
             {
                 return BadRequest();
             }
 
-            _context.Entry(teamMessage).State = EntityState.Modified;
-
-            try
+            if (await _modelService.Put(entity))
             {
-                await _context.SaveChangesAsync();
+                return NoContent();
             }
-            catch (DbUpdateConcurrencyException)
+            else
             {
-                if (!TeamMessageExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return BadRequest();
             }
-
-            return NoContent();
         }
 
         // POST: api/TeamMessages
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<TeamMessage>> PostTeamMessage(TeamMessage teamMessage)
+        public async Task<ActionResult<TeamMessage>> PostTeamMessage(TeamMessage entity)
         {
-            _context.TeamMessages.Add(teamMessage);
-            await _context.SaveChangesAsync();
+            var postedEntity = await _modelService.Post(entity);
+            if (postedEntity != null)
+            {
+                return CreatedAtAction("GetTeamMessage", new { id = postedEntity.ID }, postedEntity);
+            }
 
-            return CreatedAtAction("GetTeamMessage", new { id = teamMessage.ID }, teamMessage);
+            return BadRequest();
         }
 
         // DELETE: api/TeamMessages/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTeamMessage(int id)
         {
-            var teamMessage = await _context.TeamMessages.FindAsync(id);
-            if (teamMessage == null)
+            var entity = await _modelService.Get(id);
+            if (entity == null)
             {
                 return NotFound();
             }
 
-            _context.TeamMessages.Remove(teamMessage);
-            await _context.SaveChangesAsync();
+            if (await _modelService.Delete(id))
+            {
+                return NoContent();
+            }
 
-            return NoContent();
-        }
-
-        private bool TeamMessageExists(int id)
-        {
-            return _context.TeamMessages.Any(e => e.ID == id);
+            return BadRequest();
         }
     }
 }
