@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Quipu.Core.BLL;
-using Quipu.Core.DAL;
 using Quipu.Core.DomainModel;
 
 namespace Quipu.Core.Controllers

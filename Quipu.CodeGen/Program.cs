@@ -12,16 +12,22 @@ namespace Quipu.CodeGen
     {
         private const string COREDIRECTORY = "\\Quipu.Core";
         private const string SERVICEDIRECTORY = "\\BLL";
+        private const string CONTROLLERDIRECTORY = "\\Controllers";
 
         static void Main(string[] args)
         {
             Type[] domainModelTypes = GetDomainModels();
             string serviceDirectory = GetSolutionDirectory() + COREDIRECTORY + SERVICEDIRECTORY;
+            string controllerDirectory = GetSolutionDirectory() + COREDIRECTORY + CONTROLLERDIRECTORY;
             if (Directory.Exists(serviceDirectory))
             {
                 var modelServiceBuilder = new ModelServiceBuilder(serviceDirectory,
                                                                   domainModelTypes);
                 modelServiceBuilder.Build();
+
+                var modelControllerBuilder = new ModelControllerBuilder(controllerDirectory,
+                                                                        domainModelTypes);
+                modelControllerBuilder.Build();
             }
 
         }
