@@ -1,30 +1,46 @@
 ﻿<template>
   <div class="container">
-    <div class="createdtext historicalelement row">
-      <div class="col-1">
-        <q-avatar color="red" text-color="white" size="35px">M</q-avatar>
-      </div>
-      <div class="headertext">Michael Cancelosi created this task!</div>
-      <div class="datelabel">Sep 7</div>
-    </div>
-
-    <div v-if="displayShowExtended">More comments...</div>
-
-    <div
-      v-for="reply in elementsToShow"
-      :key="reply"
-      class="row historicalelement"
+    <q-btn
+      flat
+      v-if="displayShowExtended"
+      @click="onDisplayShowExtendedToggled()"
+      >More history...</q-btn
     >
-      <div class="col-1">
-        <q-avatar color="red" text-color="white" size="35px">M</q-avatar>
-      </div>
-      <div class="headertext">Michael Cancelosi did a thing!!</div>
-      <div class="datelabel">Sep 7</div>
 
-      <div class="col-2">
-        <div class="row">
-          <q-btn icon="o_thumb_down" flat />
+    <q-btn
+      flat
+      v-if="!displayShowExtended"
+      @click="onDisplayShowExtendedToggled()"
+      >Less history...</q-btn
+    >
+
+    <div v-for="reply in elementsToShow" :key="reply" class="historicalelement">
+      <div
+        class="row discussionelement"
+        v-if="reply.type === 'Discussion' || reply.type === 'Create'"
+      >
+        <div class="col-1">
+          <q-avatar color="red" text-color="white" size="35px">M</q-avatar>
         </div>
+        <div class="col">
+          <div class="row">
+            <div class="headertext">{{ reply.user.display_Name }}</div>
+            <div class="datelabel">Sep 7</div>
+          </div>
+          <div>{{ reply.display }}</div>
+        </div>
+        <div class="col-2">
+          <div class="row">
+            <q-btn icon="o_thumb_up" :ripple="false" flat />
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="row nondiscussionelement"
+        v-if="reply.type !== 'Discussion' && reply.type !== 'Create'"
+      >
+        {{ reply.display }}
       </div>
     </div>
   </div>
@@ -50,15 +66,31 @@
   font-size: 12px;
 }
 
+.discussionelement {
+  min-height: 50px;
+}
+
+.discussiontext {
+  font-size: 14px;
+  color: white;
+  font-weight: 500;
+}
+
 .historicalelement {
-  min-height: 60px;
   margin: 15px 0px;
+}
+
+.nondiscussionelement {
+  color: gray;
 }
 </style>
 
 <script>
 import { reactive, ref, computed } from "vue";
-import { adaptTaskRevision } from "../../utils/adapters/taskhistoryadapter.js";
+import {
+  adaptRevision,
+  adaptDiscussion,
+} from "../../utils/adapters/taskhistoryadapter.js";
 
 export default {
   name: "Task History",
@@ -71,23 +103,42 @@ export default {
     const showExtended = ref(false);
 
     props.task.value.revisions.forEach((item) =>
-      historicalelements.push(adaptTaskRevision(item))
+      historicalelements.push(adaptRevision(item))
     );
+    props.task.value.discussions.forEach((item) =>
+      historicalelements.push(adaptDiscussion(item))
+    );
+
+    historicalelements.sort(function (a, b) {
+      if (a.date > b.date) {
+        return 1;
+      }
+      if (a.date === b.date) {
+        return 0;
+      }
+      return -1;
+    });
+
+    console.log(historicalelements);
 
     const elementsToShow = computed(() => {
       if (!showExtended.value) {
         return historicalelements.slice(-1 * maxelementcount);
       } else {
-        return historicalelements.value;
+        return historicalelements;
       }
     });
 
     const displayShowExtended = computed(() => {
       return (
-        (historicalelements.value?.length ?? 0) > maxelementcount &&
+        (historicalelements?.length ?? 0) > maxelementcount &&
         !showExtended.value
       );
     });
+
+    const onDisplayShowExtendedToggled = () => {
+      showExtended.value = !showExtended.value;
+    };
 
     return {
       historicalelements,
@@ -95,6 +146,7 @@ export default {
       showExtended,
       elementsToShow,
       displayShowExtended,
+      onDisplayShowExtendedToggled,
     };
   },
 };

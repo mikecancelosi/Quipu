@@ -14,7 +14,7 @@
 body.desktop .q-focusable:focus .q-focus-helper,
 body.desktop .q-hoverable:hover .q-focus-helper {
   opacity: 0 !important;
-}
+} /*remove button hover*/
 
 .q-header .q-tab__content {
   min-width: 0px !important;

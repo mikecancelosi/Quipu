@@ -32,6 +32,7 @@ namespace Quipu.Core.BLL
                                             .ThenInclude(t => t.AssignedToUser)
                                         .Include(p => p.Tasks)
                                             .ThenInclude(t => t.DiscussionOwner)
+                                                .ThenInclude(o=>o.Discussions)
                                         .Include(p=>p.Tasks)
                                             .ThenInclude(t=>t.StatusCategory)
                                         .Include(p => p.Tasks)
@@ -40,20 +41,6 @@ namespace Quipu.Core.BLL
                                         .FirstOrDefaultAsync(p => p.ID == id);
 
             return project;
-
-            /*
-            _context.Entry(project).Collection(p => p.Tasks).Load();
-            foreach (var task in project.Tasks)
-            {
-                _context.Entry(task).Reference(t => t.StatusCategory).Load();
-                _context.Entry(task).Reference(t => t.Status).Load();
-                _context.Entry(task).Reference(t => t.Priority).Load();
-                _context.Entry(task).Reference(t => t.AssignedToUser).Load();
-                _context.Entry(task).Reference(t => t.DiscussionOwner).Load();
-                _context.Entry(task).Collection(t => t.Revisions).Load();
-            }
-
-            return project;*/
         }
 
         public async Task<bool> Put(Project priorityType)

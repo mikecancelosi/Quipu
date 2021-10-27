@@ -57,7 +57,7 @@
 
 <style scoped>
 .reply {
-  padding: 5px 20px;
+  padding: 5px 0px 0px 0px;
 }
 
 .reply-footer {

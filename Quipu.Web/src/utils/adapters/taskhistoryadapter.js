@@ -1,29 +1,29 @@
-export function adaptTaskRevision(revision) {
+export function adaptRevision(revision) {
     var displayText = "EmptyDisplay";
-    var userName = revision.user.displayName ?? "MIKE!";
-    switch (revision.revisiontype) {
-        case 'title':
-            displayText = `${userName} changed the tasks title to ${revision.newvalue}`;
+    var userName = revision.user.display_Name ?? "MIKE!";
+    switch (revision.revisionType) {
+        case 'Title':
+            displayText = `${userName} changed the tasks title to ${revision.newValue}`;
             break;
-        case 'assignee':
-            displayText = `${userName} assigned the task to ${revision.newvalue}`;
+        case 'Assignee':
+            displayText = `${userName} assigned the task to ${revision.newValue}`;
             break;
-        case 'date':
-            displayText = `${userName} changed the date to ${revision.newvalue}`;
+        case 'Date':
+            displayText = `${userName} changed the date to ${revision.newValue}`;
             break;
-        case 'priority':
-            displayText = `${userName} changed the priority to ${revision.newvalue}`;
+        case 'Priority':
+            displayText = `${userName} changed the priority to ${revision.newValue}`;
             break;
-        case 'status':
-            displayText = `${userName} changed the status to ${revision.newvalue}`;
+        case 'Status':
+            displayText = `${userName} changed the status to ${revision.newValue}`;
             break;
-        case 'description':
+        case 'Description':
             displayText = `${userName} updated the description`;
             break;
-        case 'subtask':
+        case 'Subtask':
             displayText = `${userName} added a new subtask.`;
             break;
-        case 'create':
+        case 'Create':
             displayText = `${userName} created this task.`;
             break;
 
@@ -33,7 +33,17 @@ export function adaptTaskRevision(revision) {
     return {
         date: revision.date,
         user: revision.user,
-        type: 'revision',
+        type: revision.revisionType,
         display: displayText,
+    };
+}
+
+export function adaptDiscussion(discussion) {
+    console.log(discussion);
+    return {
+        date: discussion.date_Posted,
+        user: discussion.user,
+        type: 'Discussion',
+        display: discussion.message_Contents,
     };
 }
