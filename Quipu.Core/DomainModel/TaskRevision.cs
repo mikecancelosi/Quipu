@@ -18,8 +18,11 @@ namespace Quipu.Core.DomainModel
         public string OldValue { get; set; }
         public string NewValue { get; set; }
         public RevisionType RevisionType { get; set; }
+        [ForeignKey("User")]
+        public int? UserID { get; set; }
 
         public virtual Task Task { get; set; }
+        public virtual User User { get; set; }
     }
 
     /// <summary>
@@ -34,5 +37,6 @@ namespace Quipu.Core.DomainModel
         Status,
         Description,
         Subtask,
+        Create,
     }
 }

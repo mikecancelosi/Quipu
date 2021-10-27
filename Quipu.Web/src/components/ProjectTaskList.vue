@@ -1,14 +1,13 @@
 ﻿<template>
-  <q-layout>
+  <div class="column">
     <q-drawer v-model="showDetails" side="right" bordered overlay :width="600">
-      <div class="q-drawer-container" v-if="detailtask.value != null">
-        <taskdetailpreview
-          :task="this.detailtask"
-          @hideDetails="showDetails = false"
-        />
-      </div>
+      <taskdetailpreview
+        v-if="detailtask.value != null"
+        :task="this.detailtask"
+        @hideDetails="showDetails = false"
+      />
     </q-drawer>
-    <q-page-container>
+    <div id="contentcontainer">
       <div class="row" style="padding: 15px 30px">
         <q-space />
         <div id="heading-options">
@@ -98,13 +97,17 @@
           </q-tr>
         </template>
       </q-table>
-    </q-page-container>
-  </q-layout>
+    </div>
+  </div>
 </template>
 
 <style scoped>
 #heading-options > .q-btn {
   margin-right: 20px;
+}
+
+#contentcontainer {
+  flex: 1 1 auto;
 }
 
 .tablecol {

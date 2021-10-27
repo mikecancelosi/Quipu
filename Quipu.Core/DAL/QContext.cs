@@ -27,6 +27,7 @@ namespace Quipu.Core.DAL
         public DbSet<TaskStatusCategory> TaskStatusCategories { get; set; }
         public DbSet<PriorityType> PriorityTypes { get; set; }
         public DbSet<StatusType> StatusTypes { get; set; }
+        public DbSet<DiscussionOwner> DiscussionOwners { get; set; }
 
         protected override void OnModelCreating(ModelBuilder model)
         {

@@ -1,5 +1,5 @@
 ﻿<template>
-  <q-layout>
+  <div>
     <q-drawer v-model="rightDrawerOpen" side="right" bordered :width="400">
       <div class="q-drawer-container">
         <h2 style="color: darkgray">What's the status?</h2>
@@ -38,68 +38,65 @@
 
       <div>SHOW HISTORY</div>
     </q-drawer>
+    <div class="row">
+      <q-space />
+      <div id="overviewcontent" style="max-width: 800px; margin-top: 20px">
+        <div id="collab-section">
+          <h2>How we'll collaborate</h2>
+          <q-input
+            borderless
+            placeholder="Welcome your team and set the tone for how you'll work together in Asana. Add meeting details, communication channels, and other important information."
+            type="textarea"
+          />
+        </div>
 
-    <q-page-container>
-      <div class="row">
-        <q-space />
-        <div id="overviewcontent" style="max-width: 800px; margin-top: 20px">
-          <div id="collab-section">
-            <h2>How we'll collaborate</h2>
-            <q-input
-              borderless
-              placeholder="Welcome your team and set the tone for how you'll work together in Asana. Add meeting details, communication channels, and other important information."
-              type="textarea"
-            />
-          </div>
-
-          <div id="roles-section">
-            <h2>Project roles</h2>
-            <div class="row">
-              <div class="row" style="align-items: center">
-                <q-icon
-                  name="o_add"
-                  size="24px"
-                  style="
-                    border-style: dashed;
-                    border-radius: 17px;
-                    border-width: 1px;
-                    margin-right: 10px;
-                    padding: 5px;
-                  "
-                />
-                <div>Add member</div>
-              </div>
+        <div id="roles-section">
+          <h2>Project roles</h2>
+          <div class="row">
+            <div class="row" style="align-items: center">
+              <q-icon
+                name="o_add"
+                size="24px"
+                style="
+                  border-style: dashed;
+                  border-radius: 17px;
+                  border-width: 1px;
+                  margin-right: 10px;
+                  padding: 5px;
+                "
+              />
+              <div>Add member</div>
             </div>
-          </div>
-          <div class="row" v-for="member in this.project.Members" :key="member">
-            <p>HELLO!</p>
-          </div>
-
-          <h2>Key Resources</h2>
-          <div id="resource-container" class="row">
-            <q-space />
-            <q-icon
-              name="mdi-clipboard-file-outline"
-              size="100px"
-              style="margin-right: 10px"
-            />
-            <div id="resource-empty" class="row">
-              <p>
-                Align your team around a shared vision with a project brief and
-                supporting resources
-              </p>
-              <div class="row">
-                <q-btn color="primary" label="Create project brief" />
-                <q-btn outline label="Add links & files" />
-              </div>
-            </div>
-            <q-space />
           </div>
         </div>
-        <q-space />
+        <div class="row" v-for="member in this.project.Members" :key="member">
+          <p>HELLO!</p>
+        </div>
+
+        <h2>Key Resources</h2>
+        <div id="resource-container" class="row">
+          <q-space />
+          <q-icon
+            name="mdi-clipboard-file-outline"
+            size="100px"
+            style="margin-right: 10px"
+          />
+          <div id="resource-empty" class="row">
+            <p>
+              Align your team around a shared vision with a project brief and
+              supporting resources
+            </p>
+            <div class="row">
+              <q-btn color="primary" label="Create project brief" />
+              <q-btn outline label="Add links & files" />
+            </div>
+          </div>
+          <q-space />
+        </div>
       </div>
-    </q-page-container>
-  </q-layout>
+      <q-space />
+    </div>
+  </div>
 </template>
 
 <style scoped>

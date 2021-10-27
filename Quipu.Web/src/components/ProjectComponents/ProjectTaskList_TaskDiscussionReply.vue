@@ -1,5 +1,5 @@
 ﻿<template>
-  <div class="reply row">
+  <div class="reply row bg-dark">
     <div class="col-1">
       <q-avatar color="red" text-color="white" size="35px">M</q-avatar>
     </div>

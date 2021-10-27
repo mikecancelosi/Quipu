@@ -8,8 +8,8 @@ import { store } from "./store";
 
 const app = createApp(App).use(Quasar, quasarUserOptions);
 
+app.config.devtools = true;
 app.use(router);
 app.use(VueDraggable);
 app.use(store);
-
 app.mount("#app");

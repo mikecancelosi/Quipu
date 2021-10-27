@@ -1,120 +1,134 @@
 ﻿<template>
-  <q-page-container>
-    <div id="previewcontainer">
-      <div class="row">
-        <q-btn
-          label="Mark complete"
-          icon="o_done"
-          dense
-          outline
-          no-caps
-          size="10px;"
-        />
-        <q-space />
+  <div class="full-height column" id="pagecontainer">
+    <div id="headercontainer" class="row bg-dark">
+      <q-btn
+        label="Mark complete"
+        icon="o_done"
+        dense
+        outline
+        no-caps
+        size="10px;"
+      />
+      <q-space />
 
-        <q-btn
-          class="actionbtn"
-          icon="o_attach_file"
-          size="12px"
-          dense
-          flat
-          disable
-        />
-        <q-btn
-          class="actionbtn"
-          icon="o_format_list_bulleted"
-          size="12px"
-          dense
-          flat
-          disable
-        />
-        <q-btn
-          class="actionbtn"
-          icon="o_more_vert"
-          size="12px"
-          dense
-          flat
-          @click="refreshComponents()"
-        />
-        <q-btn
-          class="actionbtn"
-          icon="mdi-forwardburger"
-          size="12px"
-          dense
-          flat
-          @click="hideself()"
-        />
-      </div>
-      <q-separator />
-
-      <div class="headinglabel">{{ task.value.name }}</div>
-
-      <div class="row descriptor">
-        <div class="label">Assignee</div>
-        <assigneecell
-          :userid="task.value.assignedToUserID"
-          class="value"
-          @updateTask="(newuser) => assignuser(element, newuser)"
-        />
-      </div>
-
-      <div class="row descriptor">
-        <div class="label">Date</div>
-        <datecell
-          class="value"
-          :startDate="task.value.startDate"
-          :endDate="task.value.endDate"
-          :key="componentKey"
-        />
-      </div>
-
-      <div class="row descriptor">
-        <div class="label">Dependencies</div>
-        <div class="value">Michael Cancelosi</div>
-      </div>
-
-      <div class="row descriptor">
-        <div class="label">Priority</div>
-        <prioritycell
-          class="value"
-          :priorityid="task.value.priorityID"
-          :key="componentKey"
-        />
-      </div>
-
-      <div class="row descriptor">
-        <div class="label">Status</div>
-        <statuscell
-          class="value"
-          :statusid="task.value.statusID"
-          :key="componentKey"
-        />
-      </div>
-
-      <div class="descriptor">
-        <div>Description</div>
-        <q-input
-          textarea
-          autogrow
-          outlined
-          v-model="description.value"
-          class="descriptionInput"
-        />
-      </div>
-
-      <subtasks />
-      <taskhistory :task="task" />
-
-      <div class="fixed-bottom">
-        <discussionreply />
-      </div>
+      <q-btn
+        class="actionbtn"
+        icon="o_attach_file"
+        size="12px"
+        dense
+        flat
+        disable
+      />
+      <q-btn
+        class="actionbtn"
+        icon="o_format_list_bulleted"
+        size="12px"
+        dense
+        flat
+        disable
+      />
+      <q-btn
+        class="actionbtn"
+        icon="o_more_vert"
+        size="12px"
+        dense
+        flat
+        @click="refreshComponents()"
+      />
+      <q-btn
+        class="actionbtn"
+        icon="mdi-forwardburger"
+        size="12px"
+        dense
+        flat
+        @click="hideself()"
+      />
     </div>
-  </q-page-container>
+    <q-scroll-area id="contentcontainer">
+      <div class="column">
+        <q-separator />
+
+        <div class="headinglabel">{{ task.value.name }}</div>
+
+        <div class="row descriptor">
+          <div class="label">Assignee</div>
+          <assigneecell
+            :userid="task.value.assignedToUserID"
+            class="value"
+            @updateTask="(newuser) => assignuser(element, newuser)"
+          />
+        </div>
+
+        <div class="row descriptor">
+          <div class="label">Date</div>
+          <datecell
+            class="value"
+            :startDate="task.value.startDate"
+            :endDate="task.value.endDate"
+            :key="componentKey"
+          />
+        </div>
+
+        <div class="row descriptor">
+          <div class="label">Dependencies</div>
+          <div class="value">Michael Cancelosi</div>
+        </div>
+
+        <div class="row descriptor">
+          <div class="label">Priority</div>
+          <prioritycell
+            class="value"
+            :priorityid="task.value.priorityID"
+            :key="componentKey"
+          />
+        </div>
+
+        <div class="row descriptor">
+          <div class="label">Status</div>
+          <statuscell
+            class="value"
+            :statusid="task.value.statusID"
+            :key="componentKey"
+          />
+        </div>
+
+        <div class="descriptor">
+          <div>Description</div>
+          <q-input
+            textarea
+            autogrow
+            outlined
+            v-model="description.value"
+            class="descriptionInput"
+          />
+        </div>
+
+        <subtasks />
+        <taskhistory :task="task" />
+      </div>
+    </q-scroll-area>
+
+    <discussionreply id="replycontainer" />
+  </div>
 </template>
 
 <style scoped>
-#previewcontainer {
+#pagecontainer {
   padding: 20px;
+  height: 100%;
+  width: 100%;
+}
+
+#headercontainer {
+  flex: 0 1 auto;
+}
+#contentcontainer {
+  width: 100%;
+  flex: 1 1 auto;
+}
+#replycontainer {
+  margin-top: auto;
+  max-height: fit-content;
 }
 
 .q-separator {
@@ -145,6 +159,7 @@
 .descriptor {
   align-items: center;
   margin-bottom: 10px;
+  min-height: 40px;
 }
 
 .value {

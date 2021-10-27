@@ -35,6 +35,9 @@ namespace Quipu.Core.DomainModel
         public int? StatusCategoryID { get; set; }
         [ForeignKey("ParentTask")]
         public int? ParentTaskID { get; set; }
+        [ForeignKey("DiscussionOwner")]
+        public int? DiscussionOwnerID { get; set; }
+
 
         public virtual Project Project { get; set; }
         public virtual PriorityType Priority { get; set; }
@@ -45,5 +48,8 @@ namespace Quipu.Core.DomainModel
         public virtual Task ParentTask { get; set; }
         public virtual ICollection<Task> Subtasks { get; set; }
         public virtual ICollection<TaskRevision> Revisions { get; set; }
+        public virtual DiscussionOwner DiscussionOwner { get; set; }
+        [NotMapped]
+        public virtual ICollection<Discussion> Discussions => DiscussionOwner?.Discussions ?? new HashSet<Discussion>();
     }
 }

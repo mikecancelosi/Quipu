@@ -16,6 +16,7 @@ namespace Quipu.Core.DomainModel
             this.Discussions = new HashSet<Discussion>();
             this.Alerts = new HashSet<Alert>();
             this.Projects = new HashSet<Project>();
+            this.TaskRevisions = new HashSet<TaskRevision>();
         }
 
         [Key]
@@ -35,6 +36,7 @@ namespace Quipu.Core.DomainModel
         public virtual ICollection<Alert> Alerts { get; set; }
         public virtual ICollection<Team> Teams { get; set; }
         public virtual ICollection<Project> Projects { get; set; }
+        public virtual ICollection<TaskRevision> TaskRevisions { get; set; }
 
     }
 }

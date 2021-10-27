@@ -10,19 +10,16 @@ namespace Quipu.Core.DomainModel
 {
     public class Discussion
     {
-        public Discussion()
-        {
-            
-        }
-
         [Key]
         public int ID { get; set; }
         public string Message_Contents { get; set; }
-        public int RecordID { get; set; }
+        [ForeignKey("Owner")]
+        public int? OwnerID { get; set; }
         [ForeignKey("User")]
         public int? UserID { get; set; }
         public DateTime Date_Posted { get; set; }
 
         public virtual User User { get; set; }
+        public virtual DiscussionOwner Owner { get; set; }
     }
 }

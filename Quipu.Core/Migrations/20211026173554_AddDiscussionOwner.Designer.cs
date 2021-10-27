@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Quipu.Core.DAL;
 
 namespace Quipu.Core.Migrations
 {
     [DbContext(typeof(QContext))]
-    partial class QContextModelSnapshot : ModelSnapshot
+    [Migration("20211026173554_AddDiscussionOwner")]
+    partial class AddDiscussionOwner
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -324,14 +326,9 @@ namespace Quipu.Core.Migrations
                     b.Property<int>("TaskID")
                         .HasColumnType("int");
 
-                    b.Property<int?>("UserID")
-                        .HasColumnType("int");
-
                     b.HasKey("ID");
 
                     b.HasIndex("TaskID");
-
-                    b.HasIndex("UserID");
 
                     b.ToTable("TaskRevisions");
                 });
@@ -603,13 +600,7 @@ namespace Quipu.Core.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Quipu.Core.DomainModel.User", "User")
-                        .WithMany("TaskRevisions")
-                        .HasForeignKey("UserID");
-
                     b.Navigation("Task");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Quipu.Core.DomainModel.TeamMessage", b =>
@@ -705,8 +696,6 @@ namespace Quipu.Core.Migrations
                     b.Navigation("Alerts");
 
                     b.Navigation("Discussions");
-
-                    b.Navigation("TaskRevisions");
 
                     b.Navigation("TasksAssigned");
 
