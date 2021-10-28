@@ -5,10 +5,15 @@
     </div>
     <div class="col-11">
       <div class="column">
-        <div class="col">
+        <div class="col" ref="inputtext">
           <q-input
+            class="inputbox"
             outlined
             dense
+            v-model="inputval"
+            @focus="focusTextArea()"
+            @blur="blurTextArea()"
+            type="textarea"
             placeholder="Ask a question or post an update..."
           />
         </div>
@@ -69,10 +74,57 @@
 .contributorIcons {
   margin-right: 4px;
 }
+
+.inputbox {
+  min-height: 50px;
+}
+
+.expanded {
+  min-height: 200px;
+}
 </style>
 
 <script>
+import { computed, ref, onMounted } from "vue";
 export default {
   name: "DiscussionReply",
+  setup() {
+    const heightStorage = ref(0);
+    const inputtext = ref(null);
+    const inputval = ref("");
+
+    const textAreaElement = computed(() => {
+      return inputtext?.value?.querySelector("textarea");
+    });
+
+    const focusTextArea = () => {
+      if (textAreaElement.value != null) {
+        heightStorage.value = textAreaElement.value.style.height;
+        textAreaElement.value.style.height = "100px";
+      }
+    };
+
+    const blurTextArea = () => {
+      if (textAreaElement.value != null) {
+        textAreaElement.value.style.height = heightStorage.value;
+      }
+    };
+
+    onMounted(() => {
+      if (textAreaElement.value != null) {
+        console.log("!");
+        textAreaElement.value.style.height = "50px";
+      }
+    });
+
+    return {
+      heightStorage,
+      inputval,
+      inputtext,
+      textAreaElement,
+      focusTextArea,
+      blurTextArea,
+    };
+  },
 };
 </script>

@@ -98,7 +98,7 @@
             textarea
             autogrow
             outlined
-            v-model="description.value"
+            v-model="description"
             class="descriptionInput"
           />
         </div>

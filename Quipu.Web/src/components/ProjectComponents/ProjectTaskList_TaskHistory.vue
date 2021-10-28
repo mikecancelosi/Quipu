@@ -15,20 +15,42 @@
     >
 
     <div v-for="reply in elementsToShow" :key="reply" class="historicalelement">
-      <div
-        class="row discussionelement"
-        v-if="reply.type === 'Discussion' || reply.type === 'Create'"
-      >
+      <div class="row discussionelement" v-if="reply.type === 'Discussion'">
         <div class="col-1">
-          <q-avatar color="red" text-color="white" size="35px">M</q-avatar>
+          <q-avatar color="red" text-color="white" size="35px">{{
+            reply.user.display_Name.slice(0, 1)
+          }}</q-avatar>
         </div>
         <div class="col">
           <div class="row">
             <div class="headertext">{{ reply.user.display_Name }}</div>
-            <div class="datelabel">Sep 7</div>
+            <div class="datelabel">{{ formatDate(reply.date) }}</div>
           </div>
           <div>{{ reply.display }}</div>
         </div>
+        <div class="col-2">
+          <div class="row">
+            <q-btn icon="o_thumb_up" :ripple="false" flat />
+          </div>
+        </div>
+      </div>
+
+      <div class="row discussionelement" v-if="reply.type === 'Create'">
+        <div class="col-1">
+          <q-avatar color="red" text-color="white" size="35px">{{
+            reply.user.display_Name.slice(0, 1)
+          }}</q-avatar>
+        </div>
+
+        <div class="col">
+          <div class="row">
+            <div class="headertext">{{ reply.display }}</div>
+            <div class="datelabel">
+              {{ formatDate(reply.date) }}
+            </div>
+          </div>
+        </div>
+
         <div class="col-2">
           <div class="row">
             <q-btn icon="o_thumb_up" :ripple="false" flat />
@@ -41,6 +63,9 @@
         v-if="reply.type !== 'Discussion' && reply.type !== 'Create'"
       >
         {{ reply.display }}
+        <a style="margin-left: 10px">
+          {{ formatDate(reply.date) }}
+        </a>
       </div>
     </div>
   </div>
@@ -92,6 +117,8 @@ import {
   adaptDiscussion,
 } from "../../utils/adapters/taskhistoryadapter.js";
 
+import { formatMonthNameDD } from "../../utils/helpers/dateformatter.js";
+
 export default {
   name: "Task History",
   props: {
@@ -119,7 +146,9 @@ export default {
       return -1;
     });
 
-    console.log(historicalelements);
+    const formatDate = (date) => {
+      return formatMonthNameDD(date);
+    };
 
     const elementsToShow = computed(() => {
       if (!showExtended.value) {
@@ -147,6 +176,7 @@ export default {
       elementsToShow,
       displayShowExtended,
       onDisplayShowExtendedToggled,
+      formatDate,
     };
   },
 };

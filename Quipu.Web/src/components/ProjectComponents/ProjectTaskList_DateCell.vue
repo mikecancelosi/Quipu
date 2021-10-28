@@ -50,6 +50,7 @@
 
 <script>
 import { ref, computed } from "vue";
+import { formatMMDD } from "../../utils/helpers/dateformatter.js";
 
 export default {
   name: "AssigneeCell",
@@ -77,15 +78,7 @@ export default {
     const formattedDate = computed(() => {
       const sDate = new Date(newStartDate.value);
       const eDate = new Date(newEndDate.value);
-      return (
-        sDate.getMonth() +
-        "/" +
-        sDate.getDate() +
-        "-" +
-        eDate.getMonth() +
-        "/" +
-        eDate.getDate()
-      );
+      return formatMMDD(sDate) + "-" + formatMMDD(eDate);
     });
 
     const cleardates = () => {

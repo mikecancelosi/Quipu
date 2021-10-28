@@ -33,6 +33,7 @@
         dense
         no-caps
         class="showonhover"
+        :ripple="false"
         @click="this.detailtask()"
       />
     </div>
