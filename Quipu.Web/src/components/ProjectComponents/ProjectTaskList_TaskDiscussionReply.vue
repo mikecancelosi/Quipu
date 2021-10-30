@@ -5,17 +5,35 @@
     </div>
     <div class="col-11">
       <div class="column">
-        <div class="col" ref="inputtext">
-          <q-input
-            class="inputbox"
-            outlined
-            dense
-            v-model="inputval"
-            @focus="focusTextArea()"
-            @blur="blurTextArea()"
-            type="textarea"
-            placeholder="Ask a question or post an update..."
-          />
+        <div id="commentContainer" class="col" ref="commentContainer">
+          <div id="inputContainer">
+            <q-input
+              class="inputbox"
+              dense
+              borderless
+              autogrow
+              v-model="inputval"
+              placeholder="Ask a question or post an update..."
+            />
+          </div>
+          <div id="inputFooterContainer">
+            <div class="row float-left">
+              <q-btn disable flat dense icon="o_text_format" />
+              <q-btn disable flat dense icon="o_alternate_email" />
+              <q-btn disable flat dense icon="o_emoji_emotions" />
+              <q-btn disable flat dense icon="o_grade" />
+              <q-btn disable flat dense icon="o_attach_file" />
+            </div>
+            <div class="row float-right">
+              <q-btn
+                id="commentBtn"
+                color="primary"
+                unelevated
+                label="Comment"
+                @click="submitComment()"
+              />
+            </div>
+          </div>
         </div>
         <div class="reply-footer row float-right">
           <a
@@ -62,7 +80,9 @@
 
 <style scoped>
 .reply {
-  padding: 5px 0px 0px 0px;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  left: 0;
+  right: 0;
 }
 
 .reply-footer {
@@ -75,56 +95,54 @@
   margin-right: 4px;
 }
 
-.inputbox {
-  min-height: 50px;
-}
-
 .expanded {
   min-height: 200px;
+}
+
+#commentContainer {
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 5px;
+  padding: 5px;
+  display: flex;
+  flex-direction: column;
+  transition: min-height 200ms;
+}
+
+#commentContainer:focus-within {
+  min-height: 150px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+}
+#commentContainer:focus-within > #inputFooterContainer {
+  height: fit-content;
+  visibility: visible;
+}
+
+#inputContainer {
+  flex-grow: 1;
+}
+
+#inputFooterContainer {
+  height: 0px;
+  visibility: hidden;
 }
 </style>
 
 <script>
-import { computed, ref, onMounted } from "vue";
+import { ref } from "vue";
+
 export default {
   name: "DiscussionReply",
-  setup() {
-    const heightStorage = ref(0);
-    const inputtext = ref(null);
+  emits: ["update-task"],
+  setup(props, { emit }) {
     const inputval = ref("");
 
-    const textAreaElement = computed(() => {
-      return inputtext?.value?.querySelector("textarea");
-    });
-
-    const focusTextArea = () => {
-      if (textAreaElement.value != null) {
-        heightStorage.value = textAreaElement.value.style.height;
-        textAreaElement.value.style.height = "100px";
-      }
+    const submitComment = () => {
+      emit("update-task", inputval.value);
+      inputval.value = "";
+      document.activeElement.blur();
     };
 
-    const blurTextArea = () => {
-      if (textAreaElement.value != null) {
-        textAreaElement.value.style.height = heightStorage.value;
-      }
-    };
-
-    onMounted(() => {
-      if (textAreaElement.value != null) {
-        console.log("!");
-        textAreaElement.value.style.height = "50px";
-      }
-    });
-
-    return {
-      heightStorage,
-      inputval,
-      inputtext,
-      textAreaElement,
-      focusTextArea,
-      blurTextArea,
-    };
+    return { inputval, submitComment };
   },
 };
 </script>

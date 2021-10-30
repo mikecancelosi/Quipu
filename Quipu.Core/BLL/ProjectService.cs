@@ -38,7 +38,9 @@ namespace Quipu.Core.BLL
                                         .Include(p => p.Tasks)
                                             .ThenInclude(t => t.Revisions)
                                                 .ThenInclude(r=>r.User)
-                                        .FirstOrDefaultAsync(p => p.ID == id);
+                                        .AsSplitQuery()
+                                        .FirstOrDefaultAsync(p => p.ID == id)
+                                        ;
 
             return project;
         }

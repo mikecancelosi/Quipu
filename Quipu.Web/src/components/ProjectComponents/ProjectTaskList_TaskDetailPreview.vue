@@ -1,5 +1,5 @@
 ﻿<template>
-  <div class="full-height column" id="pagecontainer">
+  <div class="full-height column" id="pagecontainer" v-if="loaded">
     <div id="headercontainer" class="row bg-dark">
       <q-btn
         label="Mark complete"
@@ -44,10 +44,10 @@
         @click="hideself()"
       />
     </div>
+
+    <q-separator />
     <q-scroll-area id="contentcontainer">
       <div class="column">
-        <q-separator />
-
         <div class="headinglabel">{{ task.value.name }}</div>
 
         <div class="row descriptor">
@@ -98,35 +98,44 @@
             textarea
             autogrow
             outlined
-            v-model="description"
+            v-model="task.value.description"
             class="descriptionInput"
           />
         </div>
 
         <subtasks />
-        <taskhistory :task="task" />
+        <taskhistory
+          v-if="task.value != null"
+          :task="task.value"
+          :key="componentKey"
+        />
       </div>
     </q-scroll-area>
 
-    <discussionreply id="replycontainer" />
+    <discussionreply
+      id="replycontainer"
+      @updateTask="(discussion) => addDiscussion(discussion)"
+    />
   </div>
 </template>
 
 <style scoped>
 #pagecontainer {
-  padding: 20px;
   height: 100%;
   width: 100%;
 }
 
 #headercontainer {
+  padding: 20px 20px 0px 20px;
   flex: 0 1 auto;
 }
 #contentcontainer {
+  padding: 0px 20px;
   width: 100%;
   flex: 1 1 auto;
 }
 #replycontainer {
+  padding: 10px 20px;
   margin-top: auto;
   max-height: fit-content;
 }
@@ -181,6 +190,7 @@ import subtasks from "./ProjectTaskList_Subtasks";
 import discussionreply from "./ProjectTaskList_TaskDiscussionReply";
 import taskhistory from "./ProjectTaskList_TaskHistory";
 import { reactive, ref } from "vue";
+import { useStore } from "vuex";
 
 export default {
   name: "TaskDetailPreview",
@@ -195,30 +205,59 @@ export default {
   },
   emits: ["update-task", "hide-details"],
   props: {
-    task: reactive({}),
+    id: Number,
   },
   setup(props, { emit }) {
     const hover = ref(false);
-    const description = ref("");
     const componentKey = ref(0);
+    const store = useStore();
+    const task = reactive({});
+    const loaded = ref(false);
 
-    description.value = ref(props.task.value.description);
-    const updatetask = () => {};
+    (async () => {
+      task.value = await store.getters.getTaskByID(props.id);
+      loaded.value = true;
+    })();
+
     const hideself = () => {
       emit("hide-details");
     };
     const refreshComponents = () => {
-      //this.$forceUpdate();
       componentKey.value += 1;
+    };
+
+    const addDiscussion = async (discussion) => {
+      var newDiscussion = {
+        date_Posted: new Date().toISOString().slice(0, 19).replace("T", " "),
+        message_Contents: discussion,
+        owner: task.value.discussionOwner,
+        ownerID: task.value.discussionOwnerID,
+        userID: 12,
+      };
+      await store.dispatch("postDiscussion", newDiscussion);
+      await store.dispatch("fetchTasks");
+      refreshTask();
+    };
+
+    const updateTask = () => {
+      store.dispatch("updateTask", task.value);
+    };
+
+    const refreshTask = async () => {
+      task.value = await store.getters.getTaskByID(props.id);
+      refreshComponents();
     };
 
     return {
       hover,
-      description,
       componentKey,
-      updatetask,
+      updateTask,
       hideself,
       refreshComponents,
+      addDiscussion,
+      task,
+      loaded,
+      refreshTask,
     };
   },
   updated() {

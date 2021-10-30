@@ -52,6 +52,14 @@ namespace Quipu.Core.BLL
 
         public async Task<Discussion> Post(Discussion discussion)
         {
+            if(discussion.User == null && discussion.UserID != null)
+            {
+                discussion.User = _context.Users.Find(discussion.UserID);
+            }
+
+            _context.Entry(discussion.Owner).State = EntityState.Modified;
+            discussion.Owner.Discussions.Add(discussion);
+
             _context.Discussions.Add(discussion);
             await _context.SaveChangesAsync();
 

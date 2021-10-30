@@ -28,7 +28,8 @@ namespace Quipu.Core
             services.AddControllers();
 
             services.AddDbContext<QContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"))
+                       .EnableSensitiveDataLogging());
 
             services.AddCors(options =>
             {

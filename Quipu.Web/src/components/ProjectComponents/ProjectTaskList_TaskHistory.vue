@@ -30,7 +30,7 @@
         </div>
         <div class="col-2">
           <div class="row">
-            <q-btn icon="o_thumb_up" :ripple="false" flat />
+            <q-btn icon="o_thumb_up" size="12px" disable :ripple="false" flat />
           </div>
         </div>
       </div>
@@ -129,10 +129,10 @@ export default {
     const maxelementcount = 5;
     const showExtended = ref(false);
 
-    props.task.value.revisions.forEach((item) =>
+    props.task.revisions.forEach((item) =>
       historicalelements.push(adaptRevision(item))
     );
-    props.task.value.discussions.forEach((item) =>
+    props.task.discussionOwner.discussions.forEach((item) =>
       historicalelements.push(adaptDiscussion(item))
     );
 

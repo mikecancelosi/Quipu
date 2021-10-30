@@ -48,8 +48,6 @@ namespace Quipu.Core.DomainModel
         public virtual Task ParentTask { get; set; }
         public virtual ICollection<Task> Subtasks { get; set; }
         public virtual ICollection<TaskRevision> Revisions { get; set; }
-        public virtual DiscussionOwner DiscussionOwner { get; set; }
-        [NotMapped]
-        public virtual ICollection<Discussion> Discussions => DiscussionOwner?.Discussions ?? new HashSet<Discussion>();
+        public virtual DiscussionOwner DiscussionOwner { get; set; }        
     }
 }

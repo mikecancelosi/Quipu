@@ -19,12 +19,27 @@ namespace Quipu.Core.BLL
 
         public async Task<ActionResult<IEnumerable<DomainModel.Task>>> Get()
         {
-            return await _context.Tasks.ToListAsync();
+
+            return await _context.Tasks.Include(t=>t.Revisions)
+                                            .ThenInclude(r => r.User)
+                                       .Include(t=>t.Status)
+                                       .Include(t=>t.StatusCategory)
+                                       .Include(t=>t.Priority)
+                                       .Include(t=>t.DiscussionOwner)
+                                            .ThenInclude(o=>o.Discussions)
+                                        .Include(t=>t.AssignedToUser)
+                                       .AsSplitQuery()
+                                       .ToListAsync();
         }
 
         public async Task<ActionResult<DomainModel.Task>> Get(int id)
         {
-            var task = await _context.Tasks.FindAsync(id);
+
+            var task = await _context.Tasks.Include(t=>t.Revisions)
+                                           .Include(t=>t.Status)
+                                           .Include(t=>t.Priority)
+                                           .AsSplitQuery()
+                                           .FirstAsync(t => t.ID == id);
 
             return task;
         }

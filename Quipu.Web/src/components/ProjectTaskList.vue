@@ -3,7 +3,7 @@
     <q-drawer v-model="showDetails" side="right" bordered overlay :width="600">
       <taskdetailpreview
         v-if="detailtask.value != null"
-        :task="this.detailtask"
+        :id="detailtask.value.id"
         @hideDetails="showDetails = false"
       />
     </q-drawer>

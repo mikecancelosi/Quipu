@@ -16,11 +16,22 @@ const actions = {
     const discussionlist = (await DiscussionRepository.get()).data;
     commit("setDiscussions", discussionlist);
   },
+
+  async postDiscussion({ commit }, discussion) {
+    return DiscussionRepository.post(discussion)
+      .then((instance) =>
+        commit("postDiscussion", JSON.parse(instance.config.data))
+      )
+      .catch((errorData) => alert(errorData.message));
+  },
 };
 
 const mutations = {
   setDiscussions: (state, discussionlist) => {
     state.discussions = discussionlist;
+  },
+  postDiscussion: (state, discussion) => {
+    state.discussions.push(discussion);
   },
 };
 
