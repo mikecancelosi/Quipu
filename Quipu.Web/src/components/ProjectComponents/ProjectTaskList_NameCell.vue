@@ -59,11 +59,11 @@
 </style>
 
 <script>
-import { ref } from "vue";
+import { onMounted, ref, nextTick } from "vue";
 
 export default {
   name: "StatusCell",
-  emits: ["update-task", "detail-task", "remove-element"],
+  emits: ["update-task", "detail-task", "remove-task"],
   props: {
     task: {},
   },
@@ -74,11 +74,12 @@ export default {
     const updatetask = () => {
       emit("update-task", name, completed);
     };
+    const nameinput = ref(null);
 
     const focusChange = (focus) => {
       if (!focus) {
         if (name.value === "") {
-          emit("remove-element", props.task);
+          emit("remove-task", props.task);
         } else {
           updatetask();
         }
@@ -86,6 +87,14 @@ export default {
         //  root.$nextTick(() => { this.$refs['nameinput'].focus(); });
       }
     };
+
+    onMounted(async () => {
+      if (name.value == "") {
+        await nextTick();
+        console.log(nameinput);
+        nameinput.value.focus();
+      }
+    });
 
     const detailtask = () => {
       emit("detail-task");
@@ -98,6 +107,7 @@ export default {
       updatetask,
       focusChange,
       detailtask,
+      nameinput,
     };
   },
 };

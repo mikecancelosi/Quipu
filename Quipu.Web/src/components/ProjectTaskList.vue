@@ -87,6 +87,7 @@
                       :projectid="element.projectID"
                       :categoryid="element.statusCategoryID"
                       @show-detailtask="showTaskDetail(element)"
+                      @removeTask="removetask(element)"
                     />
                   </template>
 
@@ -256,7 +257,7 @@ export default {
     const updatetask = (task) => {
       console.log(task);
     };
-    const addemptytask = (category) => {
+    const addemptytask = async (category) => {
       console.log(category);
       var categoryname = category.row.name;
       var matchresult = headerrows.filter((row) => {
@@ -272,8 +273,13 @@ export default {
         statusCategoryID: category.row.id,
         projectID: props.project.id,
       });
-      console.log(matchresult.tasks);
-      //root.$nextTick(() => { root.$refs['nameinput'].focus(); });
+    };
+    const removetask = (task) => {
+      var matchresult = headerrows.filter((row) => {
+        return row.id === task.statusCategoryID;
+      })[0];
+
+      matchresult.tasks = matchresult.tasks.filter((task) => task.name !== "");
     };
 
     return {
@@ -287,6 +293,7 @@ export default {
       taskfinishedmoving,
       dragOptions,
       showTaskDetail,
+      removetask,
     };
   },
 };

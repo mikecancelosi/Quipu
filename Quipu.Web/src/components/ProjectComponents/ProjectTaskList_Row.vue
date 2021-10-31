@@ -13,6 +13,7 @@
           :task="this.task.value"
           @detailTask="showdetailtask()"
           @updateTask="(name, completed) => assignname(task, name, completed)"
+          @removeTask="removeTask()"
         />
       </div>
 
@@ -111,7 +112,7 @@ export default {
     projectid: Number, // If this is a new task, we need to know
     categoryid: Number, // what project/category it belongs to.
   },
-  emits: ["show-detailtask"],
+  emits: ["show-detailtask", "remove-task"],
   setup(props, { emit }) {
     const task = reactive({});
     const loaded = ref(false);
@@ -154,7 +155,6 @@ export default {
       updatetask();
     };
     const assignname = (task, name, completed) => {
-      console.log("name");
       task.value.name = name;
       task.value.completed = completed;
       updatetask();
@@ -164,8 +164,11 @@ export default {
     };
 
     const updatetask = () => {
-      console.log("update from row");
       store.dispatch("updateTask", task.value);
+    };
+
+    const removeTask = () => {
+      emit("remove-task");
     };
 
     return {
@@ -179,6 +182,7 @@ export default {
       assignstatus,
       assignname,
       showdetailtask,
+      removeTask,
     };
   },
 };
