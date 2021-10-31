@@ -1,15 +1,18 @@
 ﻿<template>
-  <q-header elevated>
-    <pageheader
-      :title="project.name"
-      :tabs="this.tabs"
-      icon="mdi-google-circles-group"
-    />
-  </q-header>
+  <div v-if="!loading">
+    <q-header elevated>
+      <pageheader
+        :title="project.value.name"
+        :tabs="tabs"
+        icon="mdi-google-circles-group"
+      />
+    </q-header>
 
-  <q-page-container style="padding: 0 0 0 0">
-    <router-view :project="this.project" />
-  </q-page-container>
+    <q-page-container style="padding: 0 0 0 0">
+      <router-view :project="project.value" />
+    </q-page-container>
+  </div>
+  <q-linear-progress query v-if="loading" />
 </template>
 
 <style scoped>
@@ -22,6 +25,8 @@
 <script>
 import pageheader from "./PageHeader";
 import { RepositoryFactory } from "./../repositories/RepositoryFactory";
+import { useRouter } from "vue-router";
+import { onMounted, reactive, ref } from "vue";
 const ProjectRepository = RepositoryFactory.get("projects");
 
 export default {
@@ -30,59 +35,69 @@ export default {
     id: String,
   },
   components: { pageheader },
-  data() {
-    return {
-      project: {},
-      tabs: [
-        {
-          title: "Overview",
-          link: "/Projects/" + this.id + "/Overview",
-          disable: false,
-        },
-        {
-          title: "Task List",
-          link: "/Projects/" + this.id + "/TaskList",
-          disable: false,
-        },
-        {
-          title: "Task Board",
-          disable: true,
-        },
-        {
-          title: "Timeline",
-          disable: true,
-        },
-        {
-          title: "Calendar",
-          disable: true,
-        },
-        {
-          title: "Dashboard",
-          disable: true,
-        },
-        {
-          title: "Messages",
-          disable: true,
-        },
-        {
-          title: "Files",
-          disable: true,
-        },
-      ],
+  setup(props) {
+    const project = reactive({});
+    const tabs = [
+      {
+        title: "Overview",
+        link: "/Projects/" + props.id + "/Overview",
+        disable: false,
+      },
+      {
+        title: "Task List",
+        link: "/Projects/" + props.id + "/TaskList",
+        disable: false,
+        default: true,
+      },
+      {
+        title: "Task Board",
+        disable: true,
+      },
+      {
+        title: "Timeline",
+        disable: true,
+      },
+      {
+        title: "Calendar",
+        disable: true,
+      },
+      {
+        title: "Dashboard",
+        disable: true,
+      },
+      {
+        title: "Messages",
+        disable: true,
+      },
+      {
+        title: "Files",
+        disable: true,
+      },
+    ];
+    const router = useRouter();
+    const loading = ref(true);
+
+    const fetch = async () => {
+      project.value = (await ProjectRepository.getProject(props.id)).data;
+      loading.value = false;
+      console.log(project.value);
     };
-  },
-  methods: {
-    async fetch() {
-      this.project = (await ProjectRepository.getProject(this.id)).data;
-    },
-  },
-  mounted() {
-    this.fetch().then(() => {
-      this.$router.push({
-        name: "ProjectOverview",
-        params: { project: this.project },
+
+    onMounted(() => {
+      fetch().then(() => {
+        router.push({
+          name: "ProjectTaskList",
+          params: { project: project.value },
+        });
       });
     });
+
+    return {
+      project,
+      tabs,
+      loading,
+      fetch,
+    };
   },
 };
 </script>

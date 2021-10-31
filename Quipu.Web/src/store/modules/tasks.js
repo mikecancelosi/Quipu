@@ -18,11 +18,19 @@ const actions = {
   },
 
   updateTask({ commit }, task) {
-    TaskRepository.put(task)
-      .then((instance) =>
-        commit("updateTask", JSON.parse(instance.config.data))
-      )
-      .catch((errorData) => alert(errorData.message));
+    if (task.id !== 0 && task.id !== undefined) {
+      TaskRepository.put(task)
+        .then((instance) =>
+          commit("updateTask", JSON.parse(instance.config.data))
+        )
+        .catch((errorData) => alert(errorData.message));
+    } else {
+      TaskRepository.post(task)
+        .then((instance) =>
+          commit("updateTask", JSON.parse(instance.config.data))
+        )
+        .catch((errorData) => alert(errorData.message));
+    }
   },
 };
 

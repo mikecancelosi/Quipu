@@ -8,7 +8,7 @@
       />
     </q-drawer>
     <div id="contentcontainer">
-      <div class="row" style="padding: 15px 30px">
+      <div id="tableCommandBar" class="row" style="padding: 15px 30px">
         <q-space />
         <div id="heading-options">
           <q-btn
@@ -32,14 +32,14 @@
       </div>
 
       <q-table
-        :columns="this.headercolumns"
-        :rows="this.headerrows"
+        :columns="headercolumns"
+        :rows="headerrows"
         separator="vertical"
         style="background-color: transparent"
         flat
         hide-pagination
       >
-        <template v-slot:header="props">
+        <template v-slot:header="columnList">
           <div
             class="row"
             style="
@@ -48,18 +48,22 @@
               border-top: solid 1px gray;
             "
           >
-            <q-th v-for="col in props.cols" :key="col.name" :props="props">
+            <q-th
+              v-for="col in columnList.cols"
+              :key="col.name"
+              :props="columnList"
+            >
               {{ col.label }}
             </q-th>
           </div>
         </template>
 
-        <template v-slot:body="props">
-          <q-tr :props="props">
-            <q-td id="datacell" key="name" :props="props" colspan="100%">
+        <template v-slot:body="taskRows">
+          <q-tr :props="taskRows">
+            <q-td id="datacell" key="name" :props="taskRows" colspan="100%">
               <q-expansion-item
-                :label="props.row.name"
-                v-model="props.row.expanded"
+                :label="taskRows.row.name"
+                v-model="taskRows.row.expanded"
                 switch-toggle-side
                 expand-icon-toggle
                 dense-toggle
@@ -68,24 +72,26 @@
               >
                 <draggable
                   class="list-group"
-                  :list="props.row.tasks"
-                  group="people"
-                  itemKey="name"
+                  v-model="taskRows.row.tasks"
+                  group="tasks"
+                  item-key="id"
                   v-bind="dragOptions"
                   @start="drag = true"
                   @end="drag = false"
-                  @change="(arg) => taskfinishedmoving(arg, props.row)"
+                  @change="(arg) => taskfinishedmoving(arg, taskRows.row)"
                   handle=".handle"
                 >
                   <template #item="{ element }">
                     <row
                       :id="element.id"
+                      :projectid="element.projectID"
+                      :categoryid="element.statusCategoryID"
                       @show-detailtask="showTaskDetail(element)"
                     />
                   </template>
 
                   <template #footer>
-                    <div class="addtaskrow" @click="addemptytask(props)">
+                    <div class="addtaskrow" @click="addemptytask(taskRows)">
                       <a style="margin-left: 40px; color: darkgray">
                         Add task...
                       </a>
@@ -181,6 +187,7 @@ export default {
   },
   setup(props) {
     const store = useStore();
+    //Table Setup
     const headercolumns = [
       {
         name: "name",
@@ -213,20 +220,49 @@ export default {
         headerClasses: "headercol tablecol statuscol",
       },
     ];
-
-    const headerrows = computed(() =>
+    const headerrows = reactive(
       store.getters.getTaskStatusCategoryGroups(props.project)
-    ).value;
+    );
+
+    //Dragging
     const drag = ref(false);
+    const dragOptions = computed(() => {
+      return {
+        animation: 200,
+        group: "description",
+        disabled: false,
+        ghostClass: "ghost",
+      };
+    });
+    const taskfinishedmoving = (args, group) => {
+      if (args.added != null) {
+        args.added.element.statusCategory = headerrows.filter(
+          (status) => status.id === group.id
+        )[0];
+
+        updatetask(args.added.element);
+      }
+    };
+
+    //Details
     const showDetails = ref(false);
     const detailtask = reactive({});
+    const showTaskDetail = (task) => {
+      detailtask.value = task;
+      showDetails.value = true;
+    };
 
-    const updatetask = () => {};
+    //Modifications
+    const updatetask = (task) => {
+      console.log(task);
+    };
     const addemptytask = (category) => {
+      console.log(category);
       var categoryname = category.row.name;
       var matchresult = headerrows.filter((row) => {
         return row.name === categoryname;
       })[0];
+
       matchresult.tasks.push({
         name: "",
         description: "",
@@ -236,29 +272,8 @@ export default {
         statusCategoryID: category.row.id,
         projectID: props.project.id,
       });
+      console.log(matchresult.tasks);
       //root.$nextTick(() => { root.$refs['nameinput'].focus(); });
-    };
-    const taskfinishedmoving = (args, group) => {
-      if (args.added != null) {
-        args.added.element.statusCategory = headerrows.filter(
-          (status) => status.id === group.id
-        )[0];
-        updatetask(args.added.element);
-      }
-    };
-
-    const dragOptions = computed(() => {
-      return {
-        animation: 200,
-        group: "description",
-        disabled: false,
-        ghostClass: "ghost",
-      };
-    });
-
-    const showTaskDetail = (task) => {
-      detailtask.value = task;
-      showDetails.value = true;
     };
 
     return {

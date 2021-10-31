@@ -108,6 +108,8 @@ export default {
   components: { assigneecell, datecell, prioritycell, statuscell, namecell },
   props: {
     id: Number,
+    projectid: Number, // If this is a new task, we need to know
+    categoryid: Number, // what project/category it belongs to.
   },
   emits: ["show-detailtask"],
   setup(props, { emit }) {
@@ -116,10 +118,23 @@ export default {
     const store = useStore();
     const detailtask = reactive({});
 
-    (async () => {
-      task.value = await store.getters.getTaskByID(props.id);
+    if (props.id > 0) {
+      (async () => {
+        task.value = await store.getters.getTaskByID(props.id);
+        loaded.value = true;
+      })();
+    } else {
+      task.value = {
+        name: "",
+        description: "",
+        completed: false,
+        startDate: "0001-01-01T00:00:00",
+        endDate: "0001-01-01T00:00:00",
+        projectID: props.projectid,
+        statusCategoryID: props.categoryid,
+      };
       loaded.value = true;
-    })();
+    }
 
     const assignuser = (task, newuserid) => {
       task.value.assignedToUserID = newuserid;
@@ -139,6 +154,7 @@ export default {
       updatetask();
     };
     const assignname = (task, name, completed) => {
+      console.log("name");
       task.value.name = name;
       task.value.completed = completed;
       updatetask();
@@ -148,6 +164,7 @@ export default {
     };
 
     const updatetask = () => {
+      console.log("update from row");
       store.dispatch("updateTask", task.value);
     };
 

@@ -16,16 +16,16 @@
       </a>
     </div>
 
-    <q-tabs id="tabsContainer" v-if="hasTabs" dense>
+    <q-tabs id="tabsContainer" v-if="hasTabs" v-model="selectedtab" dense>
       <div v-for="tab in tabs" :key="tab">
         <div>
           <q-tab
             class="tabOption"
             :disable="tab.disable"
-            @click="this.$router.push(tab.link)"
-          >
-            {{ tab.title }}
-          </q-tab>
+            :to="tab.link"
+            :label="tab.title"
+            :name="tab.title"
+          />
         </div>
       </div>
     </q-tabs>
@@ -52,9 +52,6 @@
   font-size: 24px;
 }
 
-.tabOption {
-}
-
 .denseTitle {
   margin-bottom: 25px;
 }
@@ -62,25 +59,25 @@
 
 <script>
 import { mapGetters, mapActions } from "vuex";
-import { computed } from "vue";
+import { computed, ref } from "vue";
 export default {
   name: "PageHeader",
-  setup(props) {
-    const hasTabs = computed(() => props.tabs?.length ?? 0 > 0);
-
-    return { hasTabs };
-  },
-  computed: mapGetters(["leftDrawerOpen"]),
   props: {
     title: String,
     icon: String,
     tabs: Array,
   },
-  data() {
-    return {
-      project: {},
-    };
+  setup(props) {
+    const hasTabs = computed(() => props.tabs?.length ?? 0 > 0);
+    const selectedtab = ref();
+    if (props.tabs != null) {
+      selectedtab.value =
+        props.tabs?.find((x) => x.default === true)?.title ?? "";
+      console.log(props, selectedtab);
+    }
+    return { hasTabs, selectedtab };
   },
+  computed: mapGetters(["leftDrawerOpen"]),
   methods: {
     ...mapActions(["toggleLeftDrawerOpen"]),
   },

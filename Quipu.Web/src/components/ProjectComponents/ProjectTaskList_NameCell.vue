@@ -1,5 +1,5 @@
 ﻿<template>
-  <div class="cell" @mouseenter="hover = true" @mouseleave="hover = false">
+  <div class="cell">
     <div class="row">
       <div>
         <q-btn
@@ -22,8 +22,8 @@
         borderless
         v-model="name"
         style="height: 100%"
-        @update:model-value="(val) => tasklostfocus(true)"
-        @blur="(evt) => tasklostfocus()"
+        @update:model-value="(val) => focusChange(true)"
+        @blur="(evt) => focusChange(false)"
       />
       <q-space />
       <q-btn
@@ -68,7 +68,6 @@ export default {
     task: {},
   },
   setup(props, { emit }) {
-    const hover = ref(false);
     const showdropdown = ref(false);
     const name = ref(props.task.name);
     const completed = ref(props.task.completed);
@@ -76,13 +75,14 @@ export default {
       emit("update-task", name, completed);
     };
 
-    const tasklostfocus = () => {
-      if (name.value === "") {
-        emit("remove-element", props.task);
+    const focusChange = (focus) => {
+      if (!focus) {
+        if (name.value === "") {
+          emit("remove-element", props.task);
+        } else {
+          updatetask();
+        }
       } else {
-        updatetask();
-      }
-      if (focus) {
         //  root.$nextTick(() => { this.$refs['nameinput'].focus(); });
       }
     };
@@ -92,12 +92,11 @@ export default {
     };
 
     return {
-      hover,
       showdropdown,
       name,
       completed,
       updatetask,
-      tasklostfocus,
+      focusChange,
       detailtask,
     };
   },

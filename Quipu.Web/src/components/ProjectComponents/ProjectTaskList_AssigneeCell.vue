@@ -5,26 +5,12 @@
     @mouseleave="hover = false"
     v-if="loaded"
   >
-    <q-btn
-      icon="o_person_outline"
-      round
-      outline
-      dense
-      size="10px"
-      v-if="hover && !showdropdown && newuser == null"
-      @click="assignUserClicked()"
-      :style="{
-        visibility: newuser.value.value.id === null ? 'visible' : 'collapse',
-      }"
-    />
     <q-select
       dense
       v-model="newuser.value"
-      :hide-dropdown-icon="!hover && !showdropdown"
+      :hide-dropdown-icon="!hover"
       :options="allUserDropdownOptions"
       @update:model-value="updatetask()"
-      @popup-hide="showdropdown = false"
-      v-if="showdropdown || newuser.value != null"
       borderless
       emit-value
     >
@@ -65,7 +51,6 @@ export default {
   },
   setup(props, { emit }) {
     const hover = ref(false);
-    const showdropdown = ref(false);
     const newuser = reactive({});
     const loaded = ref(false);
     const store = useStore();
@@ -90,7 +75,6 @@ export default {
       hover,
       newid,
       loaded,
-      showdropdown,
       newuser,
       updatetask,
       allUserDropdownOptions,
