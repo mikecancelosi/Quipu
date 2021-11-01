@@ -214,7 +214,9 @@ export default {
     const task = reactive({});
     const loaded = ref(false);
 
+    console.log("up");
     (async () => {
+      console.log("up!");
       task.value = await store.getters.getTaskByID(props.id);
       loaded.value = true;
     })();

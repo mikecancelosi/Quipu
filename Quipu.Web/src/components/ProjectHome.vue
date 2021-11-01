@@ -1,18 +1,20 @@
 ﻿<template>
-  <div v-if="!loading">
-    <q-header elevated>
-      <pageheader
-        :title="project.value.name"
-        :tabs="tabs"
-        icon="mdi-google-circles-group"
-      />
-    </q-header>
+  <div>
+    <div v-if="!loading">
+      <q-header elevated>
+        <pageheader
+          :title="project.value.name"
+          :tabs="tabs"
+          icon="mdi-google-circles-group"
+        />
+      </q-header>
 
-    <q-page-container style="padding: 0 0 0 0">
-      <router-view :project="project.value" />
-    </q-page-container>
+      <q-page-container style="padding: 0 0 0 0">
+        <router-view :project="project.value" />
+      </q-page-container>
+    </div>
+    <q-linear-progress query v-if="loading" />
   </div>
-  <q-linear-progress query v-if="loading" />
 </template>
 
 <style scoped>
@@ -80,7 +82,6 @@ export default {
     const fetch = async () => {
       project.value = (await ProjectRepository.getProject(props.id)).data;
       loading.value = false;
-      console.log(project.value);
     };
 
     onMounted(() => {

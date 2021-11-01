@@ -1,5 +1,5 @@
 ﻿<template>
-  <div class="container">
+  <div class="container" v-if="historicalelements.length > 0">
     <q-btn
       flat
       v-if="displayShowExtended"
@@ -132,9 +132,12 @@ export default {
     props.task.revisions.forEach((item) =>
       historicalelements.push(adaptRevision(item))
     );
-    props.task.discussionOwner.discussions.forEach((item) =>
-      historicalelements.push(adaptDiscussion(item))
-    );
+
+    if (props.task.discussionOwner !== null) {
+      props.task.discussionOwner.discussions.forEach((item) =>
+        historicalelements.push(adaptDiscussion(item))
+      );
+    }
 
     historicalelements.sort(function (a, b) {
       if (a.date > b.date) {

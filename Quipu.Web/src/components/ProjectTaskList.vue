@@ -5,6 +5,7 @@
         v-if="detailtask.value != null"
         :id="detailtask.value.id"
         @hideDetails="showDetails = false"
+        :key="detailsKey"
       />
     </q-drawer>
     <div id="contentcontainer">
@@ -82,17 +83,23 @@
                   handle=".handle"
                 >
                   <template #item="{ element }">
-                    <row
-                      :id="element.id"
-                      :projectid="element.projectID"
-                      :categoryid="element.statusCategoryID"
-                      @show-detailtask="showTaskDetail(element)"
-                      @removeTask="removetask(element)"
-                    />
+                    <div class="list-group-item" :key="element.id">
+                      <row
+                        :id="element.id"
+                        :projectid="element.projectID"
+                        :categoryid="element.statusCategoryID"
+                        @show-detailtask="showTaskDetail(element)"
+                        @removeTask="removetask(element)"
+                      />
+                    </div>
                   </template>
 
                   <template #footer>
-                    <div class="addtaskrow" @click="addemptytask(taskRows)">
+                    <div
+                      class="addtaskrow"
+                      key="footer"
+                      @click="addemptytask(taskRows)"
+                    >
                       <a style="margin-left: 40px; color: darkgray">
                         Add task...
                       </a>
@@ -246,10 +253,13 @@ export default {
     };
 
     //Details
+    const detailsKey = ref(0);
     const showDetails = ref(false);
     const detailtask = reactive({});
     const showTaskDetail = (task) => {
       detailtask.value = task;
+      detailsKey.value += 1;
+      console.log(detailsKey);
       showDetails.value = true;
     };
 
@@ -258,7 +268,6 @@ export default {
       console.log(task);
     };
     const addemptytask = async (category) => {
-      console.log(category);
       var categoryname = category.row.name;
       var matchresult = headerrows.filter((row) => {
         return row.name === categoryname;
@@ -294,6 +303,7 @@ export default {
       dragOptions,
       showTaskDetail,
       removetask,
+      detailsKey,
     };
   },
 };

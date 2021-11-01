@@ -73,7 +73,6 @@ export default {
     if (props.tabs != null) {
       selectedtab.value =
         props.tabs?.find((x) => x.default === true)?.title ?? "";
-      console.log(props, selectedtab);
     }
     return { hasTabs, selectedtab };
   },
