@@ -74,10 +74,10 @@ namespace Quipu.Core.BLL
       
         public async Task<DomainModel.Task> Post(DomainModel.Task task)
         {
-            _context.Tasks.Add(task);
+            var newTask = _context.Tasks.Add(task);
             await _context.SaveChangesAsync();
 
-            return task;
+            return newTask.Entity;
         }
        
         public async Task<bool> Delete(int id)

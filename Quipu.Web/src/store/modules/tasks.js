@@ -14,7 +14,7 @@ const getters = {
   },
   getTasksByTaskStatusCategoryID: (state) => (taskstatuscategoryid) => {
     return state.tasks.filter(
-      (task) => task.statusCategory.id === taskstatuscategoryid
+      (task) => task.statusCategoryID === taskstatuscategoryid
     );
   },
 };
@@ -27,16 +27,17 @@ const actions = {
 
   updateTask({ commit }, task) {
     if (task.id !== 0 && task.id !== undefined) {
-      TaskRepository.put(task)
-        .then((instance) =>
-          commit("updateTask", JSON.parse(instance.config.data))
-        )
+      return TaskRepository.put(task)
+        .then((instance) => {
+          console.log("put");
+          commit("updateTask", JSON.parse(instance.config.data));
+        })
         .catch((errorData) => alert(errorData.message));
     } else {
-      TaskRepository.post(task)
-        .then((instance) =>
-          commit("updateTask", JSON.parse(instance.config.data))
-        )
+      return TaskRepository.post(task)
+        .then((instance) => {
+          commit("updateTask", instance.data);
+        })
         .catch((errorData) => alert(errorData.message));
     }
   },
@@ -53,6 +54,7 @@ const mutations = {
     } else {
       state.tasks.push(task);
     }
+    console.log(task);
   },
 };
 

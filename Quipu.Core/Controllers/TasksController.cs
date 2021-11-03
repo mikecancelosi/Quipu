@@ -65,7 +65,7 @@ namespace Quipu.Core.Controllers
             DomainModel.Task postedTask = await modelService.Post(task);
             if(postedTask != null)
             {
-               return CreatedAtAction("GetTask", new { id = postedTask.ID }, postedTask);
+                return Ok(postedTask);
             }
             else
             {

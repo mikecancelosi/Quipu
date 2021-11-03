@@ -112,7 +112,7 @@ export default {
     projectid: Number, // If this is a new task, we need to know
     categoryid: Number, // what project/category it belongs to.
   },
-  emits: ["show-detailtask", "remove-task"],
+  emits: ["show-detailtask", "remove-task", "task-updated"],
   setup(props, { emit }) {
     const task = reactive({});
     const loaded = ref(false);
@@ -163,8 +163,10 @@ export default {
       emit("show-detailtask", task.value.id);
     };
 
-    const updatetask = () => {
-      store.dispatch("updateTask", task.value);
+    const updatetask = async () => {
+      await store.dispatch("updateTask", task.value);
+      console.log("Emitt!");
+      emit("task-updated");
     };
 
     const removeTask = () => {

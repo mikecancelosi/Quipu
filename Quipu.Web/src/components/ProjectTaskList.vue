@@ -105,8 +105,8 @@
                           :id="emptytask.id"
                           :projectid="emptytask.projectID"
                           :categoryid="emptytask.statusCategoryID"
-                          @show-detailtask="showTaskDetail(emptytask)"
                           @removeTask="removetask(emptytask)"
+                          @taskUpdated="onTaskUpdated()"
                         />
                       </div>
                       <div
@@ -269,6 +269,9 @@ export default {
         updatetask(args.added.element);
       }
     };
+    const updatetask = (task) => {
+      console.log(task);
+    };
 
     //Details
     const detailsKey = ref(0);
@@ -280,11 +283,6 @@ export default {
       showDetails.value = true;
     };
     const refreshTask = () => {};
-
-    //Modifications
-    const updatetask = (task) => {
-      console.log(task);
-    };
 
     // New Task
     const emptytask = reactive({
@@ -298,6 +296,10 @@ export default {
     });
     const addemptytask = async (category) => {
       emptytask.statusCategoryID = category.row.id;
+    };
+    const onTaskUpdated = () => {
+      console.log(headerrows);
+      emptytask.statusCategoryID = 0;
     };
 
     const removetask = (task) => {
@@ -330,6 +332,7 @@ export default {
       refreshTask,
       tablekey,
       emptytask,
+      onTaskUpdated,
     };
   },
 };
