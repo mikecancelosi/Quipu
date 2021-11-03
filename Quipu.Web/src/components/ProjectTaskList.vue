@@ -97,14 +97,27 @@
                   </template>
 
                   <template #footer>
-                    <div
-                      class="addtaskrow"
-                      key="footer"
-                      @click="addemptytask(taskRows)"
-                    >
-                      <a style="margin-left: 40px; color: darkgray">
-                        Add task...
-                      </a>
+                    <div>
+                      <div
+                        v-if="emptytask.statusCategoryID === taskRows.row.id"
+                      >
+                        <row
+                          :id="emptytask.id"
+                          :projectid="emptytask.projectID"
+                          :categoryid="emptytask.statusCategoryID"
+                          @show-detailtask="showTaskDetail(emptytask)"
+                          @removeTask="removetask(emptytask)"
+                        />
+                      </div>
+                      <div
+                        class="addtaskrow"
+                        key="footer"
+                        @click="addemptytask(taskRows)"
+                      >
+                        <a style="margin-left: 40px; color: darkgray">
+                          Add task...
+                        </a>
+                      </div>
                     </div>
                   </template>
                 </draggable>
@@ -199,6 +212,7 @@ export default {
     const tablekey = ref(0);
     const store = useStore();
     //Table Setup
+
     const headercolumns = [
       {
         name: "name",
@@ -231,8 +245,8 @@ export default {
         headerClasses: "headercol tablecol statuscol",
       },
     ];
+
     const headerrows = computed(() => {
-      tablekey.value += 1;
       return store.getters.getTaskStatusCategoryGroups(props.project);
     });
 
@@ -271,28 +285,33 @@ export default {
     const updatetask = (task) => {
       console.log(task);
     };
+
+    // New Task
+    const emptytask = reactive({
+      name: "",
+      description: "",
+      completed: false,
+      startDate: "0001-01-01T00:00:00",
+      endDate: "0001-01-01T00:00:00",
+      statusCategoryID: 0,
+      projectID: props.project.id,
+    });
     const addemptytask = async (category) => {
-      var categoryname = category.row.name;
-      var matchresult = headerrows.value.filter((row) => {
-        return row.name === categoryname;
-      })[0];
-
-      matchresult.tasks.push({
-        name: "",
-        description: "",
-        completed: false,
-        startDate: "0001-01-01T00:00:00",
-        endDate: "0001-01-01T00:00:00",
-        statusCategoryID: category.row.id,
-        projectID: props.project.id,
-      });
+      emptytask.statusCategoryID = category.row.id;
     };
-    const removetask = (task) => {
-      var matchresult = headerrows.value.filter((row) => {
-        return row.id === task.statusCategoryID;
-      })[0];
 
-      matchresult.tasks = matchresult.tasks.filter((task) => task.name !== "");
+    const removetask = (task) => {
+      if (task.id === 0 || task.id === undefined) {
+        emptytask.statusCategoryID = 0;
+      } else {
+        var matchresult = headerrows.value.filter((row) => {
+          return row.id === task.statusCategoryID;
+        })[0];
+
+        matchresult.tasks = matchresult.tasks.filter(
+          (task) => task.name !== ""
+        );
+      }
     };
 
     return {
@@ -310,6 +329,7 @@ export default {
       detailsKey,
       refreshTask,
       tablekey,
+      emptytask,
     };
   },
 };

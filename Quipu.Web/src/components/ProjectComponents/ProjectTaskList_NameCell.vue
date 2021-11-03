@@ -91,7 +91,6 @@ export default {
     onMounted(async () => {
       if (name.value == "") {
         await nextTick();
-        console.log(nameinput);
         nameinput.value.focus();
       }
     });
