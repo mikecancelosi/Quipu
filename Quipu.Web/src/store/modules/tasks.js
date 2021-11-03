@@ -9,6 +9,14 @@ const getters = {
   getTaskByID: (state) => (id) => {
     return state.tasks.find((x) => x.id === id);
   },
+  getTasksByProjectID: (state) => (projectid) => {
+    return state.tasks.filter((task) => task.projectID === projectid);
+  },
+  getTasksByTaskStatusCategoryID: (state) => (taskstatuscategoryid) => {
+    return state.tasks.filter(
+      (task) => task.statusCategory.id === taskstatuscategoryid
+    );
+  },
 };
 
 const actions = {

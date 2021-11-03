@@ -5,6 +5,7 @@
         v-if="detailtask.value != null"
         :id="detailtask.value.id"
         @hideDetails="showDetails = false"
+        @taskUpdated="refreshTask()"
         :key="detailsKey"
       />
     </q-drawer>
@@ -37,6 +38,7 @@
         :rows="headerrows"
         separator="vertical"
         style="background-color: transparent"
+        :key="tablekey"
         flat
         hide-pagination
       >
@@ -194,6 +196,7 @@ export default {
     project: {},
   },
   setup(props) {
+    const tablekey = ref(0);
     const store = useStore();
     //Table Setup
     const headercolumns = [
@@ -228,9 +231,11 @@ export default {
         headerClasses: "headercol tablecol statuscol",
       },
     ];
-    const headerrows = reactive(
-      store.getters.getTaskStatusCategoryGroups(props.project)
-    );
+    const headerrows = computed(() => {
+      tablekey.value += 1;
+      console.log("h");
+      return store.getters.getTaskStatusCategoryGroups(props.project);
+    });
 
     //Dragging
     const drag = ref(false);
@@ -244,7 +249,7 @@ export default {
     });
     const taskfinishedmoving = (args, group) => {
       if (args.added != null) {
-        args.added.element.statusCategory = headerrows.filter(
+        args.added.element.statusCategory = headerrows.value.filter(
           (status) => status.id === group.id
         )[0];
 
@@ -259,9 +264,9 @@ export default {
     const showTaskDetail = (task) => {
       detailtask.value = task;
       detailsKey.value += 1;
-      console.log(detailsKey);
       showDetails.value = true;
     };
+    const refreshTask = () => {};
 
     //Modifications
     const updatetask = (task) => {
@@ -269,7 +274,7 @@ export default {
     };
     const addemptytask = async (category) => {
       var categoryname = category.row.name;
-      var matchresult = headerrows.filter((row) => {
+      var matchresult = headerrows.value.filter((row) => {
         return row.name === categoryname;
       })[0];
 
@@ -284,7 +289,7 @@ export default {
       });
     };
     const removetask = (task) => {
-      var matchresult = headerrows.filter((row) => {
+      var matchresult = headerrows.value.filter((row) => {
         return row.id === task.statusCategoryID;
       })[0];
 
@@ -304,6 +309,8 @@ export default {
       showTaskDetail,
       removetask,
       detailsKey,
+      refreshTask,
+      tablekey,
     };
   },
 };

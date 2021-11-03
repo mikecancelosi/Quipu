@@ -23,24 +23,7 @@ namespace Quipu.Core.BLL
 
         public async Task<ActionResult<Project>> Get(int id)
         {
-            var project = await _context.Projects
-                                        .Include(p => p.Tasks)
-                                            .ThenInclude(t => t.Status)
-                                        .Include(p => p.Tasks)
-                                            .ThenInclude(t => t.Priority)
-                                        .Include(p => p.Tasks)
-                                            .ThenInclude(t => t.AssignedToUser)
-                                        .Include(p => p.Tasks)
-                                            .ThenInclude(t => t.DiscussionOwner)
-                                                .ThenInclude(o=>o.Discussions)
-                                        .Include(p=>p.Tasks)
-                                            .ThenInclude(t=>t.StatusCategory)
-                                        .Include(p => p.Tasks)
-                                            .ThenInclude(t => t.Revisions)
-                                                .ThenInclude(r=>r.User)
-                                        .AsSplitQuery()
-                                        .FirstOrDefaultAsync(p => p.ID == id)
-                                        ;
+            var project = await _context.Projects.FindAsync(id);
 
             return project;
         }

@@ -40,6 +40,7 @@ export default {
     this.fetchTaskStatusCategories();
     this.fetchTasks();
     this.fetchUsers();
+    this.fetchProjects();
   },
   mounted() {
     this.$router.push("/Home");
@@ -51,6 +52,7 @@ export default {
       "fetchTaskStatusCategories",
       "fetchTasks",
       "fetchUsers",
+      "fetchProjects",
     ]),
   },
 };

@@ -55,7 +55,7 @@
           <assigneecell
             :userid="task.value.assignedToUserID"
             class="value"
-            @updateTask="(newuser) => assignuser(element, newuser)"
+            @updateTask="(newuser) => assignuser(newuser)"
           />
         </div>
 
@@ -203,7 +203,7 @@ export default {
     discussionreply,
     taskhistory,
   },
-  emits: ["update-task", "hide-details"],
+  emits: ["update-task", "hide-details", "task-updated"],
   props: {
     id: Number,
   },
@@ -214,9 +214,7 @@ export default {
     const task = reactive({});
     const loaded = ref(false);
 
-    console.log("up");
     (async () => {
-      console.log("up!");
       task.value = await store.getters.getTaskByID(props.id);
       loaded.value = true;
     })();
@@ -241,8 +239,33 @@ export default {
       refreshTask();
     };
 
-    const updateTask = () => {
+    const assignuser = async (newuserid) => {
+      task.value.assignedToUser = await store.getters.getUserByID(newuserid);
+      task.value.assignedToUserID = newuserid;
+      updatetask();
+    };
+    const assigndates = (startdate, enddate) => {
+      task.value.startDate = startdate;
+      task.value.endDate = enddate;
+      updatetask();
+    };
+    const assignpriority = (priorityid) => {
+      task.value.priorityID = priorityid;
+      updatetask();
+    };
+    const assignstatus = (statusid) => {
+      task.value.statusID = statusid;
+      updatetask();
+    };
+    const assignname = (name, completed) => {
+      task.value.name = name;
+      task.value.completed = completed;
+      updatetask();
+    };
+
+    const updatetask = () => {
       store.dispatch("updateTask", task.value);
+      emit("task-updated");
     };
 
     const refreshTask = async () => {
@@ -253,13 +276,18 @@ export default {
     return {
       hover,
       componentKey,
-      updateTask,
+      updatetask,
       hideself,
       refreshComponents,
       addDiscussion,
       task,
       loaded,
       refreshTask,
+      assignname,
+      assignstatus,
+      assignuser,
+      assigndates,
+      assignpriority,
     };
   },
   updated() {

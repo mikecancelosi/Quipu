@@ -52,48 +52,45 @@
 </style>
 
 <script>
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import pageheader from "./PageHeader";
-import { RepositoryFactory } from "./../repositories/RepositoryFactory";
-const ProjectRepository = RepositoryFactory.get("projects");
+import { useStore } from "vuex";
+import { useRouter } from "vue-router";
 
 export default {
   name: "ProjectsList",
   components: { pageheader },
-  data() {
-    return {
-      columns: [
-        { name: "name", label: "Project Name", field: "name", align: "left" },
-        { name: "status", label: "Status", field: "status", align: "left" },
-        {
-          name: "priority",
-          label: "Priority",
-          field: "priority",
-          align: "left",
-        },
-      ],
-      projects: [],
-      pagination: ref({
-        sortBy: "desc",
-        descending: false,
-        page: 1,
-        rowsPerPage: 10,
-        rowsNumber: 10,
-      }),
-      loading: true,
+  setup() {
+    const columns = [
+      { name: "name", label: "Project Name", field: "name", align: "left" },
+      { name: "status", label: "Status", field: "status", align: "left" },
+      {
+        name: "priority",
+        label: "Priority",
+        field: "priority",
+        align: "left",
+      },
+    ];
+    const pagination = ref({
+      sortBy: "desc",
+      descending: false,
+      page: 1,
+      rowsPerPage: 10,
+      rowsNumber: 10,
+    });
+    const store = useStore();
+    const loading = computed(() => (projects.value?.length ?? 0) <= 0);
+    const projects = computed(() => store.getters.getProjects);
+    const router = useRouter();
+
+    const navigateToProject = (evt, row) => {
+      router.push({
+        name: "ProjectHome",
+        params: { id: row.id },
+      });
     };
-  },
-  methods: {
-    async fetch() {
-      this.projects = (await ProjectRepository.get()).data;
-      this.loading = false;
-    },
-    navigateToProject(evt, row) {
-      this.$router.push("/Projects/" + row.id);
-    },
-  },
-  mounted() {
-    this.fetch();
+
+    return { columns, projects, pagination, loading, navigateToProject };
   },
 };
 </script>

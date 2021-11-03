@@ -6,16 +6,14 @@ const state = {
 
 const getters = {
   getTaskStatusCategories: (state) => state.taskStatusCategories,
-  getTaskStatusCategoryGroups: (state) => (project) => {
+  getTaskStatusCategoryGroups: (state, store) => () => {
     const groups = [];
     state.taskStatusCategories.forEach((group) => {
       groups.push({
         id: group.id,
         name: group.name,
         expanded: true,
-        tasks: project.tasks.filter((task) => {
-          return task.statusCategory.id === group.id;
-        }),
+        tasks: store.getTasksByTaskStatusCategoryID(group.id),
       });
     });
     return groups;
