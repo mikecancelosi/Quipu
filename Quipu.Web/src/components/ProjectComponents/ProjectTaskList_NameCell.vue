@@ -15,16 +15,17 @@
           icon="o_check_circle_outline"
         />
       </div>
-      <q-input
-        ref="nameinput"
-        debounce="1000"
-        dense
-        borderless
-        v-model="name"
-        style="height: 100%"
-        @update:model-value="(val) => focusChange(true)"
-        @blur="(evt) => focusChange(false)"
-      />
+      <div id="inputContainer">
+        <q-input
+          ref="nameinput"
+          debounce="1000"
+          dense
+          borderless
+          v-model="name"
+          @update:model-value="(val) => focusChange(true)"
+          @blur="(evt) => focusChange(false)"
+        />
+      </div>
       <q-space />
       <q-btn
         label="Details"
@@ -55,6 +56,10 @@
 
 .list-row-noicon .tablecol:hover .showonhover {
   visibility: visible;
+}
+/* quickfix for inputs cutting off */
+#inputContainer {
+  width: 500px;
 }
 </style>
 

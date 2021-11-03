@@ -2,12 +2,14 @@
   <div class="full-height column" id="pagecontainer" v-if="loaded">
     <div id="headercontainer" class="row bg-dark">
       <q-btn
-        label="Mark complete"
+        :label="taskcompleted ? 'Completed' : 'Mark complete'"
         icon="o_done"
         dense
         outline
+        v-bind:style="{ color: taskcompleted ? 'green' : 'white' }"
         no-caps
         size="10px;"
+        @click="toggleComplete()"
       />
       <q-space />
 
@@ -103,7 +105,8 @@
             textarea
             autogrow
             outlined
-            v-model="task.value.description"
+            v-model="description"
+            @blur="assigndescription()"
             class="descriptionInput"
           />
         </div>
@@ -195,7 +198,7 @@ import statuscell from "./ProjectTaskList_StatusCell";
 import subtasks from "./ProjectTaskList_Subtasks";
 import discussionreply from "./ProjectTaskList_TaskDiscussionReply";
 import taskhistory from "./ProjectTaskList_TaskHistory";
-import { reactive, ref } from "vue";
+import { reactive, ref, computed } from "vue";
 import { useStore } from "vuex";
 
 export default {
@@ -219,9 +222,11 @@ export default {
     const store = useStore();
     const task = reactive({});
     const loaded = ref(false);
+    const description = ref("");
 
     (async () => {
       task.value = await store.getters.getTaskByID(props.id);
+      description.value = task.value.description;
       loaded.value = true;
     })();
 
@@ -270,6 +275,10 @@ export default {
       task.value.completed = completed;
       updatetask();
     };
+    const assigndescription = () => {
+      task.value.description = description.value;
+      updatetask();
+    };
 
     const updatetask = () => {
       store.dispatch("updateTask", task.value);
@@ -280,6 +289,16 @@ export default {
       task.value = await store.getters.getTaskByID(props.id);
       refreshComponents();
     };
+
+    //Completed btn
+    const toggleComplete = () => {
+      task.value.completed = !task.value.completed;
+      updatetask();
+    };
+
+    const taskcompleted = computed(() => {
+      return task?.value.completed ?? false;
+    });
 
     return {
       hover,
@@ -296,10 +315,11 @@ export default {
       assignuser,
       assigndates,
       assignpriority,
+      description,
+      assigndescription,
+      taskcompleted,
+      toggleComplete,
     };
-  },
-  updated() {
-    this.description = this.task.description;
   },
 };
 </script>

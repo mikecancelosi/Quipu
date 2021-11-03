@@ -299,7 +299,6 @@ export default {
       emptytask.statusCategoryID = category.row.id;
     };
     const onTaskUpdated = () => {
-      console.log(headerrows);
       emptytask.statusCategoryID = 0;
     };
 
