@@ -247,6 +247,7 @@ export default {
     ];
 
     const headerrows = computed(() => {
+      tablekey.value += 1;
       return store.getters.getTaskStatusCategoryGroups(props.project);
     });
 

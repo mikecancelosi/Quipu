@@ -29,7 +29,6 @@ const actions = {
     if (task.id !== 0 && task.id !== undefined) {
       return TaskRepository.put(task)
         .then((instance) => {
-          console.log("put");
           commit("updateTask", JSON.parse(instance.config.data));
         })
         .catch((errorData) => alert(errorData.message));
@@ -54,7 +53,6 @@ const mutations = {
     } else {
       state.tasks.push(task);
     }
-    console.log(task);
   },
 };
 
