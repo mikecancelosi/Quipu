@@ -66,6 +66,9 @@
             :startDate="task.value.startDate"
             :endDate="task.value.endDate"
             :key="componentKey"
+            @updateTask="
+              (startDate, endDate) => assigndates(startDate, endDate)
+            "
           />
         </div>
 
@@ -175,6 +178,7 @@
 
 .value {
   max-width: 150px;
+  min-height: 40px;
 }
 
 .descriptionInput {
