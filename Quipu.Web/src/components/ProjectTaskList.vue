@@ -233,7 +233,6 @@ export default {
     ];
     const headerrows = computed(() => {
       tablekey.value += 1;
-      console.log("h");
       return store.getters.getTaskStatusCategoryGroups(props.project);
     });
 

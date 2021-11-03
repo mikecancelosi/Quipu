@@ -8,6 +8,9 @@ const state = {
 const getters = {
   allPriorityTypes: (state) => state.priorityTypes,
   allPriorityDropdownOptions: (state) => state.priorityDropdownOptions,
+  getPriorityByID: (state) => (id) => {
+    return state.priorityTypes.find((x) => x.id === id);
+  },
 };
 
 const actions = {

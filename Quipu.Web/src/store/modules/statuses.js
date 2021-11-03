@@ -8,6 +8,9 @@ const state = {
 const getters = {
   allStatusTypes: (state) => state.statusTypes,
   allStatusDropdownOptions: (state) => state.statusDropdownOptions,
+  getStatusByID: (state) => (id) => {
+    return state.statusTypes.find((x) => x.id === id);
+  },
 };
 
 const actions = {

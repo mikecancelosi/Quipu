@@ -80,6 +80,7 @@
             class="value"
             :priorityid="task.value.priorityID"
             :key="componentKey"
+            @updateTask="(priorityid) => assignpriority(priorityid)"
           />
         </div>
 
@@ -89,6 +90,7 @@
             class="value"
             :statusid="task.value.statusID"
             :key="componentKey"
+            @updateTask="(statusid) => assignstatus(statusid)"
           />
         </div>
 
@@ -249,11 +251,13 @@ export default {
       task.value.endDate = enddate;
       updatetask();
     };
-    const assignpriority = (priorityid) => {
+    const assignpriority = async (priorityid) => {
+      task.value.priority = await store.getters.getPriorityByID(priorityid);
       task.value.priorityID = priorityid;
       updatetask();
     };
-    const assignstatus = (statusid) => {
+    const assignstatus = async (statusid) => {
+      task.value.status = await store.getters.getStatusByID(statusid);
       task.value.statusID = statusid;
       updatetask();
     };

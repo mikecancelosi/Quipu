@@ -80,6 +80,7 @@ export default {
     );
 
     const updatetask = () => {
+      console.log(newid.value);
       emit("update-task", newid.value);
       newpriority.value = allPriorityDropdownOptions.find(
         (x) => x.category === newpriority.value.id
