@@ -25,8 +25,8 @@
 </style>
 
 <script>
-import pageheader from "./PageHeader";
-import { RepositoryFactory } from "./../repositories/RepositoryFactory";
+import pageheader from "../PageHeader";
+import { RepositoryFactory } from "../../repositories/RepositoryFactory";
 import { useRouter } from "vue-router";
 import { onMounted, reactive, ref } from "vue";
 const ProjectRepository = RepositoryFactory.get("projects");

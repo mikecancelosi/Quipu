@@ -197,8 +197,8 @@
 
 <script>
 import draggable from "vuedraggable";
-import taskdetailpreview from "./ProjectComponents/ProjectTaskList_TaskDetailPreview";
-import row from "./ProjectComponents/ProjectTaskList_Row";
+import taskdetailpreview from "./ProjectTaskList_TaskDetailPreview";
+import row from "./ProjectTaskList_Row";
 import { ref, reactive, computed } from "vue";
 import { useStore } from "vuex";
 
