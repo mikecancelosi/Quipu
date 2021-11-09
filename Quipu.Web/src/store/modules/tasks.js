@@ -26,7 +26,7 @@ const actions = {
   },
 
   updateTask({ commit }, task) {
-    if (task.id !== 0 && task.id !== undefined) {
+    if (task.id !== undefined && task.id !== 0) {
       return TaskRepository.put(task)
         .then((instance) => {
           commit("updateTask", JSON.parse(instance.config.data));

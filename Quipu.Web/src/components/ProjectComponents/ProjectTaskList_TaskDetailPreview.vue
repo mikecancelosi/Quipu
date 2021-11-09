@@ -111,7 +111,7 @@
           />
         </div>
 
-        <subtasks />
+        <subtasks :taskID="task.value.id" />
         <taskhistory
           v-if="task.value != null"
           :task="task.value"

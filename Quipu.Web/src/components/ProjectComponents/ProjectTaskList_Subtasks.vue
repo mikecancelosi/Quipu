@@ -5,7 +5,7 @@
 
       <div
         class="row taskcontainer"
-        v-for="(task, i) in mutSubTasks"
+        v-for="(task, i) in parentTask.subtasks"
         :key="task"
         :ref="
           (el) => {
@@ -18,7 +18,7 @@
           round
           flat
           v-bind:style="{ color: task.completed ? 'green' : 'white' }"
-          @click="task.completed = !task.completed"
+          @click="toggleTaskCompletion(task)"
           class="checkbox"
           size="12px"
           icon="o_check_circle_outline"
@@ -42,7 +42,7 @@
       outline
       no-caps
       id="addTask"
-      @click="this.addTask()"
+      @click="addTask()"
     />
   </div>
 </template>
@@ -77,6 +77,7 @@
 
 <script>
 import { computed, ref, nextTick } from "vue";
+import { useStore } from "vuex";
 
 export default {
   name: "Subtasks",
@@ -85,20 +86,25 @@ export default {
       type: Number,
       default: 0,
     },
-    subtasks: {
-      type: Array,
-      default: () => [],
-    },
   },
   setup(props) {
     const taskDivs = ref([]);
-    const mutSubTasks = ref(props.subtasks);
-    const hasSubTasks = computed(() => mutSubTasks.value.length > 0);
+    const parentTask = ref({});
+    const store = useStore();
+
+    (async () => {
+      parentTask.value = await store.getters.getTaskByID(props.taskID);
+      console.log(parentTask.value);
+    })();
+    const subtasks = computed(() => parentTask?.value?.subtasks ?? []);
+    const hasSubTasks = computed(() => (subtasks?.value?.length ?? 0) > 0);
 
     const addTask = async () => {
-      mutSubTasks.value.push({
+      subtasks.value.push({
         name: "",
         completed: false,
+        parentTaskID: props.taskID,
+        projectID: parentTask.value.projectID,
       });
 
       await nextTick();
@@ -110,29 +116,37 @@ export default {
 
     const onTaskLostFocus = (task) => {
       if (task.name === "") {
-        const index = mutSubTasks.value.indexOf(task);
-        mutSubTasks.value.splice(index, 1);
+        const index = subtasks.value.indexOf(task);
+        subtasks.value.splice(index, 1);
       } else {
-        pushToDB();
+        pushToDB(task);
       }
     };
 
     const clearEmptyTasks = () => {
-      mutSubTasks.value = mutSubTasks.value.filter(
-        (task) => task.name.length > 0
-      );
+      subtasks.value = subtasks.value.filter((task) => task.name.length > 0);
     };
 
-    const pushToDB = () => {};
+    const toggleTaskCompletion = (task) => {
+      task.completed = !task.completed;
+      pushToDB(task);
+    };
+
+    const pushToDB = (task) => {
+      store.dispatch("updateTask", task);
+    };
 
     return {
       hasSubTasks,
-      mutSubTasks,
       addTask,
       clearEmptyTasks,
       taskDivs,
       onTaskLostFocus,
       pushToDB,
+      parentTask,
+      store,
+      subtasks,
+      toggleTaskCompletion,
     };
   },
 };

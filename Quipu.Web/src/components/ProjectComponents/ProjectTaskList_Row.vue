@@ -165,7 +165,6 @@ export default {
 
     const updatetask = async () => {
       await store.dispatch("updateTask", task.value);
-      console.log("Emitt!");
       emit("task-updated");
     };
 
