@@ -8,7 +8,7 @@
   pluginOptions: {
     quasar: {
       importStrategy: "kebab",
-      rtlSupport: false,
+      rtlSupport: true,
     },
   },
 };
