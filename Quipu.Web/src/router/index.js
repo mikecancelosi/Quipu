@@ -1,108 +1,39 @@
-﻿import { createWebHistory, createRouter } from "vue-router";
-import Home from "@/components/Home.vue";
-import ProjectsList from "@/components/ProjectsList.vue";
-import ProjectCreate from "@/components/ProjectCreate.vue";
-import ProjectHome from "@/components/ProjectComponents/ProjectHome.vue";
-import ProjectOverview from "@/components/ProjectComponents/ProjectOverview.vue";
-import ProjectTaskList from "@/components/ProjectComponents/ProjectTaskList.vue";
-import MyTasksHome from "@/components/MyTasksHome.vue";
-import MyTasksBoard from "@/components/MyTasksBoard.vue";
-import MyTasksCalendar from "@/components/MyTasksCalendar.vue";
-import MyTasksList from "@/components/MyTasksList.vue";
-import TeamCreate from "@/components/TeamCreate.vue";
-import TeamHome from "@/components/TeamHome.vue";
-import TeamOverview from "@/components/TeamOverview.vue";
-import TeamProjects from "@/components/TeamProjects.vue";
+import { route } from "quasar/wrappers";
+import {
+  createRouter,
+  createMemoryHistory,
+  createWebHistory,
+  createWebHashHistory,
+} from "vue-router";
+import routes from "./routes";
 
-const routes = [
-  {
-    path: "/Home",
-    name: "Home",
-    component: Home,
-  },
-  {
-    path: "/Projects",
-    name: "Projects",
-    component: ProjectsList,
-  },
-  {
-    path: "/Projects/:id",
-    name: "ProjectHome",
-    component: ProjectHome,
-    props: true,
-    children: [
-      {
-        path: "overview",
-        name: "ProjectOverview",
-        component: ProjectOverview,
-        props: true,
-      },
-      {
-        path: "tasklist",
-        name: "ProjectTaskList",
-        component: ProjectTaskList,
-        props: true,
-      },
-    ],
-  },
-  {
-    path: "/Projects/Create",
-    name: "ProjectCreate",
-    component: ProjectCreate,
-  },
-  {
-    path: "/MyTasks",
-    name: "MyTasksHome",
-    component: MyTasksHome,
-    children: [
-      {
-        path: "",
-        component: MyTasksList,
-      },
-      {
-        path: "board",
-        component: MyTasksBoard,
-      },
-      {
-        path: "calendar",
-        component: MyTasksCalendar,
-      },
-      {
-        path: "list",
-        component: MyTasksList,
-      },
-    ],
-  },
-  {
-    path: "/Teams/Create",
-    name: "TeamCreate",
-    component: TeamCreate,
-  },
-  {
-    path: "/Teams/:id",
-    name: "TeamHome",
-    component: TeamHome,
-    props: true,
-    children: [
-      {
-        path: "overview",
-        name: "TeamOverview",
-        component: TeamOverview,
-        props: true,
-      },
-      {
-        path: "projects",
-        name: "TeamProjects",
-        component: TeamProjects,
-        props: true,
-      },
-    ],
-  },
-];
+/*
+ * If not building with SSR mode, you can
+ * directly export the Router instantiation;
+ *
+ * The function below can be async too; either use
+ * async/await or return a Promise which resolves
+ * with the Router instance.
+ */
 
-const router = createRouter({
-  history: createWebHistory(),
-  routes,
+export default route(function (/* { store, ssrContext } */) {
+  const createHistory = process.env.SERVER
+    ? createMemoryHistory
+    : process.env.VUE_ROUTER_MODE === "history"
+    ? createWebHistory
+    : createWebHashHistory;
+
+  const Router = createRouter({
+    scrollBehavior: () => ({ left: 0, top: 0 }),
+    routes,
+
+    // Leave this as is and make changes in quasar.conf.js instead!
+    // quasar.conf.js -> build -> vueRouterMode
+    // quasar.conf.js -> build -> publicPath
+    history: createHistory(
+      process.env.MODE === "ssr" ? void 0 : process.env.VUE_ROUTER_BASE
+    ),
+  });
+
+  return Router;
 });
-
-export default router;

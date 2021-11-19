@@ -10,7 +10,14 @@
       icon="mdi-forwardburger"
     />
     <div class="row" style="align-items: center">
-      <q-btn id="headerIcon" :icon="icon" size="24px" dense flat />
+      <q-btn
+        id="headerIcon"
+        :icon="icon"
+        size="24px"
+        dense
+        flat
+        v-if="icon !== ''"
+      />
       <a id="headerTitle" :class="{ denseTitle: hasTabs }">
         {{ title }}
       </a>
@@ -19,10 +26,10 @@
     <q-tabs id="tabsContainer" v-if="hasTabs" v-model="selectedtab" dense>
       <div v-for="tab in tabs" :key="tab">
         <div>
-          <q-tab
+          <q-route-tab
             class="tabOption"
             :disable="tab.disable"
-            :to="tab.link"
+            :to="{ name: tab.link }"
             :label="tab.title"
             :name="tab.title"
           />

@@ -197,8 +197,8 @@
 
 <script>
 import draggable from "vuedraggable";
-import taskdetailpreview from "./ProjectTaskList_TaskDetailPreview";
-import row from "./ProjectTaskList_Row";
+import taskdetailpreview from "../components/ProjectComponents/ProjectTaskList_TaskDetailPreview";
+import row from "../components/ProjectComponents/ProjectTaskList_Row";
 import { ref, reactive, computed } from "vue";
 import { useStore } from "vuex";
 
@@ -247,7 +247,6 @@ export default {
     ];
 
     const headerrows = computed(() => {
-      tablekey.value += 1;
       return store.getters.getTaskStatusCategoryGroups(props.project);
     });
 

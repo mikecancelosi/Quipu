@@ -65,6 +65,7 @@ export default {
     loaded.value = true;
 
     const updatetask = () => {
+      console.log(newid.value);
       emit("update-task", newid.value);
       newuser.value = allUserDropdownOptions.find(
         (x) => x.category === newuser.value.id

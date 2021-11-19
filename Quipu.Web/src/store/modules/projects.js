@@ -7,7 +7,8 @@ const state = {
 const getters = {
   getProjects: (state) => state.projects,
   getProjectByID: (state) => (id) => {
-    return state.projects.find((x) => x.id === id);
+    const projectfound = state.projects.find((x) => x.id === id);
+    return projectfound;
   },
 };
 

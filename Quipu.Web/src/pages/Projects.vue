@@ -1,7 +1,4 @@
 ﻿<template>
-  <q-header elevated>
-    <pageheader title="Projects" icon="o_groups" />
-  </q-header>
   <q-separator />
 
   <div id="contentContainer">
@@ -10,19 +7,19 @@
       <q-btn icon="o_add" label="Add Project" push color="primary" />
       <q-space />
       <q-btn-dropdown color="primary" label="Sort" icon="o_filter_list" dense>
-        <q-item clickable v-close-popup @click="onItemClick">
+        <q-item clickable v-close-popup>
           <q-item-section>
             <q-item-label>None</q-item-label>
           </q-item-section>
         </q-item>
 
-        <q-item clickable v-close-popup @click="onItemClick">
+        <q-item clickable v-close-popup>
           <q-item-section>
             <q-item-label>Due Date</q-item-label>
           </q-item-section>
         </q-item>
 
-        <q-item clickable v-close-popup @click="onItemClick">
+        <q-item clickable v-close-popup>
           <q-item-section>
             <q-item-label>Alphabetical</q-item-label>
           </q-item-section>
@@ -53,13 +50,11 @@
 
 <script>
 import { ref, computed } from "vue";
-import pageheader from "./PageHeader";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 
 export default {
   name: "ProjectsList",
-  components: { pageheader },
   setup() {
     const columns = [
       { name: "name", label: "Project Name", field: "name", align: "left" },
@@ -85,7 +80,7 @@ export default {
 
     const navigateToProject = (evt, row) => {
       router.push({
-        name: "ProjectHome",
+        name: "ProjectOverview",
         params: { id: row.id },
       });
     };

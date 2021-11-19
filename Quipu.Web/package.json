@@ -1,138 +1,54 @@
 {
-  "name": "quipu",
-  "version": "0.1.0",
+  "name": "testweb",
+  "version": "0.0.1",
+  "description": "A Quasar Framework app",
+  "productName": "Quasar App",
+  "author": "Mike Cancelosi <mike.cancelosi@gmail.com>",
   "private": true,
-  "description": "## Project setup ``` npm install ```",
-  "author": "",
   "scripts": {
-    "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
-    "test": "yarn jest",
-    "test:unit": "vue-cli-service test:unit",
-    "lint": "vue-cli-service lint"
+    "lint": "eslint --ext .js,.vue ./",
+    "test": "echo \"See package.json => scripts for available tests.\" && exit 0",
+    "test:unit": "jest --updateSnapshot",
+    "test:unit:ci": "jest --ci",
+    "test:unit:coverage": "jest --coverage",
+    "test:unit:watch": "jest --watch",
+    "test:unit:watchAll": "jest --watchAll",
+    "serve:test:coverage": "quasar serve test/jest/coverage/lcov-report/ --port 8788",
+    "concurrently:dev:jest": "concurrently \"quasar dev\" \"jest --watch\""
   },
   "dependencies": {
-    "@mdi/font": "5.9.55",
     "@quasar/extras": "^1.0.0",
-    "axios": "^0.20.0-0",
-    "core-js": "^3.7.0",
+    "axios": "^0.21.1",
+    "core-js": "^3.6.5",
     "quasar": "^2.0.0",
-    "roboto-fontface": "*",
-    "vue": "^3.2.21",
-    "vue-loader": "^16.8.3",
-    "vue-loader-v16": "npm:vue-loader@^16.0.0-alpha.3",
-    "vue-router": "^4.0.0-rc.5",
-    "vue-smooth-dnd": "^0.8.1",
-    "vuedraggable": "^4.1.0",
-    "vuetify": "^3.0.0-alpha.0",
-    "vuex": "^4.0.2",
-    "moment": "^2.24.0"
+    "vuex": "^4.0.1",
+    "vuedraggable": "^4.1.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.16.0",
-    "@babel/node": "^7.8.7",
-    "@babel/preset-env": "^7.9.0",
-    "@types/jest": "^25.2.1",
-    "@types/moment": "^2.13.0",
-    "@vue/cli-plugin-babel": "^4.5.15",
-    "@vue/cli-plugin-eslint": "^4.5.15",
-    "@vue/cli-service": "^4.5.15",
-    "@vue/compiler-sfc": "^3.2.21",
-    "@vue/eslint-config-prettier": "^6.0.0",
-    "@vue/test-utils": "^2.0.0-rc.16",
-    "babel-core": "^7.0.0-bridge.0",
-    "babel-eslint": "^10.1.0",
-    "babel-jest": "^25.2.6",
-    "flush-promises": "^1.0.2",
-    "ts-jest": "^25.3.1",
-    "ts-loader": "^6.2.2",
-    "css-loader": "^6.5.1",
-    "eslint": "^6.8.0",
-    "eslint-plugin-prettier": "^3.3.1",
-    "eslint-plugin-vue": "^7.1.0",
-    "file-loader": "^6.2.0",
-    "jest": "^26.3.0",
-    "mini-css-extract-plugin": "^2.4.4",
-    "prettier": "^2.2.1",
-    "sass": "1.32.12",
-    "sass-loader": "^10.1.0",
-    "typescript": "~3.9.3",
-    "vue-cli-plugin-quasar": "~4.0.4",
-    "vue-jest": "^5.0.0-alpha.10",
-    "webpack": "^4.42.1",
-    "webpack-cli": "^3.3.11",
-    "webpack-dev-server": "^3.10.3"
-  },
-  "eslintConfig": {
-    "root": true,
-    "extends": [
-      "plugin:vue/vue3-essential",
-      "eslint:recommended",
-      "@vue/prettier"
-    ],
-    "parserOptions": {
-      "parser": "babel-eslint"
-    },
-    "rules": {},
-    "overrides": [
-      {
-        "files": [
-          "**/__tests__/*.{j,t}s?(x)",
-          "**/tests/unit/**/*.spec.{j,t}s?(x)"
-        ]
-      },
-      {
-        "files": [
-          "**/__tests__/*.{j,t}s?(x)",
-          "**/tests/unit/**/*.spec.{j,t}s?(x)"
-        ],
-        "env": {
-          "jest": true
-        }
-      },
-      {
-        "files": [
-          "**/__tests__/*.{j,t}s?(x)",
-          "**/tests/unit/**/*.spec.{j,t}s?(x)"
-        ],
-        "env": {
-          "jest": true
-        }
-      }
-    ]
+    "@babel/eslint-parser": "^7.13.14",
+    "@quasar/app": "^3.0.0",
+    "@quasar/quasar-app-extension-testing": "^2.0.1",
+    "@quasar/quasar-app-extension-testing-unit-jest": "^3.0.0-alpha.6",
+    "eslint": "^7.14.0",
+    "eslint-config-prettier": "^8.1.0",
+    "eslint-plugin-vue": "^7.0.0",
+    "eslint-webpack-plugin": "^2.4.0",
+    "eslint-plugin-jest": "^25.2.2"
   },
   "browserslist": [
-    "> 1%",
-    "last 2 versions",
-    "not dead"
+    "last 10 Chrome versions",
+    "last 10 Firefox versions",
+    "last 4 Edge versions",
+    "last 7 Safari versions",
+    "last 8 Android versions",
+    "last 8 ChromeAndroid versions",
+    "last 8 FirefoxAndroid versions",
+    "last 10 iOS versions",
+    "last 5 Opera versions"
   ],
-  "jest": {
-    "moduleFileExtensions": [
-      "js",
-      "ts",
-      "jsx",
-      "json",
-      "vue"
-    ],
-    "transform": {
-      "^.+\\.vue$": "vue-jest",
-      "^.+\\.(js|jsx)?$": "babel-jest"
-    },
-    "transformIgnorePatterns": [
-      "/node_modules/"
-    ],
-    "moduleNameMapper": {
-      "^@/(.*)$": "<rootDir>/src/$1"
-    },
-    "snapshotSerializers": [
-      "jest-serializer-vue"
-    ],
-    "testURL": "http://localhost/",
-    "preset": "@vue/cli-plugin-unit-jest"
-  },
-  "directories": {
-    "test": "tests"
-  },
-  "keywords": [],
-  "license": "ISC"
+  "engines": {
+    "node": ">= 12.22.1",
+    "npm": ">= 6.13.4",
+    "yarn": ">= 1.21.1"
+  }
 }

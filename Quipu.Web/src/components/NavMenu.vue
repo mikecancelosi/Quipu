@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <q-drawer :model-value="leftDrawerOpen.value" show-if-above bordered>
     <q-list class="navigationdrawer">
       <div class="row" style="align-items: center">
         <q-item-label id="header" header>Quipu</q-item-label>
@@ -11,51 +11,27 @@
             round
             @click="toggleLeftDrawerOpen()"
             aria-label="Menu"
-            v-show="this.leftDrawerOpen"
+            v-if="leftDrawerOpen"
             icon="mdi-backburger"
           />
         </div>
       </div>
-      <q-item dense clickable @click="this.$router.push('/Home')" disable>
-        <q-item-section avatar>
-          <q-icon name="o_school" />
-        </q-item-section>
-        <q-item-section>
-          <q-item-label>Home</q-item-label>
-        </q-item-section>
-      </q-item>
-      <q-item dense clickable :to="{ name: 'MyTasksHome' }">
-        <q-item-section avatar>
-          <q-icon name="o_code" />
-        </q-item-section>
-        <q-item-section>
-          <q-item-label>My Tasks</q-item-label>
-        </q-item-section>
-      </q-item>
-      <q-item dense clickable @click="this.$router.push('/Inbox')" disable>
-        <q-item-section avatar>
-          <q-icon name="o_chat" />
-        </q-item-section>
-        <q-item-section>
-          <q-item-label>Inbox</q-item-label>
-        </q-item-section>
-      </q-item>
-      <q-item dense clickable @click="this.$router.push('/Projects')">
-        <q-item-section avatar>
-          <q-icon name="o_forum" />
-        </q-item-section>
-        <q-item-section>
-          <q-item-label>Projects</q-item-label>
-        </q-item-section>
-      </q-item>
-      <q-item dense clickable @click="this.$router.push('/Goals')" disable>
-        <q-item-section avatar>
-          <q-icon name="o_rss_feed" />
-        </q-item-section>
-        <q-item-section>
-          <q-item-label>Goals</q-item-label>
-        </q-item-section>
-      </q-item>
+
+      <div v-for="link in essentialLinks" :key="link.title" v-bind="link">
+        <q-item
+          dense
+          clickable
+          :to="{ name: link.dest }"
+          :disable="link.disable"
+        >
+          <q-item-section avatar>
+            <q-icon :name="link.icon" />
+          </q-item-section>
+          <q-item-section>
+            <q-item-label>{{ link.title }}</q-item-label>
+          </q-item-section>
+        </q-item>
+      </div>
     </q-list>
 
     <q-separator />
@@ -140,35 +116,61 @@
         </div>
       </div>
     </q-item>
-  </div>
+  </q-drawer>
 </template>
 
 <script>
-import { mapGetters, mapActions } from "vuex";
-import axios from "axios";
+import { mapActions, useStore } from "vuex";
+import { computed } from "vue";
+
+const linksList = [
+  {
+    title: "Home",
+    icon: "o_school",
+    dest: "Index",
+    disable: false,
+  },
+  {
+    title: "My Tasks",
+    icon: "o_code",
+    dest: "MyTasks",
+    disable: true,
+  },
+  {
+    title: "Inbox",
+    icon: "o_chat",
+    dest: "Inbox",
+    disable: true,
+  },
+  {
+    title: "Projects",
+    icon: "o_forum",
+    dest: "ProjectsList",
+    disable: false,
+  },
+  {
+    title: "Goals",
+    icon: "o_rss_feed",
+    dest: "Goals",
+    disable: true,
+  },
+];
+
 export default {
   name: "NavMenu",
-  computed: mapGetters(["leftDrawerOpen"]),
-  data() {
+  setup() {
+    const store = useStore();
+    const teams = computed(() => store.getters.getTeams);
+    const leftDrawerOpen = computed(() => store.getters.leftDrawerOpen);
+
     return {
-      teams: [],
+      essentialLinks: linksList,
+      teams,
+      leftDrawerOpen,
     };
   },
   methods: {
     ...mapActions(["toggleLeftDrawerOpen"]),
-    getTeams() {
-      axios
-        .get("http://127.0.0.1:5000/api/Teams")
-        .then((response) => {
-          this.teams = response.data;
-        })
-        .catch(function (error) {
-          alert(error);
-        });
-    },
-  },
-  mounted() {
-    this.getTeams();
   },
 };
 </script>

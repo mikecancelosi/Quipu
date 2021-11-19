@@ -7,7 +7,7 @@ const state = {
 const getters = {
   getTasks: (state) => state.tasks,
   getTaskByID: (state) => (id) => {
-    return state.tasks.find((x) => x.id === id);
+    return { ...state.tasks.find((x) => x.id === id) };
   },
   getTasksByProjectID: (state) => (projectid) => {
     return state.tasks.filter((task) => task.projectID === projectid);
@@ -25,7 +25,7 @@ const actions = {
     commit("setTasks", tasks);
   },
 
-  updateTask({ commit }, task) {
+  async updateTask({ commit }, task) {
     if (task.id !== undefined && task.id !== 0) {
       return TaskRepository.put(task)
         .then((instance) => {

@@ -1,5 +1,8 @@
 ﻿const state = {
-  leftDrawerOpen: Boolean,
+  leftDrawerOpen: {
+    type: Boolean,
+    default: true,
+  },
 };
 
 const getters = {

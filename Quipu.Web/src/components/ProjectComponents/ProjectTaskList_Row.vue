@@ -137,8 +137,14 @@ export default {
       loaded.value = true;
     }
 
+    const assignname = (task, name, completed) => {
+      task.value.name = name;
+      task.value.completed = completed;
+      updatetask();
+    };
     const assignuser = (task, newuserid) => {
       task.value.assignedToUserID = newuserid;
+      task.value.assignedToUser = store.getters.getUserByID(newuserid);
       updatetask();
     };
     const assigndates = (task, startdate, enddate) => {
@@ -152,11 +158,6 @@ export default {
     };
     const assignstatus = (task, statusid) => {
       task.value.statusID = statusid;
-      updatetask();
-    };
-    const assignname = (task, name, completed) => {
-      task.value.name = name;
-      task.value.completed = completed;
       updatetask();
     };
     const showdetailtask = () => {
