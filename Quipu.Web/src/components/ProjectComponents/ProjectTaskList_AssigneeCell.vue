@@ -59,13 +59,13 @@ export default {
     ).value;
     const newid = computed(() => newuser.value.id ?? 0);
 
+    console.log(allUserDropdownOptions);
     newuser.value = allUserDropdownOptions.find(
       (x) => x.category === props.userid
     );
     loaded.value = true;
 
     const updatetask = () => {
-      console.log(newid.value);
       emit("update-task", newid.value);
       newuser.value = allUserDropdownOptions.find(
         (x) => x.category === newuser.value.id

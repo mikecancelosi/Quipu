@@ -26,6 +26,7 @@ const actions = {
         category: user.id,
       });
     });
+    console.log(useroptions);
     commit("setUsers", users);
     commit("setUserDropdownOptions", useroptions);
   },
