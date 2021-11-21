@@ -18,22 +18,23 @@ const getters = {
 
 const actions = {
   async fetchUsers({ commit }) {
-    console.log("user");
-    const users = (await UserRepository.get()).data;
-    if ((users?.length ?? 0) > 0) {
-      console.log("user");
-      const useroptions = [];
-      users.forEach((user) => {
-        useroptions.push({
-          label: user.display_Name,
-          value: user,
-          category: user.id,
-        });
-      });
-      console.log(useroptions);
-      commit("setUsers", users);
-      commit("setUserDropdownOptions", useroptions);
-    }
+    await UserRepository.get()
+      .then((res) => {
+        let users = res.data;
+        if ((users?.length ?? 0) > 0) {
+          const useroptions = [];
+          users.forEach((user) => {
+            useroptions.push({
+              label: user.display_Name,
+              value: user,
+              category: user.id,
+            });
+          });
+          commit("setUsers", users);
+          commit("setUserDropdownOptions", useroptions);
+        }
+      })
+      .catch((err) => console.log(err));
   },
 
   updateUser(user, { commit }) {

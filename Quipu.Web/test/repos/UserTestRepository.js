@@ -3,18 +3,24 @@ const users = getUsers();
 
 export default {
   async get() {
-    return users;
+    return new Promise((resolve, reject) => {
+      process.nextTick(() =>
+        (users?.length ?? 0) > 0
+          ? resolve({ data: users })
+          : reject({ error: "No users found" })
+      );
+    });
   },
 
-  async getById(id) {
+  getById(id) {
     return users.find((user) => user.id === id);
   },
 
-  async post(payload) {
+  post(payload) {
     users.push(payload);
   },
 
-  async put(payload) {
+  put(payload) {
     const id = payload.id;
     const match = getById(id);
     if (match !== null) {
