@@ -59,7 +59,7 @@ export default {
     ).value;
     const newid = computed(() => newuser.value.id ?? 0);
 
-    console.log(allUserDropdownOptions);
+    console.log(store.getters.allUsers);
     newuser.value = allUserDropdownOptions.find(
       (x) => x.category === props.userid
     );

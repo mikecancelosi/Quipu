@@ -1,13 +1,15 @@
 import { describe, expect, it } from "@jest/globals";
 import { installQuasarPlugin } from "@quasar/quasar-app-extension-testing-unit-jest";
 import { mount, shallowMount } from "@vue/test-utils";
-import { createTestStore } from "../../utils/teststore";
 import Cell from "../../../src/components/ProjectComponents/ProjectTaskList_AssigneeCell.vue";
+import createStore from "app/src/store/index";
 
 // Specify here Quasar config you'll need to test your component
 installQuasarPlugin();
 
-const store = createTestStore();
+const store = createStore();
+store.dispatch("fetchUsers");
+console.log(store.getters.allUsers);
 
 describe("AssigneeCell", () => {
   it("has options", () => {
@@ -17,8 +19,6 @@ describe("AssigneeCell", () => {
       },
     });
     const { vm } = wrapper;
-
-    console.log(vm);
 
     expect(1).toEqual(1);
   });

@@ -1,4 +1,5 @@
-﻿import UserRepository from "./../../repositories/UserRepository";
+﻿import { RepositoryFactory } from "src/repositories/RepositoryFactory";
+const UserRepository = RepositoryFactory.get("users");
 
 const state = {
   users: [],
@@ -17,18 +18,22 @@ const getters = {
 
 const actions = {
   async fetchUsers({ commit }) {
+    console.log("user");
     const users = (await UserRepository.get()).data;
-    const useroptions = [];
-    users.forEach((user) => {
-      useroptions.push({
-        label: user.display_Name,
-        value: user,
-        category: user.id,
+    if ((users?.length ?? 0) > 0) {
+      console.log("user");
+      const useroptions = [];
+      users.forEach((user) => {
+        useroptions.push({
+          label: user.display_Name,
+          value: user,
+          category: user.id,
+        });
       });
-    });
-    console.log(useroptions);
-    commit("setUsers", users);
-    commit("setUserDropdownOptions", useroptions);
+      console.log(useroptions);
+      commit("setUsers", users);
+      commit("setUserDropdownOptions", useroptions);
+    }
   },
 
   updateUser(user, { commit }) {
