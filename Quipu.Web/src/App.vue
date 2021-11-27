@@ -9,12 +9,14 @@ export default defineComponent({
   name: "App",
   setup() {
     const store = useStore();
-    store.dispatch("fetchStatusTypes");
-    store.dispatch("fetchPriorityTypes");
-    store.dispatch("fetchTaskStatusCategories");
-    store.dispatch("fetchTasks");
-    store.dispatch("fetchUsers");
-    store.dispatch("fetchProjects");
+          
+     store.dispatch("fetchProjects");
+     store.dispatch("fetchStatusTypes");
+     store.dispatch("fetchPriorityTypes");
+     store.dispatch("fetchTaskStatusCategories");
+     store.dispatch("fetchTasks");
+     store.dispatch("fetchUsers");
+    
   },
 });
 </script>
