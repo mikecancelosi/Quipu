@@ -1,4 +1,5 @@
-﻿import TaskRepository from "./../../repositories/TaskRepository";
+﻿import { RepositoryFactory } from "src/repositories/RepositoryFactory";
+const TaskRepository = RepositoryFactory.get("tasks");
 
 const state = {
   tasks: [],

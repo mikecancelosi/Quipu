@@ -67,16 +67,16 @@ export default {
     const showdropdown = ref(false);
     const newstatus = reactive({});
     const store = useStore();
-    const allStatusDropdownOptions = computed(
-      () => store.getters.allStatusDropdownOptions
+    const statusDropdownOptions = computed(
+      () => store.getters.getStatusDropdownOptions
     ).value;
     const newid = computed(() => newstatus.value.id ?? 0);
     newstatus.value =
-      allStatusDropdownOptions.find((x) => x.category === props.statusid) ?? {};
+      statusDropdownOptions.find((x) => x.category === props.statusid) ?? {};
 
     const updatetask = () => {
       emit("update-task", newid.value);
-      newstatus.value = allStatusDropdownOptions.find(
+      newstatus.value = statusDropdownOptions.find(
         (x) => x.category === newstatus.value.id
       );
     };
@@ -87,7 +87,7 @@ export default {
       showdropdown,
       newstatus,
       store,
-      allStatusDropdownOptions,
+      statusDropdownOptions,
     };
   },
 };

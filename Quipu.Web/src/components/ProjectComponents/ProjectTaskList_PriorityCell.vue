@@ -5,7 +5,7 @@
       borderless
       v-model="newpriority.value"
       @update:model-value="updatetask()"
-      :options="allPriorityDropdownOptions"
+      :options="priorityDropdownOptions"
       dense
       emit-value
     >
@@ -57,7 +57,6 @@ import { ref, reactive, computed } from "vue";
 export default {
   name: "PriorityCell",
   emits: ["update-task"],
-  computed: mapGetters(["allPriorityDropdownOptions"]),
   props: {
     priorityid: {
       type: Number,
@@ -69,20 +68,20 @@ export default {
     const showdropdown = ref(false);
     const newpriority = reactive({});
     const store = useStore();
-    const allPriorityDropdownOptions = computed(
-      () => store.getters.allPriorityDropdownOptions
+    const priorityDropdownOptions = computed(
+      () => store.getters.getPriorityDropdownOptions
     ).value;
 
     const newid = computed(() => newpriority.value.id ?? 0);
 
-    newpriority.value = allPriorityDropdownOptions.find(
+    newpriority.value = priorityDropdownOptions.find(
       (x) => x.category === props.priorityid
     );
 
     const updatetask = () => {
       console.log(newid.value);
       emit("update-task", newid.value);
-      newpriority.value = allPriorityDropdownOptions.find(
+      newpriority.value = priorityDropdownOptions.find(
         (x) => x.category === newpriority.value.id
       );
     };
@@ -93,7 +92,7 @@ export default {
       showdropdown,
       newpriority,
       updatetask,
-      allPriorityDropdownOptions,
+      priorityDropdownOptions,
     };
   },
 };

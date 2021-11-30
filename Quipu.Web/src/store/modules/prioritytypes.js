@@ -1,4 +1,5 @@
-﻿import PriorityTypeRepository from "./../../repositories/PriorityTypeRepository";
+﻿import { RepositoryFactory } from "src/repositories/RepositoryFactory";
+const PriorityTypeRepository = RepositoryFactory.get("priorities");
 
 const state = {
   priorityTypes: [],
@@ -6,8 +7,8 @@ const state = {
 };
 
 const getters = {
-  allPriorityTypes: (state) => state.priorityTypes,
-  allPriorityDropdownOptions: (state) => state.priorityDropdownOptions,
+  getPriorities: (state) => state.priorityTypes,
+  getPriorityDropdownOptions: (state) => state.priorityDropdownOptions,
   getPriorityByID: (state) => (id) => {
     return state.priorityTypes.find((x) => x.id === id);
   },

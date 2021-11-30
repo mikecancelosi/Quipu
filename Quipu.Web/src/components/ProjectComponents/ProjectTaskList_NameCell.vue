@@ -12,7 +12,7 @@
             updatetask();
           "
           class="checkbox"
-          icon="o_check_circle_outline"
+          icon="check_circle_outline"
         />
       </div>
       <div id="inputContainer">
@@ -21,6 +21,7 @@
           debounce="1000"
           dense
           borderless
+          data-cy="input"
           v-model="name"
           @update:model-value="(val) => focusChange(true)"
           @blur="(evt) => focusChange(false)"
@@ -29,12 +30,13 @@
       <q-space />
       <q-btn
         label="Details"
-        icon-right="o_chevron_right"
+        icon-right="chevron_right"
         flat
         dense
         no-caps
         class="showonhover"
         :ripple="false"
+        id="detailsbtn"
         @click="this.detailtask()"
       />
     </div>
@@ -50,11 +52,11 @@
   color: green;
 }
 
-.list-row-noicon .tablecol .showonhover {
+.cell .showonhover {
   visibility: hidden;
 }
 
-.list-row-noicon .tablecol:hover .showonhover {
+.cell:hover .showonhover {
   visibility: visible;
 }
 /* quickfix for inputs cutting off */
@@ -67,7 +69,7 @@
 import { onMounted, ref, nextTick } from "vue";
 
 export default {
-  name: "StatusCell",
+  name: "NameCell",
   emits: ["update-task", "detail-task", "remove-task"],
   props: {
     task: {},

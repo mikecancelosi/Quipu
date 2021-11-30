@@ -1,7 +1,11 @@
-﻿const tasks = [];
+﻿import { getTasks } from "../utils/TestData";
+
+const tasks = getTasks();
 export default {
-  get() {
-    return tasks;
+  async get() {
+    return {
+      data: tasks,
+    };
   },
 
   getTask(id) {

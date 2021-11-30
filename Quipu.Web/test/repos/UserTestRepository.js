@@ -3,13 +3,9 @@ const users = getUsers();
 
 export default {
   async get() {
-    return new Promise((resolve, reject) => {
-      process.nextTick(() =>
-        (users?.length ?? 0) > 0
-          ? resolve({ data: users })
-          : reject({ error: "No users found" })
-      );
-    });
+    return {
+      data: users,
+    };
   },
 
   getById(id) {

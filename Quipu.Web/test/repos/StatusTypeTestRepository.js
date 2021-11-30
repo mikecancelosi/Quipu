@@ -1,7 +1,12 @@
-﻿const statustypes = [];
+﻿import { getStatusTypes } from "../utils/TestData";
+
+const statustypes = getStatusTypes();
+
 export default {
   get() {
-    return statustypes;
+    return {
+      data: statustypes,
+    };
   },
 
   getById(id) {

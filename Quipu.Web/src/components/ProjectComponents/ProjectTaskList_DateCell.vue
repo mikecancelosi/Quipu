@@ -1,7 +1,7 @@
 ﻿<template>
   <div class="cell" @mouseenter="hover = true" @mouseleave="hover = false">
     <q-btn
-      icon="o_calendar_today"
+      icon="event"
       round
       flat
       outline
@@ -49,6 +49,8 @@
 .cell {
   height: 100%;
   width: 100%;
+  min-width: 50px;
+  min-height: 50px;
 }
 </style>
 
@@ -60,7 +62,7 @@ import {
 } from "../../utils/helpers/dateformatter.js";
 
 export default {
-  name: "AssigneeCell",
+  name: "DateCell",
   emits: ["update-task"],
   props: {
     startDate: {

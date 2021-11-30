@@ -1,7 +1,11 @@
-﻿const prioritytypes = [];
+﻿import { getPriorityTypes } from "../utils/TestData";
+
+const prioritytypes = getPriorityTypes();
 export default {
   get() {
-    return prioritytypes;
+    return {
+      data: prioritytypes,
+    };
   },
 
   getById(id) {

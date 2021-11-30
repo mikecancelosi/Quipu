@@ -1,4 +1,5 @@
-﻿import StatusTypeRepository from "./../../repositories/StatusTypeRepository";
+﻿import { RepositoryFactory } from "src/repositories/RepositoryFactory";
+const StatusTypeRepository = RepositoryFactory.get("statuses");
 
 const state = {
   statusTypes: [],
@@ -6,8 +7,8 @@ const state = {
 };
 
 const getters = {
-  allStatusTypes: (state) => state.statusTypes,
-  allStatusDropdownOptions: (state) => state.statusDropdownOptions,
+  getStatusTypes: (state) => state.statusTypes,
+  getStatusDropdownOptions: (state) => state.statusDropdownOptions,
   getStatusByID: (state) => (id) => {
     return state.statusTypes.find((x) => x.id === id);
   },

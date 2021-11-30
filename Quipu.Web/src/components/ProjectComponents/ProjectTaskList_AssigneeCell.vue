@@ -8,6 +8,7 @@
     <q-select
       id="selectitem"
       dense
+      data-cy="select"
       v-model="newuser.value"
       :hide-dropdown-icon="!hover"
       :options="allUserDropdownOptions"
@@ -39,7 +40,7 @@
 
 <script>
 import { useStore } from "vuex";
-import { ref, reactive, computed, toRefs,watch } from "vue";
+import { ref, reactive, computed, toRefs, watch } from "vue";
 
 export default {
   name: "AssigneeCell",
@@ -51,7 +52,7 @@ export default {
     },
   },
   setup(props, { emit }) {
-    const hover = ref(false);   
+    const hover = ref(false);
     const loaded = ref(false);
     const store = useStore();
     const allUserDropdownOptions = computed(
@@ -61,14 +62,15 @@ export default {
     const newuser = reactive({});
 
     // Ensure newuser gets set properly when props update.
-    const useridRef = toRefs(props).userid;       
+    const useridRef = toRefs(props).userid;
     watch(useridRef, () => {
       setUserValue();
-    })    
+    });
     const setUserValue = () => {
-        newuser.value = allUserDropdownOptions.find(
-      (x) => x.category === useridRef.value);
-    }
+      newuser.value = allUserDropdownOptions.find(
+        (x) => x.category === useridRef.value
+      );
+    };
     setUserValue();
 
     loaded.value = true;
@@ -86,7 +88,7 @@ export default {
       newuser,
       updatetask,
       allUserDropdownOptions,
-      setUserValue
+      setUserValue,
     };
   },
 };
